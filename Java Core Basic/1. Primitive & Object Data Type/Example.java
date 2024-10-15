@@ -30,6 +30,14 @@ public class Example {
         }
         */
 
+
+        //khởi tạo gia trị mac định
+        /*
+        * int, byte, short, long: 0
+        * float, double: 0.0
+        * char: ‘\u0000’ (ký tự rỗng)
+        * boolean: false
+*/
     }
 }
 
