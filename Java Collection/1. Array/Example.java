@@ -19,6 +19,22 @@ public class Example {
         for(int i : numbers3) {
             System.out.println(i);
         }
+        // Tìm số lớn nhất nhỏ nhất
+        int max = numbers3[0];
+        int min = numbers3[0];
+
+        for (int value : numbers3) {
+            if (value > max) max = value;
+            if (value < min) min = value;
+        }
+
+        System.out.println("Giá trị lớn nhất: " + max);
+        System.out.println("Giá trị nhỏ nhất: " + min);
+
+        // sắp xếp mảng
+        Arrays.sort(numbers3);
+
+        System.out.println("Mảng sau khi sắp xếp: " + Arrays.toString(numbers3));
     }
 
 }
