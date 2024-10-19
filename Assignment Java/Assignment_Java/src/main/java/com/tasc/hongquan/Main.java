@@ -21,6 +21,7 @@ public class Main {
         CustomerController customerController = new CustomerController(customerService);
         CustomerView customerView = new CustomerView(customerController);
         //load all data from file before start
+        Thread thread = new Thread(() ->{customerService.l})
         customerService.loadAll();
 
         //after thread finish, start view
@@ -41,7 +42,7 @@ class dataGenerator{
                 writer.write(customer.toString());
                 writer.newLine();
             }
-            System.out.println("Append 100 customers successfully!");
+            System.out.println("Append 100000 customers successfully!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +74,8 @@ class dataGenerator{
     }
 
     private static String generateEmail(String name) {
-        String emailName = name.toLowerCase().replaceAll(" ", "") + (RANDOM.nextInt(1000));
+        String emailName = name.toLowerCase().replaceAll(" ", "")
+                + (RANDOM.nextInt(1000));
         return emailName + DOMAIN;
     }
 
