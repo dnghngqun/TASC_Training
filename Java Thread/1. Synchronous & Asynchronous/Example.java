@@ -6,7 +6,7 @@ class Synchronous {
         System.out.println("Dữ liệu đã tải: " + data);
     }
 
-    private static String downloadData() {
+    private synchronized static String downloadData() {
         try {
             // Giả sử thời gian tải dữ liệu là 2s
             Thread.sleep(2000);
