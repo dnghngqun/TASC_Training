@@ -54,4 +54,7 @@ public class CustomerController {
         customerService.saveAll();
     }
 
+    public boolean checkDuplicatePhoneNumber(String phoneNumber){
+        return customerService.checkDuplicatePhoneNumber(phoneNumber);
+    }
 }

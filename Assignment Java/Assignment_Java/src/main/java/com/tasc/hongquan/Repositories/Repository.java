@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface Repository<T,K,V> {
-    void saveAll(List<T> t);
+    void saveAll(HashMap<K,V> t);
     HashMap<K,V> LoadAll();
 
 }

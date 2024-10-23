@@ -152,7 +152,7 @@ public class CustomerView {
             System.out.print("Email is not valid! Enter email again: ");
             email = reader.readLine();
         }
-        return email;
+        return email.trim();
     }
     private String checkPhoneNumber() throws IOException {
         String phonePattern = "^(0|84)([35789])([0-9]{8})$";
@@ -167,7 +167,12 @@ public class CustomerView {
             System.out.print("Phone number is not valid! Enter phone number again: ");
             phone = reader.readLine();
         }
-        return phone;
+
+        if(customerController.checkDuplicatePhoneNumber(phone)){
+            System.out.print("Phone number is duplicated! Enter phone number again: ");
+            phone = reader.readLine();
+        }
+        return phone.trim();
     }
 
     private String checkName() throws IOException {
@@ -177,7 +182,7 @@ public class CustomerView {
             System.out.print("Name is not null! Enter name again: ");
             name = reader.readLine();
         }
-        return name;
+        return name.trim();
     }
 
     private void addCustomer() throws IOException {

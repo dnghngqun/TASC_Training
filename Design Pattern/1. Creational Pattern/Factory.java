@@ -25,6 +25,7 @@ abstract class Creator {
 // Các creator cụ thể
 class CreatorA extends Creator {
     public Product createProduct() {
+        //  Đinh nghia doi tuong cu the
         return new ProductA();
     }
 }

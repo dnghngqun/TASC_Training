@@ -4,6 +4,7 @@ import com.tasc.hongquan.Models.Customer;
 import com.tasc.hongquan.Repositories.CustomerRepositoryImplement;
 import com.tasc.hongquan.Repositories.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomerService {
@@ -23,11 +24,11 @@ public class CustomerService {
     }
 
     public void saveAll() {
-        //convert map to list
-        customerRepository.saveAll(customers
-                .values()
-                .stream()
-                .toList());
+        long startTime = System.currentTimeMillis();
+        customerRepository.saveAll(customers);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Save all customers successfully! Total time: " + (endTime - startTime)
+                + " milliseconds("+ ((endTime - startTime)/1000) + " seconds)");
     }
 
     //crud
@@ -90,6 +91,11 @@ public class CustomerService {
     //get all
     public HashMap<String, Customer> getAllCustomer(){
         return customers;
+    }
+
+    //check duplicate phonenumber
+    public boolean checkDuplicatePhoneNumber(String phoneNumber){
+        return customers.containsKey(phoneNumber);
     }
 
 }
