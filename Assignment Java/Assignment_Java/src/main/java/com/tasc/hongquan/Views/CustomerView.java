@@ -79,7 +79,7 @@ public class CustomerView {
         if(choice.equals("y")) {
             String lastPhoneNumber = customer.getPhoneNumber();
             System.out.print("Enter customer" + (index > 0 ? index : "") + " phone number: ");
-            customer.setPhoneNumber(checkPhoneNumber());
+            customer.setPhoneNumber(checkUpdatePhoneNumber(lastPhoneNumber));
             customerController.updateChangePhoneCustomer(lastPhoneNumber,customer);
         }else {
             System.out.println("No update phone number!");
@@ -162,6 +162,29 @@ public class CustomerView {
             System.out.print("Phone number is not null! Enter phone number again: ");
             phone = reader.readLine();
         }
+
+        while (!patternCheck(phonePattern, phone)) {
+            System.out.print("Phone number is not valid! Enter phone number again: ");
+            phone = reader.readLine();
+        }
+
+        if(customerController.checkDuplicatePhoneNumber(phone)){
+            System.out.print("Phone number is duplicated! Enter phone number again: ");
+            phone = reader.readLine();
+        }
+        return phone.trim();
+    }
+
+    private String checkUpdatePhoneNumber(String lastPhone) throws IOException {
+        String phonePattern = "^(0|84)([35789])([0-9]{8})$";
+        String phone = reader.readLine();
+
+        if (phone.equals("") || phone == null) {
+            System.out.print("Phone number is not null! Enter phone number again: ");
+            phone = reader.readLine();
+        }
+
+        if(phone == lastPhone) return phone;
 
         while (!patternCheck(phonePattern, phone)) {
             System.out.print("Phone number is not valid! Enter phone number again: ");
