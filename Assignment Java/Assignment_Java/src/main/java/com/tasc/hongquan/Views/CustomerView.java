@@ -39,6 +39,7 @@ public class CustomerView {
                         deleteCustomer();
                         break;
                     case 6:
+                        customerController.shutdown(); //wait for thread shutdown
                         System.exit(0);
                         break;
                     default:

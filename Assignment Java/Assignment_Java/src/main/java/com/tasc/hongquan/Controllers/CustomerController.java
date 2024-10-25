@@ -22,6 +22,7 @@ public class CustomerController {
 
     public void addMoreCustomer(HashMap<String, Customer> customerHashMap){
         customerService.addMoreCustomer(customerHashMap);
+
     }
 
     //update if changePhoneNumber
@@ -56,5 +57,11 @@ public class CustomerController {
 
     public boolean checkDuplicatePhoneNumber(String phoneNumber){
         return customerService.checkDuplicatePhoneNumber(phoneNumber);
+    }
+
+
+
+    public void shutdown(){
+        customerService.shutdown();
     }
 }

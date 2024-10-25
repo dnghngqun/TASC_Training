@@ -1,3 +1,8 @@
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class Example {
 
 }
@@ -86,27 +91,28 @@ class ThreadAnonymousExample{
 
 //callable and future
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-class MyCallable implements Callable<String> {
-    private String taskName;
+class MyCallable implements Callable<Integer> {
 
-    public MyCallable(String taskName) {
-        this.taskName = taskName;
-    }
 
     @Override
-    public String call() throws Exception {
+    public Integer call() throws Exception {
         // Giả lập một tác vụ mất thời gian
         Thread.sleep(2000);  // Dừng trong 2 giây
-        return taskName + " completed!";
+        return 50;
     }
+
+    public static void main(String[] args) throws Exception {
+        MyCallable task = new MyCallable();
+        Future<Integer> future = Executors.newSingleThreadExecutor().submit(task);
+        Integer result = future.get();
+        System.out.println(result);
+    }
+
+
 }
 
-public class CallableFutureExample {
+class CallableFutureExample {
     public static void main(String[] args) throws Exception {
         // Tạo một thread pool với 2 thread
         ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -123,8 +129,9 @@ public class CallableFutureExample {
         System.out.println("Waiting for task results...");
 
         // Sử dụng get() để chặn cho đến khi task hoàn thành và lấy kết quả
-        String result1 = future1.get();  // Chờ cho task1 hoàn thành
-        String result2 = future2.get();  // Chờ cho task2 hoàn thành
+        // Chờ cho task1 hoàn thành
+        String result1 = future1.get();
+        String result2 = future2.get();
 
         // In ra kết quả
         System.out.println(result1);  // Task 1 completed!

@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 public class CustomerRepositoryImplement implements Repository<Customer,String,Customer> {
     private final String filePath = "src/main/resources/customer.json";
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private Future<?> currentSaveTask;
+    private Future<Boolean> currentSaveTask;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     /*
     @Override
@@ -29,6 +29,8 @@ public class CustomerRepositoryImplement implements Repository<Customer,String,C
     }
     */
 
+
+
     @Override
     public synchronized void saveAll(HashMap<String, Customer> t) {
         //cancel last task
@@ -40,34 +42,41 @@ public class CustomerRepositoryImplement implements Repository<Customer,String,C
         currentSaveTask = executorService.submit(() -> {
             System.out.println("Start saving customers...");
             Collection<Customer> values = t.values();
-            try(FileWriter writer = new FileWriter(filePath)){
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))){
                 gson.toJson(values, writer);
                 System.out.println("Save customers successfully!");
+                return true;
             }catch (IOException e){
                 e.printStackTrace();
+                return false;
             }
 
         });
-        executorService.shutdown();//shutdown thead after success
+
         try{
             //wait all thread to finish with time = infinity
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        }catch (InterruptedException e){
+            currentSaveTask.get(Long.MAX_VALUE, TimeUnit.SECONDS);
+        }catch (TimeoutException e) {
+            System.out.println("Task timed out and was cancelled.");
+            currentSaveTask.cancel(true);
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
 
     //method using stop executor when don't use
-    public void shutdown(){
+    public void shutdown() {
         executorService.shutdown();
         try {
-            if(!executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS)) {
+            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
                 executorService.shutdownNow();
             }
-        }catch (InterruptedException e){
+
+        } catch (InterruptedException e) {
             executorService.shutdownNow();
         }
     }
+
     /*
 
 
@@ -121,7 +130,7 @@ public class CustomerRepositoryImplement implements Repository<Customer,String,C
             System.out.println("File does not exist!");
             return new HashMap<>();
         }
-        int numThreads = 30;
+        int numThreads = 4;
         ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         List<ByteArrayOutputStream> byteOutputStreams = new ArrayList<>(Collections.nCopies(numThreads, null));
         //load data
@@ -160,7 +169,7 @@ public class CustomerRepositoryImplement implements Repository<Customer,String,C
             //wait all thread to finish with time = infinity
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         }catch (InterruptedException e){
-            e.printStackTrace();
+            executorService.shutdownNow();
         }
         //ghep cac du lieu vao nhau
         ByteArrayOutputStream fullFileByte = new ByteArrayOutputStream();

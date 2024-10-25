@@ -31,6 +31,8 @@ public class CustomerService {
                 + " milliseconds("+ ((endTime - startTime)/1000) + " seconds)");
     }
 
+
+
     //crud
 
     //add
@@ -98,5 +100,8 @@ public class CustomerService {
         return customers.containsKey(phoneNumber);
     }
 
+    public void shutdown(){
+        customerRepository.shutdown();
+    }
 }
 
