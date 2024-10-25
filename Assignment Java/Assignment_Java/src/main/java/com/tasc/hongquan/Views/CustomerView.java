@@ -18,8 +18,8 @@ public class CustomerView {
         this.customerController = customerController;
     }
 
-    public void run(){
-        while(true) {
+    public void run() {
+        while (true) {
             try {
                 int choice = menu();
                 switch (choice) {
@@ -56,15 +56,15 @@ public class CustomerView {
         System.out.print("Enter the phone number of the customer you want to find: ");
         String phoneNumber = reader.readLine();
         Customer customer = customerController.searchByPhoneNumber(phoneNumber);
-        if(customer != null){
+        if (customer != null) {
             System.out.println("Customer found: " + customer.toString());
-        }else {
+        } else {
             System.out.println("Customer information does not exist!");
         }
     }
 
     private void updateCustomer(int index) throws IOException {
-        System.out.print("Enter the phone number of the customer" + (index > 0 ? index : "") +" you want to update: ");
+        System.out.print("Enter the phone number of the customer" + (index > 0 ? index : "") + " you want to update: ");
         String phoneNumber = reader.readLine();
         Customer customer = customerController.searchByPhoneNumber(phoneNumber);
         System.out.println("Customer" + (index > 0 ? index : "") + " found: " + customer.toString());
@@ -77,37 +77,38 @@ public class CustomerView {
         System.out.println("Do you want to update phone number(y/n)?");
         System.out.print("Choice: ");
         String choice = String.valueOf(reader.readLine().charAt(0)).toLowerCase();
-        if(choice.equals("y")) {
+        if (choice.equals("y")) {
             String lastPhoneNumber = customer.getPhoneNumber();
             System.out.print("Enter customer" + (index > 0 ? index : "") + " phone number: ");
             customer.setPhoneNumber(checkUpdatePhoneNumber(lastPhoneNumber));
-            customerController.updateChangePhoneCustomer(lastPhoneNumber,customer);
-        }else {
+            customerController.updateChangePhoneCustomer(lastPhoneNumber, customer);
+        } else {
             System.out.println("No update phone number!");
             customerController.updateCustomer(customer);
         }
     }
+
     private void handleUpdateCustomer() throws IOException {
         System.out.print("Enter the number of customers to update: ");
         try {
             int n = Integer.parseInt(reader.readLine());
 
-            if(n == 1) {
+            if (n == 1) {
                 updateCustomer(0);
                 System.out.println("Update customer successfully!");
-            }else if(n > 1) {
-                for(int i = 0; i < n; i++) {
-                    updateCustomer(i+1);
-                    System.out.println("Update customer" + (i+1) + " successfully!");
+            } else if (n > 1) {
+                for (int i = 0; i < n; i++) {
+                    updateCustomer(i + 1);
+                    System.out.println("Update customer" + (i + 1) + " successfully!");
                 }
                 System.out.println("Update customers successfully!");
-            }else {
+            } else {
                 System.out.println("Invalid input!");
             }
             System.out.println("Please wait for write to file...");
             customerController.saveAll();
 
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Invalid input! Please try again!");
             handleUpdateCustomer();
         }
@@ -144,7 +145,7 @@ public class CustomerView {
         String emailPattern = "^(.+)@(\\S+)$";
         String email = reader.readLine();
 
-        if(email.equals("") || email == null) {
+        if (email.equals("") || email == null) {
             System.out.print("Email is not null! Enter email again: ");
             email = reader.readLine();
         }
@@ -155,7 +156,8 @@ public class CustomerView {
         }
         return email.trim();
     }
-    private String checkPhoneNumber() throws IOException {
+
+    private String invalidPhoneNumber() throws IOException {
         String phonePattern = "^(0|84)([35789])([0-9]{8})$";
         String phone = reader.readLine();
 
@@ -169,7 +171,7 @@ public class CustomerView {
             phone = reader.readLine();
         }
 
-        if(customerController.checkDuplicatePhoneNumber(phone)){
+        if (customerController.checkDuplicatePhoneNumber(phone)) {
             System.out.print("Phone number is duplicated! Enter phone number again: ");
             phone = reader.readLine();
         }
@@ -185,14 +187,14 @@ public class CustomerView {
             phone = reader.readLine();
         }
 
-        if(phone == lastPhone) return phone;
+        if (phone == lastPhone) return phone;
 
         while (!patternCheck(phonePattern, phone)) {
             System.out.print("Phone number is not valid! Enter phone number again: ");
             phone = reader.readLine();
         }
 
-        if(customerController.checkDuplicatePhoneNumber(phone)){
+        if (customerController.checkDuplicatePhoneNumber(phone)) {
             System.out.print("Phone number is duplicated! Enter phone number again: ");
             phone = reader.readLine();
         }
@@ -209,40 +211,28 @@ public class CustomerView {
         return name.trim();
     }
 
+    private void inputCustomer() throws IOException {
+        Customer customer = new Customer();
+        System.out.print("Enter customer name: ");
+        customer.setName(checkName());
+        System.out.print("Enter customer email: ");
+        customer.setEmail(checkEmail());
+        System.out.print("Enter customer phone number: ");
+        customer.setPhoneNumber(invalidPhoneNumber());
+        customerController.addCustomer(customer);
+    }
+
     private void addCustomer() throws IOException {
         System.out.print("Enter the number of customers to add: ");
         try {
             int n = Integer.parseInt(reader.readLine());
-
-            if(n == 1) {
-                Customer customer = new Customer();
-                System.out.print("Enter customer name: ");
-                customer.setName(checkName());
-                System.out.print("Enter customer email: ");
-                customer.setEmail(checkEmail());
-                System.out.print("Enter customer phone number: ");
-                customer.setPhoneNumber(checkPhoneNumber());
-                customerController.addCustomer(customer);
-            }else if(n > 1) {
-                HashMap<String, Customer> customers = new HashMap<>();
-                for(int i = 0; i < n; i++) {
-                    Customer customer = new Customer();
-                    System.out.print("Enter customer name " + (i+1) + ": ");
-                    customer.setName(checkName());
-                    System.out.print("Enter customer email " + (i+1) + ": ");
-                    customer.setEmail(checkEmail());
-                    System.out.print("Enter customer phone number " + (i+1) + ": ");
-                    customer.setPhoneNumber(checkPhoneNumber());
-                    customers.put(customer.getPhoneNumber(), customer);
-                }
-                customerController.addMoreCustomer(customers);
-            }else {
-                System.out.println("Invalid input!");
-            }
-
+            if (n < 1) System.out.println("Invalid input!");
+            else
+                for (int i = 0; i < n; i++)
+                    inputCustomer();
             System.out.println("Please wait for write to file...");
             customerController.saveAll();
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Invalid input! Please try again!");
             addCustomer();
         }
@@ -250,14 +240,14 @@ public class CustomerView {
 
     private void viewAllCustomer() {
         HashMap<String, Customer> customers = customerController.getAllCustomer();
-        if(customers == null || customers.isEmpty()) {
+        if (customers == null || customers.isEmpty()) {
             System.out.println("No customer information available!");
-        }else {
+        } else {
             int i = 0;
             System.out.println("=====View All Customer=====");
             System.out.println("|     No     |         Name         |             Email              | Phone Number |");
-            for(Customer customer : customers.values()) {
-                System.out.printf("|%s|  %-20s|  %-30s|%s|\n", center(String.valueOf(i+1), 12), customer.getName(), customer.getEmail(), center(customer.getPhoneNumber(), 14));
+            for (Customer customer : customers.values()) {
+                System.out.printf("|%s|  %-20s|  %-30s|%s|\n", center(String.valueOf(i + 1), 12), customer.getName(), customer.getEmail(), center(customer.getPhoneNumber(), 14));
                 i++;
             }
         }
@@ -265,7 +255,7 @@ public class CustomerView {
 
     private String center(String text, int length) {
         int padding = length - text.length();
-        int paddingLeft = padding /2;
+        int paddingLeft = padding / 2;
         int paddingRight = padding - paddingLeft;
         return " ".repeat(paddingLeft) + text + " ".repeat(paddingRight);
     }

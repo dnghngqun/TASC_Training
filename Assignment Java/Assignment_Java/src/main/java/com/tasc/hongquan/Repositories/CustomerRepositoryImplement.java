@@ -55,7 +55,8 @@ public class CustomerRepositoryImplement implements Repository<Customer,String,C
 
         try{
             //wait all thread to finish with time = infinity
-            currentSaveTask.get(Long.MAX_VALUE, TimeUnit.SECONDS);
+            boolean isSuccess = currentSaveTask.get(Long.MAX_VALUE, TimeUnit.SECONDS);
+            if(isSuccess) currentSaveTask.cancel(true);
         }catch (TimeoutException e) {
             System.out.println("Task timed out and was cancelled.");
             currentSaveTask.cancel(true);

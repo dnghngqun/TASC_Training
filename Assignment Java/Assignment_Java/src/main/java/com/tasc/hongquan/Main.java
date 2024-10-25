@@ -51,11 +51,12 @@ class dataGenerator{
         CustomerRepositoryImplement customerRepositoryImplement = new CustomerRepositoryImplement();
 
         System.out.println("Start add data example");
-        HashMap<String, Customer> customers = generateCustomers(1000000);
+        HashMap<String, Customer> customers = generateCustomers(10);
         //save to file
         System.out.println("Save to file...");
         customerRepositoryImplement.saveAll(customers);
-
+        System.out.println("Add successfully!");
+        customerRepositoryImplement.shutdown();
 //        Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Tạo Gson với định dạng đẹp
 //        Collection<Customer> values = customers.values();
 //        try (FileWriter writer = new FileWriter(FILEPATH, true)) {
