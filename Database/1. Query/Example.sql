@@ -13,7 +13,7 @@ SELECT * FROM table1 FULL OUTER JOIN table2 ON table1.id = table2.id;
 #Subquery: truy vấn con
 SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees);
 
-#CTE 
+#CTE (CREATE TEMPORARY TABLE)
 WITH EmployeeCTE AS (
   SELECT id, name, salary FROM employees WHERE department = 'HR'
 )
@@ -32,6 +32,13 @@ SELECT name, salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS dense_rank FROM
 #VIEW
 CREATE VIEW HighSalary AS
 SELECT name, salary FROM employees WHERE salary > 5000;
+
+#PROCEDURE (SỬ DỤNG TRONG SQL)
+CREATE PROCEDURE procedure_name (IN parameter1 datatype, OUT parameter2 datatype)
+BEGIN
+    -- SQL statements
+END;
+
 
 #PROCEDURE (SỬ DỤNG TRONG JAVA)
 CallableStatement stmt = connection.prepareCall("{call my_procedure(?)}");
