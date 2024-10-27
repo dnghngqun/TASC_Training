@@ -28,7 +28,7 @@ public class Main {
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
 
-        System.out.println("Running time: " + duration + " milliseconds" + "(" + duration/1000 + " seconds)");
+        System.out.println("Running time: " + duration + " milliseconds" + "(" + duration / 1000 + " seconds)");
 
 
         //after thread finish, start view
@@ -36,7 +36,7 @@ public class Main {
     }
 }
 
-class dataGenerator{
+class dataGenerator {
     private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
     private static final String DOMAIN = "@gmail.com";
     private static final Random RANDOM = new Random();
@@ -51,7 +51,7 @@ class dataGenerator{
         CustomerRepositoryImplement customerRepositoryImplement = new CustomerRepositoryImplement();
 
         System.out.println("Start add data example");
-        HashMap<String, Customer> customers = generateCustomers(10);
+        HashMap<String, Customer> customers = generateCustomers(1000000);
         //save to file
         System.out.println("Save to file...");
         customerRepositoryImplement.saveAll(customers);
@@ -89,10 +89,11 @@ class dataGenerator{
                 phoneNumber = generatePhoneNumber();
             } while (usedPhoneNumbers.contains(phoneNumber));
             usedPhoneNumbers.add(phoneNumber);
-            customers.put(phoneNumber,new Customer(name, email, phoneNumber));
+            customers.put(phoneNumber, new Customer(name, email, phoneNumber));
         }
         return customers;
     }
+
     private static String generateRandomName() {
         int nameLength = RANDOM.nextInt(3) + 3; // Tên có độ dài từ 3 đến 5 ký tự
         StringBuilder name = new StringBuilder();

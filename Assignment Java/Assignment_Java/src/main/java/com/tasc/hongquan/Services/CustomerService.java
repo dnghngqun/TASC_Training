@@ -12,7 +12,7 @@ public class CustomerService {
     private HashMap<String, Customer> customers;
 
 
-    private final Repository<Customer,String, Customer> customerRepository;
+    private final Repository<Customer, String, Customer> customerRepository;
 
     public CustomerService(CustomerRepositoryImplement customerRepository) {
         this.customers = new HashMap<>();
@@ -28,9 +28,8 @@ public class CustomerService {
         customerRepository.saveAll(customers);
         long endTime = System.currentTimeMillis();
         System.out.println("Save all customers successfully! Total time: " + (endTime - startTime)
-                + " milliseconds("+ ((endTime - startTime)/1000) + " seconds)");
+                + " milliseconds(" + ((endTime - startTime) / 1000) + " seconds)");
     }
-
 
 
     //crud
@@ -47,30 +46,32 @@ public class CustomerService {
     }
 
     //add  more customer
-    public void addMoreCustomer(HashMap<String, Customer> customerHashMap){
-        try{
+    public void addMoreCustomer(HashMap<String, Customer> customerHashMap) {
+        try {
             customers.putAll(customerHashMap);
             System.out.println("Add customers successfully!");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     //update if change phoneNumber
-    public void updateChangePhoneCustomer(String phoneNumberLast,Customer customer){
+    public void updateChangePhoneCustomer(String phoneNumberLast, Customer customer) {
         try {
             customers.remove(phoneNumberLast);
             customers.put(customer.getPhoneNumber(), customer);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void updateCustomer(Customer customer){
+
+    public void updateCustomer(Customer customer) {
         try {
             customers.put(customer.getPhoneNumber(), customer);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -86,21 +87,21 @@ public class CustomerService {
     }
 
     //search by phone number
-    public Customer searchByPhoneNumber(String phoneNumber){
+    public Customer searchByPhoneNumber(String phoneNumber) {
         return customers.get(phoneNumber);
     }
 
     //get all
-    public HashMap<String, Customer> getAllCustomer(){
+    public HashMap<String, Customer> getAllCustomer() {
         return customers;
     }
 
     //check duplicate phonenumber
-    public boolean checkDuplicatePhoneNumber(String phoneNumber){
+    public boolean checkDuplicatePhoneNumber(String phoneNumber) {
         return customers.containsKey(phoneNumber);
     }
 
-    public void shutdown(){
+    public void shutdown() {
         customerRepository.shutdown();
     }
 }
