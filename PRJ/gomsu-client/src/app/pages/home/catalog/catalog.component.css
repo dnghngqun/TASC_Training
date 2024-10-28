@@ -1,0 +1,98 @@
+:host {
+  --section-danhmuc: 170px;
+}
+
+/* section danh mục */
+.danhmuc-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 300px;
+  margin-top: 20px;
+}
+
+.danhmuc-container::before {
+  content: "";
+  background-image: url("/assets/img/bg_danhmuc_left.webp");
+}
+
+.danhmuc-container .danhmuc {
+  margin: 0 auto;
+}
+
+.danhmuc-container .danhmuc a {
+  width: 100%;
+  text-decoration: none;
+  color: #000;
+}
+
+.danhmuc-container .danhmuc img {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  transform: translateY(0px);
+  z-index: 10;
+}
+
+.danhmuc .danhmuc-content {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+.danhmuc .danhmuc-content .danhmuc-quantity {
+  color: #878787;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.danhmuc:hover img {
+  transform: translateY(-12px) !important;
+  transition: 0.5s ease;
+}
+
+.danhmuc:hover .danhmuc-title {
+  color: #ec8510;
+  transition: 0.5s ease;
+}
+.danhmuc {
+  position: relative;
+}
+.danhmuc .shadow-danhmuc {
+  width: var(--section-danhmuc);
+  height: var(--section-danhmuc);
+  border-radius: 50%;
+  z-index: -10;
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    96%,
+    #ec8510
+  ) !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* section banner */
+.section-banner a img {
+  object-fit: cover;
+  width: 100%;
+}
+
+.section-banner a {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 98%;
+}
+
+.section-banner {
+  margin-top: 40px;
+}
+
+.section-banner a:hover img {
+  transform: rotate(6deg) scale(1.16);
+  transition: 0.8s;
+}

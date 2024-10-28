@@ -1,0 +1,230 @@
+:host {
+  --header-height: 60px;
+}
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  height: var(--header-height);
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 10;
+  box-sizing: content-box;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+}
+
+.h-left img {
+  height: 100%;
+}
+
+.h-center .item-head {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h-center .item {
+  margin: 0 20px;
+  padding: 50px 0;
+}
+
+.h-center .item-head {
+  height: 99%;
+}
+.h-center {
+  height: 100%;
+}
+
+.h-center .item a {
+  text-decoration: none;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.h-center .item:hover > a,
+.item:hover .caretDown {
+  color: #be742a;
+  transition: 0.5s;
+}
+
+.item:hover .caretDown {
+  transform: rotate(180deg);
+  transition: 0.5s;
+}
+
+.h-right .icon {
+  margin: 0 10px;
+  font-size: 15px;
+  color: #000;
+  cursor: pointer;
+}
+
+.h-right {
+  margin-right: 8%;
+}
+
+.h-left {
+  margin-left: 8%;
+  height: 100%;
+}
+
+.h-right .icon:hover,
+.dropdown-user:hover .icon {
+  color: #e98827;
+  transition: 0.3s ease;
+}
+
+.i-link {
+  position: relative;
+}
+
+.count {
+  color: #fff;
+  background-color: #ca6f04;
+  width: 16px;
+  height: 16px;
+  font-size: 11px;
+  border-radius: 50%;
+  position: absolute;
+  top: -9px;
+  right: 3px;
+  z-index: 20;
+  line-height: 14px;
+  text-align: center;
+}
+
+.dropdown-container {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10%);
+  width: 80vw;
+  margin: 0 auto;
+  height: 400px;
+  background-color: #fffffff1;
+  border-radius: 3px;
+  position: absolute;
+  overflow: hidden;
+  top: calc(var(--header-height) + 40px);
+  left: 10vw;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.dropdown-container .dropdown-left ul {
+  list-style: none;
+  /* margin-left: 5%; */
+}
+
+.dropdown-container .dropdown-left a {
+  text-decoration: none;
+  text-transform: none;
+  font-weight: 450;
+  font-size: 17px;
+}
+
+.dropdown-container .dropdown-right img {
+  /* width: 100%; */
+  float: right;
+  height: 90%;
+  object-fit: cover;
+  margin-right: 0%;
+}
+
+.dropdown-left .row-dropdown {
+  margin: 25px 0;
+  margin-left: 5%;
+}
+
+.dropdown-container .dropdown-left li.dropdown-h {
+  margin: 10px 0;
+}
+
+.dropdown-left li.dropdown-h > a {
+  font-weight: 600;
+  color: #ca6f04;
+}
+.dropdown-container .dropdown-left li.dropdown-title a {
+  font-size: 17px;
+}
+.dropdown-container .dropdown-left a:hover {
+  color: #fa9a2b;
+}
+
+.h-center .item.dropdown-product:hover .dropdown-container,
+.dropdown-container:hover {
+  opacity: 1;
+  transition: 0.6s ease;
+  visibility: visible;
+  transform: translateY(0%);
+}
+
+.dropdown-user {
+  position: relative;
+  padding: auto 0;
+}
+
+/* dropdown user */
+.dropdown-user-container {
+  /* display: none; */
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 8px;
+  top: 30px;
+  display: block;
+  background-color: #fff;
+  width: 120px;
+  border-radius: 3px;
+  z-index: 2000;
+  box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+  align-items: center;
+  padding: 5px 0;
+  font-size: 14px !important;
+}
+
+.dropdown-user:hover .dropdown-user-container,
+.dropdown-user-container:hover {
+  opacity: 1;
+  transition: 0.6s ease;
+  visibility: visible;
+}
+
+/* .dropdown-user-container:hover {
+  opacity: 1;
+  transition: 0.6s ease;
+  visibility: visible;
+} */
+
+.dropdown-user-container .dropdown-user-item {
+  text-decoration: none;
+  color: #000;
+  font-size: 12px;
+  margin: 3px 10px;
+  display: block;
+  /* text-align: center; */
+}
+
+.dropdown-user-container::before {
+  content: "";
+  width: 0;
+  height: 0px;
+  border-bottom: 9px solid #fff;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  position: absolute;
+  top: -9px;
+  right: 2px;
+}
+
+.dropdown-user-container .dropdown-user-item:hover {
+  color: #fa9a2b;
+  transition: 0.6s ease;
+}
