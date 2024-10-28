@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+@import "swiper/swiper-bundle.css";
+@import 'swiper/css';
+@import 'swiper/css/effect-fade';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}

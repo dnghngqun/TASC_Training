@@ -1,26 +1,42 @@
 CREATE DATABASE gomsu;
 USE gomsu;
-
+-- Bảng Users (Người dùng)
 CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(15) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
-    address TEXT,
+    address VARCHAR(255),
     role_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng Roles (Vai trò)
 CREATE TABLE Roles (
     role_id INT AUTO_INCREMENT PRIMARY KEY,
-    role_name VARCHAR(100),
+    role_name VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng Products (Sản phẩm)
+CREATE TABLE Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(255),
+    category_id INT,
+    stock INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+);
+
+-- Bảng Categories (Danh mục sản phẩm)
 CREATE TABLE Categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
@@ -29,19 +45,7 @@ CREATE TABLE Categories (
     deleted_at TIMESTAMP NULL
 );
 
-CREATE TABLE Products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    image_url VARCHAR(255),
-    category_id INT,
-    stock INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP NULL
-);
-
+-- Bảng Orders (Đơn hàng)
 CREATE TABLE Orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -53,6 +57,7 @@ CREATE TABLE Orders (
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng OrderDetails (Chi tiết đơn hàng)
 CREATE TABLE OrderDetails (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
@@ -64,6 +69,7 @@ CREATE TABLE OrderDetails (
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng Cart (Giỏ hàng)
 CREATE TABLE Cart (
     cart_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -74,6 +80,7 @@ CREATE TABLE Cart (
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng Payments (Thanh toán)
 CREATE TABLE Payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
@@ -85,6 +92,7 @@ CREATE TABLE Payments (
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng Discounts (Mã giảm giá)
 CREATE TABLE Discounts (
     discount_id INT AUTO_INCREMENT PRIMARY KEY,
     amount DECIMAL(10, 2) NOT NULL,
@@ -96,7 +104,8 @@ CREATE TABLE Discounts (
     deleted_at TIMESTAMP NULL
 );
 
-CREATE TABLE Notifications (
+-- Bảng Notification (Thông báo)
+CREATE TABLE Notification (
     notification_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     product_id INT,
@@ -106,35 +115,79 @@ CREATE TABLE Notifications (
     deleted_at TIMESTAMP NULL
 );
 
-CREATE TABLE JWTTokens (
+-- Bảng Tokens
+CREATE TABLE Tokens (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    token TEXT NOT NULL,
+    token VARCHAR(255),
+    token_type ENUM('JWT', 'Reset_token') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,
     is_revoked BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE PasswordResetToken (
-    prt_id INT AUTO_INCREMENT PRIMARY KEY,
+-- Bảng Posts (Bài viết)
+CREATE TABLE Posts (
+    post_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
-    reset_token TEXT NOT NULL,
+    content TEXT,
+    image_link VARCHAR(255),
+    post_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP,
-    is_used BOOLEAN DEFAULT FALSE
+    update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Tạo các khóa tham chiếu (Foreign Keys)
-ALTER TABLE Users ADD CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES Roles(role_id);
-ALTER TABLE Products ADD CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES Categories(category_id);
-ALTER TABLE Orders ADD CONSTRAINT fk_user_order FOREIGN KEY (user_id) REFERENCES Users(user_id);
-ALTER TABLE Orders ADD CONSTRAINT fk_discount FOREIGN KEY (discount_id) REFERENCES Discounts(discount_id);
-ALTER TABLE OrderDetails ADD CONSTRAINT fk_order_detail_order FOREIGN KEY (order_id) REFERENCES Orders(order_id);
-ALTER TABLE OrderDetails ADD CONSTRAINT fk_order_detail_product FOREIGN KEY (product_id) REFERENCES Products(product_id);
-ALTER TABLE Cart ADD CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES Users(user_id);
-ALTER TABLE Cart ADD CONSTRAINT fk_cart_product FOREIGN KEY (product_id) REFERENCES Products(product_id);
-ALTER TABLE Payments ADD CONSTRAINT fk_payment_order FOREIGN KEY (order_id) REFERENCES Orders(order_id);
-ALTER TABLE Notifications ADD CONSTRAINT fk_notification_user FOREIGN KEY (user_id) REFERENCES Users(user_id);
-ALTER TABLE Notifications ADD CONSTRAINT fk_notification_product FOREIGN KEY (product_id) REFERENCES Products(product_id);
-ALTER TABLE JWTTokens ADD CONSTRAINT fk_token_user FOREIGN KEY (user_id) REFERENCES Users(user_id);
-ALTER TABLE PasswordResetToken ADD CONSTRAINT fk_prt_user FOREIGN KEY (user_id) REFERENCES Users(user_id);
+-- Bảng Comments (Bình luận)
+CREATE TABLE Comments (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    post_id INT,
+    email VARCHAR(255),
+    name VARCHAR(255),
+    content TEXT,
+    time_comment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Thêm khóa ngoại cho Users
+ALTER TABLE Users 
+ADD CONSTRAINT fk_users_roles FOREIGN KEY (role_id) REFERENCES Roles(role_id);
+
+-- Thêm khóa ngoại cho Products
+ALTER TABLE Products 
+ADD CONSTRAINT fk_products_categories FOREIGN KEY (category_id) REFERENCES Categories(category_id);
+
+-- Thêm khóa ngoại cho Orders
+ALTER TABLE Orders 
+ADD CONSTRAINT fk_orders_users FOREIGN KEY (user_id) REFERENCES Users(user_id),
+ADD CONSTRAINT fk_orders_discounts FOREIGN KEY (discount_id) REFERENCES Discounts(discount_id);
+
+-- Thêm khóa ngoại cho OrderDetails
+ALTER TABLE OrderDetails 
+ADD CONSTRAINT fk_orderdetails_orders FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+ADD CONSTRAINT fk_orderdetails_products FOREIGN KEY (product_id) REFERENCES Products(product_id);
+
+-- Thêm khóa ngoại cho Cart
+ALTER TABLE Cart 
+ADD CONSTRAINT fk_cart_users FOREIGN KEY (user_id) REFERENCES Users(user_id),
+ADD CONSTRAINT fk_cart_products FOREIGN KEY (product_id) REFERENCES Products(product_id);
+
+-- Thêm khóa ngoại cho Payments
+ALTER TABLE Payments 
+ADD CONSTRAINT fk_payments_orders FOREIGN KEY (order_id) REFERENCES Orders(order_id);
+
+-- Thêm khóa ngoại cho Notification
+ALTER TABLE Notification 
+ADD CONSTRAINT fk_notification_users FOREIGN KEY (user_id) REFERENCES Users(user_id),
+ADD CONSTRAINT fk_notification_products FOREIGN KEY (product_id) REFERENCES Products(product_id);
+
+-- Thêm khóa ngoại cho Tokens
+ALTER TABLE Tokens 
+ADD CONSTRAINT fk_tokens_users FOREIGN KEY (user_id) REFERENCES Users(user_id);
+
+-- Thêm khóa ngoại cho Posts
+ALTER TABLE Posts 
+ADD CONSTRAINT fk_posts_users FOREIGN KEY (user_id) REFERENCES Users(user_id);
+
+-- Thêm khóa ngoại cho Comments
+ALTER TABLE Comments 
+ADD CONSTRAINT fk_comments_posts FOREIGN KEY (post_id) REFERENCES Posts(post_id);
