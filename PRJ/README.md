@@ -27,11 +27,12 @@
 ## Database
 
 - Document: [Link](https://docs.google.com/document/d/1bVGPYfc7CZ0_VKj5WW4HSywYq2yF2IA7FK7zaPp6fEI/edit?usp=sharing)
-
+- Diagram: [Link] (https://dbdiagram.io/d/GomSuTASC-67210aa8b4216d5a289f8b94)
 
 ### Các Bước Cài Đặt
 
 1. Clone dự án từ GitHub:
+
    ```bash
    git clone
 
