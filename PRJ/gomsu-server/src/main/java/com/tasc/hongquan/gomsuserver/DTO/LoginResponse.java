@@ -5,14 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterDTO {
-    private String email;
-    private String password;
-    private String fullName;
-    private String phone_number;
-
+public class LoginResponse {
+    private String accessToken;
+    private String UUID;
+    private String role;
 }

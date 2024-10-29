@@ -20,9 +20,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
     @Id
-    @Column(name = "user_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @Column(name = "user_id", nullable = false, columnDefinition = "CHAR(36)")
+    private String userId = UUID.randomUUID().toString();
 
     @Size(max = 255, min = 6, message = "Email is not valid")
     @NotNull
@@ -55,7 +54,7 @@ public class User {
     @Column(name = "provider_id")
     private String providerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 
