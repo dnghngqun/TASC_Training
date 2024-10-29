@@ -127,7 +127,7 @@ CREATE TABLE Tokens (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     token TEXT,
-    token_type ENUM('JWT', 'Refresh_token', 'Access_token', 'Reset_token') NOT NULL,
+    token_type ENUM('JWT', 'Access_token', 'Reset_token') NOT NULL,
     provider VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,

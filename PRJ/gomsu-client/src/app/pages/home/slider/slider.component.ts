@@ -21,7 +21,7 @@ export class SliderComponent implements OnInit {
       },
       pagination: { clickable: false },
       loop: true,
-      modules: [Pagination, Navigation, EffectFade, Autoplay],
+      modules: [ Navigation, EffectFade, Autoplay],
     });
   }
 }

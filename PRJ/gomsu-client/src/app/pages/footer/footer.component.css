@@ -1,0 +1,137 @@
+footer {
+  /* height: 400px; */
+  background-color: #303030;
+  position: relative;
+  overflow: hidden;
+}
+
+footer::before {
+  content: "";
+  background: transparent url("/assets/img/trongdong.webp") no-repeat center
+    center;
+  background-size: 100% auto;
+  position: absolute;
+  top: -280px;
+  left: 0;
+  width: 1200px;
+  height: 1200px;
+  opacity: 0.3;
+  z-index: 10;
+  -webkit-animation-name: rotate;
+  -webkit-animation-duration: 60s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mid-footer,
+.copyright {
+  color: #f1eaea;
+  position: relative;
+  z-index: 20;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.mid-footer {
+  padding: 60px 0;
+}
+
+.heading {
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: bolder;
+
+  margin: 15px 0;
+}
+.icon {
+  margin-right: 10px;
+  width: 30px !important;
+}
+
+.list_item a {
+  color: #f1eaea;
+  text-decoration: none;
+}
+.item {
+  margin: 10px 0;
+}
+.item-mxh img {
+  width: 30px;
+  margin: 0 5px;
+}
+
+.item-payment img {
+  width: 50px;
+  margin: 0 5px;
+}
+
+.line {
+  width: 100%;
+  height: 3px;
+  background-color: #f1eaea;
+  margin: 0;
+}
+.copyright {
+  padding: 20px;
+  color: #f1eaea;
+  font-size: 15px;
+}
+
+.foot_link {
+  text-align: center;
+  text-decoration: none;
+  color: #f1eaea;
+  margin: 0 10px;
+}
+
+.item-input {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+.input {
+  height: 100%;
+  outline: 0;
+  border: 0;
+  font-size: 13px;
+  border-radius: 10px 0 0 10px;
+  color: #303030;
+  padding: 10px;
+}
+.button-send {
+  height: 100%;
+  background-color: #ca6e04;
+  color: #f1eaea;
+  outline: 0;
+  text-transform: uppercase;
+  font-size: 14px;
+  border: 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.item {
+  cursor: pointer;
+}
+
+.item.item-mxh img:hover,
+.item-payment img:hover {
+  transform: scale(1.1);
+  transition: all 0.5s ease;
+}
+
+.item:hover,
+.item:hover a,
+.foot_link:hover {
+  color: #ef9337;
+  transition: all 0.5s ease;
+}
