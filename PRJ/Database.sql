@@ -131,8 +131,7 @@ CREATE TABLE Tokens (
     provider VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP,
-    is_revoked BOOLEAN DEFAULT FALSE,
-    refresh_token_id INT NULL
+    is_revoked BOOLEAN DEFAULT FALSE
 );
 
 -- Tạo bảng Posts
@@ -184,9 +183,7 @@ ALTER TABLE Notification
     ADD CONSTRAINT fk_notification_product_id FOREIGN KEY (product_id) REFERENCES Products(product_id);
 
 ALTER TABLE Tokens
-    ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    ADD CONSTRAINT fk_refresh_token_id FOREIGN KEY (refresh_token_id) REFERENCES Tokens(token_id);
-
+    ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id);
 ALTER TABLE Posts
     ADD CONSTRAINT fk_post_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id);
 
