@@ -1,0 +1,106 @@
+#login-container {
+  max-width: 350px;
+  margin: 30px auto;
+}
+
+#login-container .btn-navigate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: 400;
+  padding: 10px 40px;
+  cursor: pointer;
+}
+.breadcrumb-active {
+  border-bottom: 1px solid #ca6e04;
+  color: #ca6e04;
+}
+
+.button:hover {
+  color: #ca6e04;
+  transition: 0.4s ease all;
+}
+
+.form-login .heading {
+  text-align: center;
+  font-size: 25px;
+  font-weight: 300;
+  color: #222;
+  margin: 5px 0;
+}
+
+.form-login .input {
+  width: 100%;
+  height: 40px;
+  margin: 7px 0;
+  padding: 10px;
+  outline: 0;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  border-bottom: 2px solid #ca6e04;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  font-size: 15px;
+}
+
+.btn-submit {
+  width: 100%;
+  color: #fff;
+  background-color: #ca6e04;
+  border-radius: 5px;
+  height: 40px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 7px;
+}
+
+.btn-submit:hover {
+  background-color: #e98717;
+  color: #fff;
+  transition: 0.4s ease all;
+}
+
+.btn-submit:active {
+  transform: scale(0.95);
+  transition: 0.4 ease all;
+}
+
+.forgot-pass,
+.or {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 7px 0;
+}
+
+.login-otp .login-google {
+  outline: none;
+  border: 0;
+  width: 100%;
+  height: 40px;
+  background-color: #d0563e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 10px;
+}
+.login-google svg {
+  width: 7%;
+  fill: #fff;
+  stroke: #fff;
+}
+
+.login-google span {
+  color: #fff;
+  width: 90%;
+  padding-right: 30px;
+}

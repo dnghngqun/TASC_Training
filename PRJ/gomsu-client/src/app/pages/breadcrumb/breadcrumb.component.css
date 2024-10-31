@@ -1,0 +1,155 @@
+:host {
+  --section-danhmuc: 100%;
+}
+#breadcrumb {
+  margin-top: 100px;
+  background: url("/assets/img/breadcrumb.webp") center no-repeat;
+  background-size: 150% 100%;
+}
+
+.danhmuc-container .danhmuc {
+  margin: 0 auto;
+  width: var(--section-danhmuc);
+}
+
+.danhmuc-container .danhmuc a {
+  width: 100%;
+  text-decoration: none;
+  color: #000;
+}
+
+.danhmuc-container .danhmuc img {
+  width: var(--section-danhmuc);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  transform: translateY(0px);
+  z-index: 10;
+}
+
+.danhmuc .danhmuc-content {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+.danhmuc .danhmuc-content .danhmuc-quantity {
+  color: #878787;
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.danhmuc:hover img {
+  transform: translateY(-12px) !important;
+  transition: 0.5s ease;
+}
+
+.danhmuc:hover .danhmuc-title {
+  color: #ec8510;
+  transition: 0.5s ease;
+}
+.danhmuc {
+  position: relative;
+  width: calc(100% / 4);
+}
+.danhmuc .shadow-danhmuc {
+  width: var(--section-danhmuc);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  z-index: -10;
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    99.5%,
+    #e48e2c
+  ) !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.swiper-container-breadcrumb {
+  overflow: hidden;
+  padding-top: 30px;
+}
+
+.container-catalog-breadcrumb {
+  /* overflow: hidden; */
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#breadcrumb {
+  padding-top: 30px;
+  padding-bottom: 60px;
+}
+
+.heading {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 400;
+  color: #ce8531;
+}
+
+.breadcrumb {
+  width: 30%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  font-weight: 300;
+  font-size: 15px;
+  margin: 0 10px;
+  color: #222;
+}
+
+.breadcrumb-active {
+  color: #ce8531 !important;
+}
+
+.container-catalog-breadcrumb {
+  position: relative;
+}
+
+.container-catalog-breadcrumb .btn-swiper-catalog {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+
+  top: 50%;
+  transform: translateY(-50%);
+  outline: none;
+  border: 1px solid #e99c45;
+  z-index: 100;
+  background-color: #fff;
+}
+
+.container-catalog-breadcrumb .btn-swiper-catalog:hover {
+  background-color: #e99c45;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.container-catalog-breadcrumb .swiper-catalog-btn-next {
+  right: 0;
+  /* transform: translateX(50%); */
+  /* clip-path: inset(50px); */
+}
+.container-catalog-breadcrumb .swiper-catalog-btn-prev {
+  left: 0;
+  /* transform: translateX(-50%); */
+  /* clip-path: inset(-50%); */
+}
+
+.breadcrumb-link:hover {
+  color: #ce8531 !important;
+  transition: all 0.3s ease;
+}

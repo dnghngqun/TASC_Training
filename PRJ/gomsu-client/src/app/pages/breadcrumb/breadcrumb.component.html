@@ -1,0 +1,80 @@
+<section id="breadcrumb">
+  <div class="heading">{{ heading }}</div>
+  <div class="breadcrumb">
+    <a [routerLink]="['/']" class="breadcrumb-link">Trang chủ</a>
+    <span class="breadcrumb-sep">></span>
+    <a href="#" class="breadcrumb-active">{{ location }}</a>
+  </div>
+  <div class="catalog">
+    <div class="swiper-container-breadcrumb container-catalog-breadcrumb">
+      <div class="swiper-wrapper danhmuc-container">
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_1.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Nồi sứ dưỡng sinh</div>
+              <span class="danhmuc-quantity">+ 0 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_2.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Phòng ăn</div>
+              <span class="danhmuc-quantity">+ 30 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_3.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Sứ dưỡng sinh</div>
+              <span class="danhmuc-quantity">+ 0 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_4.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Trà - cà phê</div>
+              <span class="danhmuc-quantity">+ 21 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_5.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Phụ kiện bàn ăn</div>
+              <span class="danhmuc-quantity">+ 0 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+        <div class="danhmuc swiper-slide">
+          <a href="#">
+            <img src="assets/img/danhmuc_6.webp" alt="" />
+            <div class="shadow-danhmuc"></div>
+            <div class="danhmuc-content">
+              <div class="danhmuc-title">Sứ nghệ thuật</div>
+              <span class="danhmuc-quantity">+ 0 sản phẩm</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <button class="btn-swiper-catalog swiper-catalog-btn-next">
+        <fa-icon [icon]="faChevronRight" class="icon faChevronRight"></fa-icon>
+      </button>
+      <button class="btn-swiper-catalog swiper-catalog-btn-prev">
+        <fa-icon [icon]="faChevronLeft" class="icon faChevronLeft"></fa-icon>
+      </button>
+    </div>
+  </div>
+</section>
