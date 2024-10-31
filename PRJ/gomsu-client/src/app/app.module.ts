@@ -1,18 +1,35 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { provideHttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './pages/navbar/navbar.component';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import { SliderComponent } from './pages/home/slider/slider.component';
-import { CatalogComponent } from './pages/home/catalog/catalog.component';
-import { HomeComponent } from './pages/home/home.component';
+import { BreadcrumbComponent } from './pages/breadcrumb/breadcrumb.component';
 import { FooterComponent } from './pages/footer/footer.component';
+import { HomeModule } from './pages/home/home.module';
+import { LoginComponent } from './pages/login/login.component';
+import { NavbarComponent } from './pages/navbar/navbar.component';
+import { RegisterComponent } from './pages/register/register.component';
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, SliderComponent, CatalogComponent, HomeComponent, FooterComponent],
-  imports: [BrowserModule, AppRoutingModule, FontAwesomeModule],
-  providers: [],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    FooterComponent,
+    BreadcrumbComponent,
+    LoginComponent,
+    RegisterComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FontAwesomeModule,
+    FormsModule,
+    HomeModule,
+  ],
+
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,5 +1,7 @@
 package com.tasc.hongquan.gomsuserver.configs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
 import com.tasc.hongquan.gomsuserver.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -39,6 +44,7 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -47,7 +53,7 @@ public class SecurityConfig {
                 //add filter before: đứng trước api, loọc trước
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //bao ve api
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "users/register", "users/signin").permitAll()
+                        .requestMatchers("/", "/home", "users/register", "users/signin", "users/logout").permitAll()
                         .requestMatchers("users/shipper/**").hasAuthority("admin")
                         .anyRequest().authenticated()
                 ).formLogin(form -> form.disable());
@@ -73,7 +79,7 @@ public class SecurityConfig {
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);
 
             }
         };
@@ -82,6 +88,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newFixedThreadPool(4);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
 

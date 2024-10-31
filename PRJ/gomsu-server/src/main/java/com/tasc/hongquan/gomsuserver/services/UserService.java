@@ -40,8 +40,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User getUserById(String id) {
-        return userRepository.findById(id).orElse(null);
+    public User getUserByUserId(String id) {
+        return userRepository.findByUserId(id).get();
     }
 
     public User createAccount(RegisterDTO userDto, int roleId) {
@@ -73,8 +73,16 @@ public class UserService implements UserDetailsService {
     }
 
 
-    private User updateUser(User user) {
+    public User updateUser(User user) {
         return userRepository.save(user);
+    }
+
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public String getRoleName(String email) throws CustomException {
@@ -87,12 +95,14 @@ public class UserService implements UserDetailsService {
 
     }
 
+
     @Override
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> userOptional = Optional.of(userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email)));
 
-        // Ở đây bạn sẽ ánh xạ User vào đối tượng UserDetails của Spring Security
+        // Ở đây ánh xạ User vào đối tượng UserDetails của Spring Security
+        // same as method findUserByEmail
         return new CustomUserDetails(userOptional.get());
     }
 

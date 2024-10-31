@@ -100,3 +100,9 @@
   transform: rotate(6deg) scale(1.16);
   transition: 0.8s;
 }
+
+@media screen and (max-width: 1300px) {
+  :host {
+    --section-danhmuc: 205px;
+  }
+}

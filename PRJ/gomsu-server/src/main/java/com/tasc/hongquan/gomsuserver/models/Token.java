@@ -3,8 +3,7 @@ package com.tasc.hongquan.gomsuserver.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -12,10 +11,14 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "Tokens")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Token {
     @Id
     @Column(name = "token_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,8 +52,5 @@ public class Token {
     @Column(name = "is_revoked")
     private Boolean isRevoked;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "refresh_token_id")
-    private Token refreshToken;
 
 }

@@ -2,12 +2,10 @@ package com.tasc.hongquan.gomsuserver.Jwt;
 
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 
-import java.security.SecureRandom;
-import java.util.Base64;
+import com.tasc.hongquan.gomsuserver.services.TokenService;
+import io.jsonwebtoken.*;
+
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +18,11 @@ public class JwtTokenProvider {
 
     private String JWT_SECRET = "3E817CFD882DD4866F287E42DBA1887E42DBA1887E42DBA18";
     private final long JWT_EXPIRATION = 3600000L;// 1h
+    private final TokenService tokenService;
+
+    public JwtTokenProvider(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     public String generateToken(CustomUserDetails userDetails) {
 
@@ -28,6 +31,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("userId", userDetails.getUserId())
                 .claim("role", userDetails.getAuthorities().stream()
                         .findFirst()
                         .map(GrantedAuthority::getAuthority)
@@ -54,6 +58,21 @@ public class JwtTokenProvider {
         return claims.get("role", String.class); // Lấy vai trò từ claims
     }
 
+    public String getUserIdFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET).build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", String.class); // Lấy vai trò từ claims
+    }
+
+    public Date getExpirationDateFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_SECRET).build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration();
+    }
 
     public boolean validateToken(String authToken) {
         try {
@@ -66,22 +85,24 @@ public class JwtTokenProvider {
             // Kiểm tra xem token đã hết hạn hay chưa
             Date expirationDate = claims.getExpiration();
             if (expirationDate.before(new Date())) {
-                // Token đã hết hạn
+                tokenService.revokeToken(authToken);
                 return false;
             }
+            return true;
+        } catch (ExpiredJwtException ex) {
+            // Token is expired
+            System.err.println("Token is expired: " + ex.getMessage());
+            tokenService.revokeToken(authToken);
 
-            return true; // Token hợp lệ
-        } catch (io.jsonwebtoken.ExpiredJwtException ex) {
-            // Token đã hết hạn
-            System.err.println("Token đã hết hạn: " + ex.getMessage());
             return false;
-        } catch (io.jsonwebtoken.SignatureException ex) {
-            // Chữ ký không hợp lệ
-            System.err.println("Chữ ký không hợp lệ: " + ex.getMessage());
+        } catch (SignatureException ex) {
+            //Signature is invalid
+            System.err.println("Signature is invalid: " + ex.getMessage());
+            tokenService.revokeToken(authToken);
+
             return false;
         } catch (Exception ex) {
-            // Lỗi chung
-            System.err.println("Lỗi khi xác thực token: " + ex.getMessage());
+            System.err.println("Err : " + ex);
             return false;
         }
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import Swiper from 'swiper';
-import { Autoplay, Navigation } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 
 @Component({
   selector: 'app-catalog',
@@ -14,14 +14,10 @@ export class CatalogComponent implements OnInit {
   ngOnInit() {
     this.swiper = new Swiper('.swiper-container-catalog', {
       slidesPerView: 'auto',
-      autoplay: { delay: 2000, disableOnInteraction: false },
-      spaceBetween: 25  ,
+      autoplay: { delay: 2400, disableOnInteraction: false },
+      spaceBetween: 22,
       loop: true,
-      navigation: {
-        nextEl: '.swiper-catalog-btn-next',
-        prevEl: '.swiper-catalog-btn-prev',
-      },
-      modules: [Navigation, Autoplay],
+      modules: [Autoplay],
     });
   }
 }

@@ -5,7 +5,7 @@
   <div class="h-center">
     <ul class="item-head">
       <li class="item">
-        <a href="#">Trang chủ</a>
+        <a [routerLink]="['/']">Trang chủ</a>
       </li>
       <li class="item">
         <a href="#">Giới thiệu</a>
@@ -132,9 +132,13 @@
     </a>
     <a href="#" class="dropdown-user">
       <fa-icon class="icon i-user" size="lg" [icon]="faUser" />
-      <div class="dropdown-user-container">
-        <a href="#" class="dropdown-user-item"> Đăng ký </a>
-        <a href="#" class="dropdown-user-item"> Đăng nhập </a>
+      <div *ngIf="!isLoggedIn" class="dropdown-user-container">
+        <a [routerLink]="['/register']" class="dropdown-user-item"> Đăng ký </a>
+        <a [routerLink]="['/login']" class="dropdown-user-item"> Đăng nhập </a>
+      </div>
+      <div *ngIf="isLoggedIn" class="dropdown-user-container">
+        <a [routerLink]="['/account']" class="dropdown-user-item">Tài khoản</a>
+        <a class="dropdown-user-item" (click)="handleLogout()"> Đăng xuất </a>
       </div>
     </a>
     <a href="#" class="link-heart i-link" title="Sản phẩm yêu thích">

@@ -214,13 +214,13 @@
 
 .dropdown-user-container::before {
   content: "";
-  width: 0;
-  height: 0px;
-  border-bottom: 9px solid #fff;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+  width: 50px;
+  height: 12px;
+  border-bottom: 10px solid #fff;
+  border-left: 30px solid transparent;
+  border-right: 2px solid transparent;
   position: absolute;
-  top: -9px;
+  top: -11px;
   right: 2px;
 }
 
