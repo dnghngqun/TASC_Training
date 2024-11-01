@@ -39,6 +39,7 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final ExecutorService executorService;
     private final ObjectMapper objectMapper;
+    public static final int MAX_AGE = 60;
 
     @Autowired
     public UserController(UserService userService, TokenService tokenService, AuthenticationManager authen, JwtTokenProvider jwt, ExecutorService executorService, ObjectMapper objectMapper) {
@@ -59,6 +60,21 @@ public class UserController {
     public ResponseEntity<User> createShipper(@RequestBody RegisterDTO user) {
         return ResponseEntity.ok(userService.createAccount(user, 2));
     }
+
+    @GetMapping("/isLoggedIn")
+    public boolean isLoggedIn(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return false;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("isLoggedIn") && cookie.getValue().equals("true")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Transactional
     @PostMapping("/signin")
@@ -87,20 +103,20 @@ public class UserController {
         //create a new cookie
         Cookie jwtCookie = new Cookie("jwt", encodeJWT);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60 * 60); //1 hour
+        jwtCookie.setMaxAge(MAX_AGE); //1 hour
         jwtCookie.setHttpOnly(true);//not allow javascript access
 
         Cookie userCookie = new Cookie("user", encodeUser);
         userCookie.setPath("/");
-        userCookie.setMaxAge(60 * 60); //1 hour
+        userCookie.setMaxAge(MAX_AGE); //1 hour
 
         Cookie roleCookie = new Cookie("role", role);
         roleCookie.setPath("/");
-        roleCookie.setMaxAge(60 * 60); //1 hour
+        roleCookie.setMaxAge(MAX_AGE); //1 hour
 
         Cookie isLoggedIn = new Cookie("isLoggedIn", "true");
         isLoggedIn.setPath("/");
-        isLoggedIn.setMaxAge(60 * 60); //1 hour
+        isLoggedIn.setMaxAge(MAX_AGE); //1 hour
 
         //save token
         executorService.submit(() -> {
@@ -118,6 +134,7 @@ public class UserController {
         response.addCookie(jwtCookie);
         response.addCookie(userCookie);
         response.addCookie(roleCookie);
+        response.addCookie(isLoggedIn);
 
 
         return ResponseEntity.ok("Login success, JWT has been saved in cookie, role: " + role);
@@ -132,8 +149,8 @@ public class UserController {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("jwt")) {
-                    String json = cookie.getValue();
-                    String jwtEncode = objectMapper.readValue(json, String.class);
+                    String jwtEncode = cookie.getValue();
+//                    String jwtEncode = objectMapper.readValue(json, String.class);
 
                     byte[] decodedBytes = Base64.getDecoder().decode(jwtEncode);
                     String token = new String(decodedBytes);

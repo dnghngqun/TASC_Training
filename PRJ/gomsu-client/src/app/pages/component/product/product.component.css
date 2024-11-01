@@ -1,0 +1,137 @@
+.product-container {
+  width: 100%;
+  padding-bottom: 50px;
+}
+
+.product-container .linkProduct {
+  text-decoration: none;
+  color: #000;
+  width: 100%;
+}
+
+.linkProduct .imageProduct {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.product-info {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.product-info .linkProduct .product-name {
+  font-size: 18px;
+  font-weight: 350;
+  margin-bottom: 15px;
+}
+
+.product-info .linkProduct .price-box span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.price-box .current-price {
+  color: #ea3323;
+}
+
+.price-box .old-price {
+  text-decoration: line-through;
+  margin-left: 10px;
+}
+
+.linkImage {
+}
+
+.imageProduct {
+  background-color: #f3eee4;
+  border-radius: 8px;
+}
+
+.linkImage {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  position: relative;
+}
+
+.union {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  text-align: center;
+  padding: 3px 15px 15px;
+}
+
+.union-text {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.union::before {
+  background-image: url("/assets/img/union.webp");
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-size: 100% 100%;
+  z-index: -1;
+}
+
+.action {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  gap: 10px;
+  opacity: 0;
+}
+
+.btn-action {
+  width: 35px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: #ca6f04;
+  border: 0;
+  transform: rotate(-15deg);
+}
+
+.linkImage:hover .action {
+  opacity: 1;
+  transition: all 0.4s ease;
+}
+
+.linkImage:hover .action .btn-action {
+  animation: rorateBtn 0.6s linear;
+  transform: rotate(0deg);
+  /* transition: all 0.6s ease; */
+}
+
+@keyframes rorateBtn {
+  0% {
+    transform: rotate(-15deg);
+  }
+
+  70% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+.btn-action .icon {
+  filter: invert(1);
+}
+
+.btn-action:hover {
+  background-color: #ea8c20;
+  transition: all 0.4s ease;
+}

@@ -6,14 +6,19 @@ import {
   faMagnifyingGlass,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+
 import { LoginService } from '../../services/login_service.service';
+
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  constructor(private loginService: LoginService) {}
+  constructor(
+    private loginService: LoginService,
+
+  ) {}
   isLoggedIn: boolean = false;
   private intervalId: any;
   ngOnInit() {
@@ -36,7 +41,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     console.log('isLoggedIn: ', this.isLoggedIn);
   }
 
-  handleLogout(){
-    this.loginService.logout();
+
+  handleLogout() {
+    this.loginService.logout().then((success) => {
+      if (success) {
+        // this.showSuccess('Logout success 👋');
+        console.log("Logout success 👋");
+      } else {
+        // this.showError('Logout error 🧐');
+        console.log("Logout error 🧐")
+      }
+    });
   }
 }

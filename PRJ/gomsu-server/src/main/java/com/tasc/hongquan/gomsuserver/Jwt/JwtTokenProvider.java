@@ -1,5 +1,6 @@
 package com.tasc.hongquan.gomsuserver.Jwt;
 
+import com.tasc.hongquan.gomsuserver.controllers.UserController;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 
 import com.tasc.hongquan.gomsuserver.services.TokenService;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
     private String JWT_SECRET = "3E817CFD882DD4866F287E42DBA1887E42DBA1887E42DBA18";
-    private final long JWT_EXPIRATION = 3600000L;// 1h
+    private final long JWT_EXPIRATION = UserController.MAX_AGE * 1000;
     private final TokenService tokenService;
 
     public JwtTokenProvider(TokenService tokenService) {

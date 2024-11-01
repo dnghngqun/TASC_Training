@@ -1,0 +1,38 @@
+.product .heading .heading-text {
+  font-weight: 400;
+  font-size: 35px;
+}
+
+.product .heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+.product {
+  margin: 50px 0;
+}
+
+.filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+}
+
+.filter-item {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0 10px;
+}
+
+.filter-item-active {
+  color: #e78c24;
+}
+.filter-item:hover {
+  color: #e78c24;
+  transition: all 0.4s ease;
+}

@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
@@ -21,6 +20,8 @@
     "@fortawesome/angular-fontawesome": "^0.15.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@syncfusion/ej2-angular-buttons": "^27.1.53",
+    "@syncfusion/ej2-base": "^27.1.55",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "ngx-cookie-service": "^18.0.0",
