@@ -39,5 +39,4 @@ public class Cart {
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
-
 }

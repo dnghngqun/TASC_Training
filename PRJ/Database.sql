@@ -129,7 +129,7 @@ CREATE TABLE Tokens (
     token_type ENUM('JWT', 'Access_token', 'Reset_token') NOT NULL,
     provider VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP,
+    expires_at TIMESTAMP NULL,
     is_revoked BOOLEAN DEFAULT FALSE
 );
 
