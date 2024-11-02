@@ -50,13 +50,13 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .sessionManagement(sesson -> sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //add filter before: đứng trước api, loọc trước
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //bao ve api
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "users/register", "users/signin", "users/logout").permitAll()
                         .requestMatchers("users/shipper/**").hasAuthority("admin")
                         .anyRequest().authenticated()
-                ).formLogin(form -> form.disable());
+                )
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //bao ve api
+                .formLogin(form -> form.disable());
 
         return http.build();
     }
