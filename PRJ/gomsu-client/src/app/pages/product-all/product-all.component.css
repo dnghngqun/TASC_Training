@@ -1,0 +1,26 @@
+.sort-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px auto;
+  width: 97.95%;
+}
+
+.sort-heading .heading-left,
+.sort-heading .heading-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.button-left,
+.btn-quick-sort {
+  border: 1px solid #464646;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.btn-quick-sort {
+  border-color: #be742a;
+}

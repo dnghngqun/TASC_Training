@@ -56,7 +56,7 @@ public class JwtTokenProvider {
                 .setSigningKey(JWT_SECRET).build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.get("role", String.class); // Lấy vai trò từ claims
+        return claims.get("role", String.class);
     }
 
     public String getUserIdFromJWT(String token) {
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
                 .setSigningKey(JWT_SECRET).build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.get("userId", String.class); // Lấy vai trò từ claims
+        return claims.get("userId", String.class);
     }
 
     public Date getExpirationDateFromJWT(String token) {
@@ -82,8 +82,7 @@ public class JwtTokenProvider {
                     .setSigningKey(JWT_SECRET).build()
                     .parseClaimsJws(authToken)
                     .getBody();
-
-            // Kiểm tra xem token đã hết hạn hay chưa
+            
             Date expirationDate = claims.getExpiration();
             if (expirationDate.before(new Date())) {
                 tokenService.revokeToken(authToken);

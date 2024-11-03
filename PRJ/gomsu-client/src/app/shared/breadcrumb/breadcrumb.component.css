@@ -140,11 +140,13 @@
 }
 .container-catalog-breadcrumb .swiper-catalog-btn-next {
   right: 0;
+  z-index: 1;
   /* transform: translateX(50%); */
   /* clip-path: inset(50px); */
 }
 .container-catalog-breadcrumb .swiper-catalog-btn-prev {
   left: 0;
+  z-index: 1;
   /* transform: translateX(-50%); */
   /* clip-path: inset(-50%); */
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 import { LoginService } from '../../services/login_service.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class LoginComponent implements OnInit {
     private loginService: LoginService,
     private cookieService: CookieService,
     private router: Router,
+    private toastr:ToastrService
 
   ) {}
   role!: string;
@@ -34,6 +36,7 @@ export class LoginComponent implements OnInit {
         if (jwtCookie && roleCookie && userCookie) {
           this.role = roleCookie;
           // this.showSuccess('Login success 🥳');
+          this.toastr.success('Login success 🥳');
           this.loginService.loggedIn();
 
           if (this.role === 'user') {
@@ -48,6 +51,7 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         console.error('Login error: ', error); // Log lỗi nếu có
         // this.showError('Login failed 😡 Please check email and password 🙏');
+        this.toastr.error('Login failed 😡 Please check email and password 🙏');
       },
     });
   }
