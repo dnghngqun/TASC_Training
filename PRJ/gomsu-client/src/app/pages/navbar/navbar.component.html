@@ -11,7 +11,11 @@
         <a href="#">Giới thiệu</a>
       </li>
       <li class="item dropdown-product">
-        <a href="#">Sản phẩm </a>
+        <a
+          [routerLink]="['collections', 'all']"
+          routerLinkActive="router-link-active"
+          >Sản phẩm
+        </a>
         <fa-icon [icon]="faCaretDown" class="caretDown" />
         <div class="dropdown-container row">
           <div class="dropdown-left col-lg-8">

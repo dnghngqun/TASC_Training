@@ -8,7 +8,10 @@
       <button [routerLink]="['/login']" class="button btn-login">
         Đăng Nhập
       </button>
-      <button [routerLink]="['/register']" class="button btn-regis breadcrumb-active">
+      <button
+        [routerLink]="['/register']"
+        class="button btn-regis breadcrumb-active"
+      >
         Đăng Ký
       </button>
     </div>
@@ -20,6 +23,9 @@
         id="fullName"
         class="input"
         placeholder="Họ và tên"
+        [(ngModel)]="fullName"
+        [ngClass]="isFullNameValid"
+        (input)="onFullNameChange()"
       />
       <br />
       <input
@@ -28,6 +34,9 @@
         id="email"
         class="input"
         placeholder="Email"
+        [(ngModel)]="email"
+        [ngClass]="isEmailValid"
+        (input)="onEmailChange()"
       />
       <br />
       <input
@@ -36,17 +45,29 @@
         id="phoneNumber"
         class="input"
         placeholder="Số điện thoại"
+        [(ngModel)]="phoneNumber"
+        [ngClass]="isPhoneNumberValid"
+        (input)="onPhoneNumberChange()"
       />
       <br />
       <input
         class="input"
         type="password"
+        [(ngModel)]="password"
         name="password"
         id="password"
         placeholder="Mật khẩu"
+        [ngClass]="isPwValid"
+        (input)="onPasswordChange()"
       />
       <br />
-      <button type="submit" class="button btn-submit">Đăng Ký</button>
+      <button
+        (click)="onClickRegister()"
+        [disabled]="isDisabledBtn"
+        class="button btn-submit"
+      >
+        Đăng Ký
+      </button>
     </div>
     <div class="or">Hoặc đăng nhập bằng</div>
     <div class="login-otp">

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
 import com.tasc.hongquan.gomsuserver.services.UserService;
+import com.tasc.hongquan.gomsuserver.superAdmin.SuperAdminAuthenticationFilter;
+import com.tasc.hongquan.gomsuserver.superAdmin.SuperAdminAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -29,6 +33,7 @@ import java.util.concurrent.ExecutorService;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final UserService userService;
@@ -39,6 +44,7 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter(jwtTokenProvider);
     }
 
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -46,7 +52,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SuperAdminAuthenticationFilter superAdminAuthenticationFilter) throws Exception {
         http
                 .csrf().disable()
                 .sessionManagement(sesson -> sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("users/shipper/**").hasAuthority("admin")
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(superAdminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //bao ve api
                 .formLogin(form -> form.disable());
 

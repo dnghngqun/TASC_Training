@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ToastrService } from 'ngx-toastr';
-import { LoginService } from '../../services/login_service.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,7 +17,7 @@ import { LoginService } from '../../services/login_service.service';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
-    private loginService: LoginService,
+    private authService: AuthService,
     private toastr: ToastrService,
   ) {}
   isLoggedIn: boolean = false;
@@ -38,12 +38,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     clearInterval(this.intervalId);
   }
   private updateLoginStatus() {
-    this.isLoggedIn = this.loginService.getIsLoggedIn();
+    this.isLoggedIn = this.authService.getIsLoggedIn();
     console.log('isLoggedIn: ', this.isLoggedIn);
   }
 
   handleLogout() {
-    this.loginService.logout().then((success) => {
+    // this.toastr.info("Starting logout...");
+    this.authService.logout().then((success) => {
       if (success) {
         // this.showSuccess('Logout success 👋');
         console.log('Logout success 👋');

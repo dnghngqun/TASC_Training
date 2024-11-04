@@ -37,9 +37,13 @@ import { ProductModule } from './shared/product/product.module';
     RouterModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut: 3000,
+      timeOut: 1500,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
+      disableTimeOut: false,
+      tapToDismiss: true,
+      progressBar: true,
+      autoDismiss: true,
     }),
   ],
 

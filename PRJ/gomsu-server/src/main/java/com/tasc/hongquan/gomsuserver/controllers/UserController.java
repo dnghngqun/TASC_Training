@@ -15,8 +15,12 @@ import com.tasc.hongquan.gomsuserver.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +36,7 @@ import java.util.concurrent.ExecutorService;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
@@ -39,7 +44,8 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final ExecutorService executorService;
     private final ObjectMapper objectMapper;
-    public static final int MAX_AGE = 60;
+    public static final int MAX_AGE = 3600;
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserService userService, TokenService tokenService, AuthenticationManager authen, JwtTokenProvider jwt, ExecutorService executorService, ObjectMapper objectMapper) {
@@ -52,13 +58,40 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> createUser(@RequestBody RegisterDTO user) {
-        return ResponseEntity.ok(userService.createAccount(user, 3));
+    public ResponseEntity<String> createUser(@RequestBody RegisterDTO user) {
+        try {
+            userService.createAccount(user, 3);
+            return ResponseEntity.ok("Account created successfully");
+        } catch (Exception ex) {
+            logger.error("Error creating user: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/admin/register")
+    @PreAuthorize("hasAnyAuthority('admin', 'superadmin')")
+    public ResponseEntity<String> createAdmin(@RequestBody RegisterDTO user) {
+        try {
+            userService.createAccount(user, 1);
+            return ResponseEntity.ok("Account admin created successfully");
+        } catch (Exception ex) {
+            logger.error("Error creating admin: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @PostMapping("/shipper/register")
-    public ResponseEntity<User> createShipper(@RequestBody RegisterDTO user) {
-        return ResponseEntity.ok(userService.createAccount(user, 2));
+//    @PreAuthorize("hasAuthority('admin') or hasAuthority('user')")
+//    @PreAuthorize("hasAnyAuthority('admin', 'user')")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<String> createShipper(@RequestBody RegisterDTO user) {
+        try {
+            userService.createAccount(user, 2);
+            return ResponseEntity.ok("Account shipper created successfully");
+        } catch (Exception ex) {
+            logger.error("Error creating account: " + ex.getMessage());
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
     @GetMapping("/isLoggedIn")

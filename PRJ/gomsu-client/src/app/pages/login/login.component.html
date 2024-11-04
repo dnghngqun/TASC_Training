@@ -23,6 +23,8 @@
         id="email"
         class="input"
         [(ngModel)]="email"
+        (input)="onEmailChange()"
+        [ngClass]="isEmailValid"
         placeholder="Email"
       />
       <br />
@@ -33,9 +35,15 @@
         [(ngModel)]="password"
         id="password"
         placeholder="Mật khẩu"
+        (input)="onPasswordChange()"
+        [ngClass]="isPwValid"
       />
       <br />
-      <button type="submit" (click)="onClickLogin()" class="button btn-submit">
+      <button
+        (click)="onClickLogin()"
+        [disabled]="isDisabledBtn"
+        class="button btn-submit"
+      >
         Đăng nhập
       </button>
     </div>

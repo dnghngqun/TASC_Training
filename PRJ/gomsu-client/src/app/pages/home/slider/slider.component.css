@@ -117,18 +117,12 @@
 .slider-text .btn-slider::before {
   content: "";
   background-image: linear-gradient(to left, transparent, 80%, #ca6f04);
-  /* linear-gradient: Đây là loại gradient sẽ được sử dụng để tạo nền. Trong trường hợp này, gradient là một đường thẳng. */
-  /*to left: Định nghĩa hướng của gradient. Trong trường hợp này, gradient sẽ diễn ra từ phải sang trái, tức là theo chiều ngược lại của hướng của trục x  */
-  /* transparent: Điểm bắt đầu của gradient là màu trong suốt. */
-  /* 80%: Là điểm dừng của màu trong suốt, tức là từ điểm bắt đầu đến 80% chiều rộng của gradient sẽ là màu trong suốt. */
-  /* #ca6f04: Màu sẽ bắt đầu từ 80% đến cuối chiều rộng của gradient, trong trường hợp này là màu cam (#ca6f04) */
   height: 100%;
   width: 40%;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
-  /* background-size: 100% 100%; */
   transition: 0.4s linear;
 }
 
