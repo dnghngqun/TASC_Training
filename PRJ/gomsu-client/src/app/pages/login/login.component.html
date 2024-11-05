@@ -28,6 +28,9 @@
         placeholder="Email"
       />
       <br />
+      <div class="error-email err">
+        {{ errMessage }}
+      </div>
       <input
         class="input"
         type="password"
@@ -39,6 +42,8 @@
         [ngClass]="isPwValid"
       />
       <br />
+      <div class="error-pw err">
+        {{ errMessagePw }}</div>
       <button
         (click)="onClickLogin()"
         [disabled]="isDisabledBtn"
@@ -50,7 +55,7 @@
     <div class="forgot-pass"><a href="#">Quên mật khẩu</a></div>
     <div class="or">Hoặc đăng nhập bằng</div>
     <div class="login-otp">
-      <button class="login-google">
+      <button class="login-google"  (click)="onCLickLoginWithGG()" >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
           <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
           <path

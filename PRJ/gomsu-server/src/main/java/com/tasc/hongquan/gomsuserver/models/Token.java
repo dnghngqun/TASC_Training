@@ -27,16 +27,12 @@ public class Token {
 
     @Lob
     @Column(name = "token")
-    private String token;
+    private int token;
 
     @NotNull
     @Lob
     @Column(name = "token_type", nullable = false)
     private String tokenType;
-
-    @Size(max = 255)
-    @Column(name = "provider")
-    private String provider;
 
     @NotNull
     @ColumnDefault("current_timestamp()")

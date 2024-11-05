@@ -37,6 +37,36 @@ export class LoginComponent implements OnInit {
     this.loginComponent(this.email, this.password);
   }
 
+  onCLickLoginWithGG() {
+    const popup = window.open(
+      'http://localhost:8080/oauth2/authorization/google',
+      '_blank',
+      'width=500,height=600',
+    );
+
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'http://localhost:8080') {
+        return;
+      }
+
+      // Đóng popup
+      if (popup) {
+        popup.close();
+      }
+
+      this.authService.loginWithGoogle().subscribe({
+        next: (res) => {
+          console.log('Message: ', res);
+          this.toastr.success('Login with Google success 🥳');
+        },
+        error: (error) => {
+          console.error('Login with Google error: ', error);
+          this.toastr.error('Login with Google failed 😡');
+        },
+      });
+    });
+  }
+
   loginComponent(email: string, password: string) {
     this.authService.login(email, password).subscribe({
       next: (res) => {
@@ -69,17 +99,16 @@ export class LoginComponent implements OnInit {
     if (this.email === '') {
       this.isEmailValid = '';
       this.isDisabledBtn = true;
-      this.errMessage = '';
+      this.errMessage = '* Email không được để trống!';
     } else if (!this.email.match(pattern)) {
       this.isEmailValid = 'falseEmail';
       this.isDisabledBtn = true;
-      this.errMessage = 'Invalid email format!';
-    } else if(this.email.match(pattern) && this.password === '') {
+      this.errMessage = '* Email không đúng định dạng!';
+    } else if (this.email.match(pattern) && this.password === '') {
       this.isEmailValid = 'trueEmail';
       this.errMessage = '';
       this.isDisabledBtn = true;
-    }
-    else{
+    } else {
       this.isEmailValid = 'trueEmail';
       this.errMessage = '';
       this.isDisabledBtn = false;
@@ -92,11 +121,23 @@ export class LoginComponent implements OnInit {
       this.isPwValid = '';
       this.isDisabledBtn = true;
 
-      this.errMessagePw = '';
+      this.errMessagePw = '* Mật khẩu không được để trống!';
     } else {
       this.isPwValid = 'truePw';
       this.isDisabledBtn = false;
       this.errMessagePw = '';
     }
+  }
+  onClickLoginWithGoogle() {
+    this.authService.loginWithGoogle().subscribe({
+      next: (res) => {
+        console.log('Message: ', res);
+        this.toastr.success('Login with Google success 🥳');
+      },
+      error: (error) => {
+        console.error('Login with Google error: ', error);
+        this.toastr.error('Login with Google failed 😡');
+      },
+    });
   }
 }

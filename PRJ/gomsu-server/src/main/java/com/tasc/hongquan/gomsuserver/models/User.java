@@ -33,8 +33,7 @@ public class User {
     private String password;
 
     @Size(max = 20)
-    @NotNull
-    @Column(name = "phone_number", nullable = false, length = 20)
+    @Column(name = "phone_number", nullable = true, length = 20)
     private String phoneNumber;
 
     @Size(max = 255)

@@ -17,7 +17,7 @@ public class TokenService {
         this.tokenRepository = tokenRepository;
     }
 
-    public Token findByToken(String token) {
+    public Token findByToken(int token) {
         return tokenRepository.findByToken(token);
     }
 
@@ -33,7 +33,7 @@ public class TokenService {
         }
     }
 
-    public void revokeToken(String token) {
+    public void revokeToken(int token) {
         try {
             Token existingToken = tokenRepository.findByToken(token);
             if (existingToken == null) {

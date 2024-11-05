@@ -73,10 +73,10 @@ export class RegisterComponent implements OnInit {
     let pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
     if (this.email === '') {
       this.isEmailValid = '';
-      this.errMessage = 'Không được để trống trường này!';
+      this.errMessage = '* Email không được để trống!';
     } else if (!this.email.match(pattern)) {
       this.isEmailValid = 'falseEmail';
-      this.errMessage = 'Invalid email format!';
+      this.errMessage = '* Email không đúng định dạng!';
     } else {
       this.isEmailValid = 'trueEmail';
       this.errMessage = '';
@@ -90,11 +90,11 @@ export class RegisterComponent implements OnInit {
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (this.password === '') {
       this.isPwValid = '';
-      this.errMessagePw = 'Không được để trống trường này!';
+      this.errMessagePw = '* Mật khẩu Không được để trống!';
     } else if (!this.password.match(pattern)) {
       this.isPwValid = 'falsePw';
       this.errMessagePw =
-        'Mật khẩu tối thiểu 8 ký tự, ít nhất 1 chữ cái và 1 số!';
+        '* Mật khẩu tối thiểu 8 ký tự, ít nhất 1 chữ cái và 1 số!';
     } else {
       this.isPwValid = 'truePw';
       this.errMessagePw = '';
@@ -108,7 +108,7 @@ export class RegisterComponent implements OnInit {
   onFullNameChange() {
     if (this.fullName === '') {
       this.isFullNameValid = '';
-      this.errMessageFullName = 'Không được để trống trường này!';
+      this.errMessageFullName = '* Không được để trống trường này!';
     } else {
       this.isFullNameValid = 'trueFullName';
       this.errMessageFullName = '';
@@ -122,10 +122,10 @@ export class RegisterComponent implements OnInit {
     let phonePattern = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
     if (this.phoneNumber === '') {
       this.isPhoneNumberValid = '';
-      this.errMessagePhoneNumber = 'Không được để trống trường này!';
+      this.errMessagePhoneNumber = '* Số điện thoại không được để trống!';
     } else if (!this.phoneNumber.match(phonePattern)) {
       this.isPhoneNumberValid = 'falsePhoneNumber';
-      this.errMessagePhoneNumber = 'Số điện thoại không hợp lệ!';
+      this.errMessagePhoneNumber = '* Số điện thoại không hợp lệ!';
     } else {
       this.isPhoneNumberValid = 'truePhoneNumber';
       this.errMessagePhoneNumber = '';

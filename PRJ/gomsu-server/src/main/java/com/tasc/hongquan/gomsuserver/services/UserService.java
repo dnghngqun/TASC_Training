@@ -44,6 +44,28 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUserId(id).get();
     }
 
+    public User createAccountWithGG(User user, int roleId) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already in use.");
+        }
+
+        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
+            throw new IllegalArgumentException("Phone number already in use.");
+        }
+
+        user.setCreatedAt(Instant.now());
+        user.setUpdatedAt(Instant.now());
+
+
+        // Retrieve the role from the database
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found."));
+
+        user.setRole(role);
+
+        return userRepository.save(user);
+    }
+
     public User createAccount(RegisterDTO userDto, int roleId) {
         // Check if the user already exists
         if (userRepository.existsByEmail(userDto.getEmail())) {

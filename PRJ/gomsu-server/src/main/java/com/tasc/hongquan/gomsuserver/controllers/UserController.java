@@ -7,8 +7,8 @@ import com.tasc.hongquan.gomsuserver.DTO.LoginResponse;
 import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
 import com.tasc.hongquan.gomsuserver.cookie.LoginCookie;
+import com.tasc.hongquan.gomsuserver.exception.CustomException;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
-import com.tasc.hongquan.gomsuserver.models.Token;
 import com.tasc.hongquan.gomsuserver.models.User;
 import com.tasc.hongquan.gomsuserver.services.TokenService;
 import com.tasc.hongquan.gomsuserver.services.UserService;
@@ -25,6 +25,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 @RestController
@@ -39,25 +43,21 @@ import java.util.concurrent.ExecutorService;
 @Slf4j
 public class UserController {
     private final UserService userService;
-    private final TokenService tokenService;
     private final AuthenticationManager authen;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ExecutorService executorService;
     private final ObjectMapper objectMapper;
     public static final int MAX_AGE = 3600;
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService, TokenService tokenService, AuthenticationManager authen, JwtTokenProvider jwt, ExecutorService executorService, ObjectMapper objectMapper) {
+    public UserController(UserService userService, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper) {
         this.userService = userService;
-        this.tokenService = tokenService;
         this.authen = authen;
         this.jwtTokenProvider = jwt;
-        this.executorService = executorService;
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/public/register")
     public ResponseEntity<String> createUser(@RequestBody RegisterDTO user) {
         try {
             userService.createAccount(user, 3);
@@ -67,6 +67,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasAnyAuthority('admin', 'superadmin')")
@@ -94,7 +95,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/isLoggedIn")
+    @GetMapping("/public/isLoggedIn")
     public boolean isLoggedIn(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
@@ -109,8 +110,55 @@ public class UserController {
     }
 
 
+    @GetMapping("/public/oauth2/success")
+    public ResponseEntity<String> googleLoginSuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication instanceof OAuth2AuthenticationToken)) {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .body("Unauthorized: User is not authenticated");
+        }
+
+        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+        OAuth2User oauth2User = oauthToken.getPrincipal();
+
+
+        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+//
+//        OAuth2User oauth2User = oauthToken.getPrincipal();
+
+        String email = oauth2User.getAttribute("email");
+        String role = userService.getRoleName(email);
+        String providerId = oauthToken.getPrincipal().getAttribute("sub");
+        String provider = "google";
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            String randomPassword = UUID.randomUUID().toString();
+            user = new User();
+            user.setFullName(oauth2User.getAttribute("name"));
+            user.setEmail(email);
+            user.setPassword(randomPassword);
+            user.setProvider(provider);
+            user.setProviderId(providerId);
+            userService.createAccountWithGG(user, 3);
+        }
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setEmail(email);
+        loginDTO.setPassword(user.getPassword());
+        login(loginDTO, response);
+
+        return ResponseEntity.ok("<html><body>" +
+                "<script>" +
+                "window.opener.postMessage(" +
+                "{ email: '" + email + "' }, '*');" +
+                "window.close();" +  // Đóng popup sau khi gửi dữ liệu
+                "</script>" +
+                "</body></html>");
+    }
+
+
     @Transactional
-    @PostMapping("/signin")
+    @PostMapping("/public/signin")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception {
         try {
             Authentication authentication = authen.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
@@ -151,17 +199,6 @@ public class UserController {
         isLoggedIn.setPath("/");
         isLoggedIn.setMaxAge(MAX_AGE); //1 hour
 
-        //save token
-        executorService.submit(() -> {
-            //save token to database
-            tokenService.saveToken(new Token().builder()
-                    .user(user)
-                    .token(jwt)
-                    .tokenType("JWT")
-                    .expiresAt(expiryDate.toInstant())
-                    .build()
-            );
-        });
 
         //add cookie to response
         response.addCookie(jwtCookie);
@@ -181,14 +218,6 @@ public class UserController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("jwt")) {
-                    String jwtEncode = cookie.getValue();
-//                    String jwtEncode = objectMapper.readValue(json, String.class);
-
-                    byte[] decodedBytes = Base64.getDecoder().decode(jwtEncode);
-                    String token = new String(decodedBytes);
-                    tokenService.revokeToken(token);
-                }
                 cookie.setPath("/");
                 cookie.setHttpOnly(true);
                 cookie.setMaxAge(0);

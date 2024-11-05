@@ -132,3 +132,19 @@
   cursor: not-allowed;
   transition: all 0.35s ease;
 }
+
+.err {
+  display: block;
+  color: red;
+  transition: all 0.4s ease;
+  font-size: 14px;
+}
+
+.login-google:active {
+  transform: scale(0.95);
+  transition: 0.4 ease all;
+}
+.login-google:hover {
+  background-color: #e98717;
+  transition: 0.4s ease all;
+}

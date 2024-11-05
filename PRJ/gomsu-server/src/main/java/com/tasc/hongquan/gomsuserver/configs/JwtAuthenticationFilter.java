@@ -21,7 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.UUID;
 
 @Slf4j
 @Component
@@ -45,6 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        logger.info("Request URI: {}", request.getRequestURI());
+        if (request.getRequestURI().startsWith("/users/public/oauth2/success")) {
+            logger.info("Request is public.");
+            filterChain.doFilter(request, response);
+            return;
+        }
 //        String token = getJWTFromRequest(request);
         String token = null;
         Cookie[] cookies = request.getCookies();

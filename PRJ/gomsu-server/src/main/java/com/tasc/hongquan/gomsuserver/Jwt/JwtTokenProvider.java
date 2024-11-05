@@ -82,23 +82,22 @@ public class JwtTokenProvider {
                     .setSigningKey(JWT_SECRET).build()
                     .parseClaimsJws(authToken)
                     .getBody();
-            
+
             Date expirationDate = claims.getExpiration();
             if (expirationDate.before(new Date())) {
-                tokenService.revokeToken(authToken);
+                System.err.println("Token is expired");
+
                 return false;
             }
             return true;
         } catch (ExpiredJwtException ex) {
             // Token is expired
             System.err.println("Token is expired: " + ex.getMessage());
-            tokenService.revokeToken(authToken);
 
             return false;
         } catch (SignatureException ex) {
             //Signature is invalid
             System.err.println("Signature is invalid: " + ex.getMessage());
-            tokenService.revokeToken(authToken);
 
             return false;
         } catch (Exception ex) {

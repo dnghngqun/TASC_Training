@@ -13,7 +13,7 @@ export class AuthService {
     const data = { email, password };
     console.log('data: ', data);
     return this.httpClient
-      .post(`${APIURL}users/signin`, data, {
+      .post(`${APIURL}users/public/signin`, data, {
         withCredentials: true,
         responseType: 'text',
       })
@@ -43,8 +43,9 @@ export class AuthService {
         .subscribe({
           next: (response) => {
             console.log('Logout successful', response);
-            this.loggedOut();
             resolve(true);
+            this.loggedOut();
+            
           },
           error: (error) => {
             console.error('Error during logout', error);
@@ -67,9 +68,16 @@ export class AuthService {
     };
     console.log('data: ', data);
     return this.httpClient
-      .post(`${APIURL}users/register`, data, {
+      .post(`${APIURL}users/public/register`, data, {
         responseType: 'text',
       })
       .pipe();
+  }
+
+  loginWithGoogle(): Observable<any> {
+    return this.httpClient.get(`${APIURL}users/google`, {
+      withCredentials: true,
+      responseType: 'text',
+    });
   }
 }

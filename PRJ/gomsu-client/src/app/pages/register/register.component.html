@@ -28,6 +28,7 @@
         (input)="onFullNameChange()"
       />
       <br />
+      <div class="error-fullname err">{{ errMessageFullName }}</div>
       <input
         type="email"
         name="email"
@@ -39,6 +40,7 @@
         (input)="onEmailChange()"
       />
       <br />
+      <div class="error-email err">{{ errMessage }}</div>
       <input
         type="text"
         name="phoneNumber"
@@ -50,6 +52,7 @@
         (input)="onPhoneNumberChange()"
       />
       <br />
+      <div class="error-phone err">{{ errMessagePhoneNumber }}</div>
       <input
         class="input"
         type="password"
@@ -61,6 +64,7 @@
         (input)="onPasswordChange()"
       />
       <br />
+      <div class="error-pw err">{{ errMessagePw }}</div>
       <button
         (click)="onClickRegister()"
         [disabled]="isDisabledBtn"

@@ -26,7 +26,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.updateLoginStatus();
     this.intervalId = setInterval(() => {
       this.updateLoginStatus();
-    }, 5000);
+    }, 1000);
   }
   faCaretDown = faCaretDown;
   faMagnifyingGlass = faMagnifyingGlass;

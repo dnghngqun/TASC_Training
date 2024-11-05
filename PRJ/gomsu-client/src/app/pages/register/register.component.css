@@ -104,19 +104,22 @@
   padding-right: 30px;
 }
 
-
 .input:focus {
   box-shadow: 0 0px 10px 0px #f2b250 !important;
   transition: 0.35s ease;
 }
 
-.input.falseEmail, .input.falsePhoneNumber, .input.falsePw {
+.input.falseEmail,
+.input.falsePhoneNumber,
+.input.falsePw {
   box-shadow: 0 0px 10px 0px #b90b0b !important;
   transition: 0.35s ease;
 }
 
 .input.trueEmail,
-.input.truePw, .input.trueFullName, .input.truePhoneNumber {
+.input.truePw,
+.input.trueFullName,
+.input.truePhoneNumber {
   box-shadow: 0 0px 10px 0px #5bf250 !important;
   transition: 0.35s ease;
 }
@@ -126,4 +129,11 @@
   color: #fff;
   cursor: not-allowed;
   transition: all 0.35s ease;
+}
+
+.err {
+  display: block;
+  color: red;
+  transition: all 0.4s ease;
+  font-size: 14px;
 }

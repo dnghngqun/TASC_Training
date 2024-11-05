@@ -7,7 +7,7 @@ CREATE TABLE Users (
     user_id CHAR(36) PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255),
-    phone_number VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(20) ,
     full_name VARCHAR(255) NOT NULL,
     address TEXT,
     provider VARCHAR(255),
@@ -121,13 +121,12 @@ CREATE TABLE Notification (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Tokens
+-- Tạo bảng Tokens: reset password, OTP
 CREATE TABLE Tokens (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
-    token TEXT,
-    token_type ENUM('JWT', 'Access_token', 'Reset_token') NOT NULL,
-    provider VARCHAR(255),
+    token INT,
+    token_type ENUM('OTP') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NULL,
     is_revoked BOOLEAN DEFAULT FALSE
