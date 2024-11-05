@@ -6,7 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 import { ToastrModule } from 'ngx-toastr';
+import { environment } from '../environments/environment.development';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './pages/footer/footer.component';
@@ -17,6 +19,8 @@ import { ProductAllComponent } from './pages/product-all/product-all.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { BreadcrumbModule } from './shared/breadcrumb/breadcrumb.module';
 import { ProductModule } from './shared/product/product.module';
+
+const googleClientId = environment.googleClientId;
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,6 +29,7 @@ import { ProductModule } from './shared/product/product.module';
     ProductAllComponent,
     RegisterComponent,
     LoginComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -47,7 +52,9 @@ import { ProductModule } from './shared/product/product.module';
     }),
   ],
 
-  providers: [provideHttpClient()],
+  providers: [
+    provideHttpClient(),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

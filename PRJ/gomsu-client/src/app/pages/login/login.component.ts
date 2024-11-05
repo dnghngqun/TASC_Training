@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,6 +14,7 @@ export class LoginComponent implements OnInit {
     private cookieService: CookieService,
     private router: Router,
     private toastr: ToastrService,
+
   ) {}
   role!: string;
   email!: string;
@@ -37,35 +37,36 @@ export class LoginComponent implements OnInit {
     this.loginComponent(this.email, this.password);
   }
 
-  onCLickLoginWithGG() {
-    const popup = window.open(
-      'http://localhost:8080/oauth2/authorization/google',
-      '_blank',
-      'width=500,height=600',
-    );
+  // onCLickLoginWithGG():void {
+  //   const popup = window.open(
+  //     'http://localhost:8080/oauth2/authorization/google',
+  //     '_blank',
+  //     'width=500,height=600',
+  //   );
 
-    window.addEventListener('message', (event) => {
-      if (event.origin !== 'http://localhost:8080') {
-        return;
-      }
+  //   window.addEventListener('message', (event) => {
+  //     if (event.origin !== 'http://localhost:8080') {
+  //       return;
+  //     }
 
-      // Đóng popup
-      if (popup) {
-        popup.close();
-      }
+  //     // Đóng popup
+  //     if (popup) {
+  //       popup.close();
+  //     }
 
-      this.authService.loginWithGoogle().subscribe({
-        next: (res) => {
-          console.log('Message: ', res);
-          this.toastr.success('Login with Google success 🥳');
-        },
-        error: (error) => {
-          console.error('Login with Google error: ', error);
-          this.toastr.error('Login with Google failed 😡');
-        },
-      });
-    });
-  }
+  //     this.authService.loginWithGoogle().subscribe({
+  //       next: (res) => {
+  //         console.log('Message: ', res);
+  //         this.toastr.success('Login with Google success 🥳');
+  //       },
+  //       error: (error) => {
+  //         console.error('Login with Google error: ', error);
+  //         this.toastr.error('Login with Google failed 😡');
+  //       },
+  //     });
+  //   });
+  // }
+
 
   loginComponent(email: string, password: string) {
     this.authService.login(email, password).subscribe({
@@ -128,16 +129,16 @@ export class LoginComponent implements OnInit {
       this.errMessagePw = '';
     }
   }
-  onClickLoginWithGoogle() {
-    this.authService.loginWithGoogle().subscribe({
-      next: (res) => {
-        console.log('Message: ', res);
-        this.toastr.success('Login with Google success 🥳');
-      },
-      error: (error) => {
-        console.error('Login with Google error: ', error);
-        this.toastr.error('Login with Google failed 😡');
-      },
-    });
-  }
+  // onClickLoginWithGoogle() {
+  //   this.authService.loginWithGoogle().subscribe({
+  //     next: (res) => {
+  //       console.log('Message: ', res);
+  //       this.toastr.success('Login with Google success 🥳');
+  //     },
+  //     error: (error) => {
+  //       console.error('Login with Google error: ', error);
+  //       this.toastr.error('Login with Google failed 😡');
+  //     },
+  //   });
+  // }
 }

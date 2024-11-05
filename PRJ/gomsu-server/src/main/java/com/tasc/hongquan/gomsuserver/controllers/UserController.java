@@ -1,16 +1,11 @@
 package com.tasc.hongquan.gomsuserver.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.gomsuserver.DTO.LoginDTO;
-import com.tasc.hongquan.gomsuserver.DTO.LoginResponse;
 import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
-import com.tasc.hongquan.gomsuserver.cookie.LoginCookie;
-import com.tasc.hongquan.gomsuserver.exception.CustomException;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 import com.tasc.hongquan.gomsuserver.models.User;
-import com.tasc.hongquan.gomsuserver.services.TokenService;
 import com.tasc.hongquan.gomsuserver.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,18 +20,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
-import java.util.Base64;
-import java.util.Date;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
+import java.util.*;
+
 
 @RestController
 @RequestMapping("/users")
@@ -46,7 +37,7 @@ public class UserController {
     private final AuthenticationManager authen;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-    public static final int MAX_AGE = 3600;
+    public static final int MAX_AGE = 3600 * 24;// 1 day
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -82,8 +73,6 @@ public class UserController {
     }
 
     @PostMapping("/shipper/register")
-//    @PreAuthorize("hasAuthority('admin') or hasAuthority('user')")
-//    @PreAuthorize("hasAnyAuthority('admin', 'user')")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<String> createShipper(@RequestBody RegisterDTO user) {
         try {
@@ -95,41 +84,32 @@ public class UserController {
         }
     }
 
-    @GetMapping("/public/isLoggedIn")
-    public boolean isLoggedIn(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return false;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("isLoggedIn") && cookie.getValue().equals("true")) {
-                return true;
+    @PostMapping("request-change-password")
+    @PreAuthorize("hasAnyAuthority('admin', 'superadmin', 'shipper')")
+    public ResponseEntity<String> requestChangePassword(@RequestParam String email) {
+        try {
+            //find user
+            User user = userService.getUserByEmail(email);
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User not found");
             }
+            //generate token otp
+            String otp = UUID.randomUUID().toString();
+
+        } catch (Exception e) {
+            logger.error("Error requesting change password: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return false;
     }
 
 
     @GetMapping("/public/oauth2/success")
-    public ResponseEntity<String> googleLoginSuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication instanceof OAuth2AuthenticationToken)) {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-                    .body("Unauthorized: User is not authenticated");
-        }
+    public ResponseEntity<String> googleLoginSuccess(HttpServletResponse response, OAuth2AuthenticationToken authentication) throws Exception {
+        OAuth2User oauth2User = authentication.getPrincipal();
 
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-        OAuth2User oauth2User = oauthToken.getPrincipal();
-
-
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
-//
-//        OAuth2User oauth2User = oauthToken.getPrincipal();
 
         String email = oauth2User.getAttribute("email");
-        String role = userService.getRoleName(email);
-        String providerId = oauthToken.getPrincipal().getAttribute("sub");
+        String providerId = authentication.getPrincipal().getAttribute("sub");
         String provider = "google";
         User user = userService.getUserByEmail(email);
         if (user == null) {
@@ -179,25 +159,24 @@ public class UserController {
         String encodeJWT = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
         String userJson = objectMapper.writeValueAsString(user);
         String encodeUser = Base64.getEncoder().encodeToString(userJson.getBytes(StandardCharsets.UTF_8));
-//        String encodeJWT = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
 
         //create a new cookie
         Cookie jwtCookie = new Cookie("jwt", encodeJWT);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(MAX_AGE); //1 hour
+        jwtCookie.setMaxAge(MAX_AGE);
         jwtCookie.setHttpOnly(true);//not allow javascript access
 
         Cookie userCookie = new Cookie("user", encodeUser);
         userCookie.setPath("/");
-        userCookie.setMaxAge(MAX_AGE); //1 hour
+        userCookie.setMaxAge(MAX_AGE);
 
         Cookie roleCookie = new Cookie("role", role);
         roleCookie.setPath("/");
-        roleCookie.setMaxAge(MAX_AGE); //1 hour
+        roleCookie.setMaxAge(MAX_AGE);
 
         Cookie isLoggedIn = new Cookie("isLoggedIn", "true");
         isLoggedIn.setPath("/");
-        isLoggedIn.setMaxAge(MAX_AGE); //1 hour
+        isLoggedIn.setMaxAge(MAX_AGE);
 
 
         //add cookie to response
@@ -212,8 +191,7 @@ public class UserController {
 
     @Transactional
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response, HttpServletRequest request) throws JsonProcessingException {
-
+    public String logout(HttpServletResponse response, HttpServletRequest request) {
         //get cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -223,11 +201,8 @@ public class UserController {
                 cookie.setMaxAge(0);
                 response.addCookie(cookie);
             }
-
             return "Logout success";
         }
-
-
         return "Logout failed";
     }
 }

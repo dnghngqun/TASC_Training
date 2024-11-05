@@ -90,33 +90,6 @@ public class SecurityConfig {
     }
 
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String clientId;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String clientSecret;
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String redirectUri;
-
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        ClientRegistration googleClientRegistration = ClientRegistration.withRegistrationId("google")
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .scope("profile", "email")
-                .authorizationUri("https://accounts.google.com/o/oauth2/auth")
-                .tokenUri("https://oauth2.googleapis.com/token")
-                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-                .userNameAttributeName("sub")
-                .redirectUri(redirectUri)
-                .clientName("Google")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .build();
-
-        return new InMemoryClientRegistrationRepository(Arrays.asList(googleClientRegistration));
-    }
-
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

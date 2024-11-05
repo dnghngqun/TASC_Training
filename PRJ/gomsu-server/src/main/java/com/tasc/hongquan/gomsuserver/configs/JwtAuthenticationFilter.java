@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("Request URI: {}", request.getRequestURI());
-        if (request.getRequestURI().startsWith("/users/public/oauth2/success")) {
+        if (request.getRequestURI().startsWith("/users/public/")) {
             logger.info("Request is public.");
             filterChain.doFilter(request, response);
             return;

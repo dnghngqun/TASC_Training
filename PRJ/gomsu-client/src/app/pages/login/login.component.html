@@ -43,7 +43,8 @@
       />
       <br />
       <div class="error-pw err">
-        {{ errMessagePw }}</div>
+        {{ errMessagePw }}
+      </div>
       <button
         (click)="onClickLogin()"
         [disabled]="isDisabledBtn"
@@ -55,7 +56,7 @@
     <div class="forgot-pass"><a href="#">Quên mật khẩu</a></div>
     <div class="or">Hoặc đăng nhập bằng</div>
     <div class="login-otp">
-      <button class="login-google"  (click)="onCLickLoginWithGG()" >
+      <button class="login-google" >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
           <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
           <path
@@ -64,6 +65,7 @@
         </svg>
         <span> Sign in with google</span>
       </button>
+
     </div>
   </div>
 </section>

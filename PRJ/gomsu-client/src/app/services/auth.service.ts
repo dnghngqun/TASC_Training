@@ -45,7 +45,7 @@ export class AuthService {
             console.log('Logout successful', response);
             resolve(true);
             this.loggedOut();
-            
+
           },
           error: (error) => {
             console.error('Error during logout', error);
@@ -74,10 +74,7 @@ export class AuthService {
       .pipe();
   }
 
-  loginWithGoogle(): Observable<any> {
-    return this.httpClient.get(`${APIURL}users/google`, {
-      withCredentials: true,
-      responseType: 'text',
-    });
+  loginWithGoogle(idToken: string): Observable<any> {
+    return this.httpClient.post(`${APIURL}/users/public/oauth2/login/google`, {idToken}, { withCredentials: true }).pipe();
   }
 }

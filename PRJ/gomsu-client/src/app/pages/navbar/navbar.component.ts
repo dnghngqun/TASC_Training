@@ -7,6 +7,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
 
@@ -19,6 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private toastr: ToastrService,
+    private router: Router,
   ) {}
   isLoggedIn: boolean = false;
   private intervalId: any;
@@ -49,6 +51,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         // this.showSuccess('Logout success 👋');
         console.log('Logout success 👋');
         this.toastr.success('Logout success 👋');
+        this.router.navigate(['login']);
       } else {
         // this.showError('Logout error 🧐');
         console.log('Logout error 🧐');
