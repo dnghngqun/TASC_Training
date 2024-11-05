@@ -5,7 +5,10 @@ import com.tasc.hongquan.gomsuserver.DTO.LoginDTO;
 import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
+import com.tasc.hongquan.gomsuserver.models.Token;
 import com.tasc.hongquan.gomsuserver.models.User;
+import com.tasc.hongquan.gomsuserver.services.EmailService;
+import com.tasc.hongquan.gomsuserver.services.TokenService;
 import com.tasc.hongquan.gomsuserver.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,16 +39,20 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authen;
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenService tokenService;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
     public static final int MAX_AGE = 3600 * 24;// 1 day
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper) {
+    public UserController(UserService userService, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper, TokenService tokenService, TokenService tokenService1, EmailService emailService) {
         this.userService = userService;
         this.authen = authen;
         this.jwtTokenProvider = jwt;
         this.objectMapper = objectMapper;
+        this.tokenService = tokenService1;
+        this.emailService = emailService;
     }
 
     @PostMapping("/public/register")
@@ -84,8 +91,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("request-change-password")
-    @PreAuthorize("hasAnyAuthority('admin', 'superadmin', 'shipper')")
+    @PostMapping("/public/request-change-password")
     public ResponseEntity<String> requestChangePassword(@RequestParam String email) {
         try {
             //find user
@@ -94,14 +100,56 @@ public class UserController {
                 return ResponseEntity.badRequest().body("User not found");
             }
             //generate token otp
-            String otp = UUID.randomUUID().toString();
+            int otp = tokenService.generateOTP();
 
+
+            Token token = new Token().builder()
+                    .token(otp)
+                    .tokenType("otp")
+                    .user(user)
+                    .build();
+
+            tokenService.saveToken(token);
+            //check otp if exists and not revoked with user
+            while (!tokenService.checkValidOTP(otp, user.getUserId())) {
+                //false
+                //set revoked old token
+                try {
+                    tokenService.revokeToken(otp, user.getUserId());
+
+                } catch (Exception e) {
+                    logger.error("Error revoking token: " + e.getMessage());
+                }
+                otp = tokenService.generateOTP();
+
+            }
+            //send email
+            emailService.sendEmail(user.getEmail(), "Change password", "Your OTP is: " + otp);
+
+            return ResponseEntity.ok("OTP has been sent to your email");
         } catch (Exception e) {
             logger.error("Error requesting change password: " + e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+
+    @PostMapping("/public/change-password")
+    public ResponseEntity<String> changePassword(@RequestParam String email, @RequestParam int otp, @RequestParam String newPassword) {
+        try {
+            if (tokenService.validateToken(otp, email)) {
+                logger.info("OTP is valid");
+                //changepass
+                User user = userService.changePass(email, newPassword);
+                //revoke token
+                tokenService.revokeToken(otp, user.getUserId());
+            }
+            return ResponseEntity.badRequest().body("OTP is invalid");
+        } catch (Exception e) {
+            logger.error("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping("/public/oauth2/success")
     public ResponseEntity<String> googleLoginSuccess(HttpServletResponse response, OAuth2AuthenticationToken authentication) throws Exception {

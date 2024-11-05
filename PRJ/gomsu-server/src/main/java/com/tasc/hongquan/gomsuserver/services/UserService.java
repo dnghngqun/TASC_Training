@@ -117,6 +117,11 @@ public class UserService implements UserDetailsService {
 
     }
 
+    public User changePass(String email, String password) {
+        User user = userRepository.findByEmail(email).get();
+        user.setPassword(passwordEncoder.encode(password));
+        return userRepository.save(user);
+    }
 
     @Override
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

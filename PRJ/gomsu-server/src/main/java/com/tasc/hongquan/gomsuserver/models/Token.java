@@ -15,6 +15,7 @@ import java.time.Instant;
 @Table(name = "Tokens")
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Token {
     @Id
     @Column(name = "token_id", nullable = false)
