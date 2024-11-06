@@ -3,7 +3,7 @@ package com.tasc.hongquan.gomsuserver.Jwt;
 import com.tasc.hongquan.gomsuserver.controllers.UserController;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 
-import com.tasc.hongquan.gomsuserver.services.TokenService;
+import com.tasc.hongquan.gomsuserver.services.TokenServiceImpl;
 import io.jsonwebtoken.*;
 
 import java.util.Date;
@@ -19,10 +19,10 @@ public class JwtTokenProvider {
 
     private String JWT_SECRET = "3E817CFD882DD4866F287E42DBA1887E42DBA1887E42DBA18";
     private final long JWT_EXPIRATION = UserController.MAX_AGE * 1000;
-    private final TokenService tokenService;
+    private final TokenServiceImpl tokenServiceImpl;
 
-    public JwtTokenProvider(TokenService tokenService) {
-        this.tokenService = tokenService;
+    public JwtTokenProvider(TokenServiceImpl tokenServiceImpl) {
+        this.tokenServiceImpl = tokenServiceImpl;
     }
 
     public String generateToken(CustomUserDetails userDetails) {

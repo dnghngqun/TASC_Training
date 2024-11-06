@@ -8,9 +8,7 @@ import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 import com.tasc.hongquan.gomsuserver.models.Token;
 import com.tasc.hongquan.gomsuserver.models.User;
-import com.tasc.hongquan.gomsuserver.services.EmailService;
-import com.tasc.hongquan.gomsuserver.services.TokenService;
-import com.tasc.hongquan.gomsuserver.services.UserService;
+import com.tasc.hongquan.gomsuserver.services.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,13 +46,13 @@ public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper, TokenService tokenService, TokenService tokenService1, EmailService emailService) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper, TokenServiceImpl tokenServiceImpl, EmailServiceImpl emailServiceImpl) {
+        this.userService = userServiceImpl;
         this.authen = authen;
         this.jwtTokenProvider = jwt;
         this.objectMapper = objectMapper;
-        this.tokenService = tokenService1;
-        this.emailService = emailService;
+        this.tokenService = tokenServiceImpl;
+        this.emailService = emailServiceImpl;
     }
 
     @PostMapping("/public/register")
@@ -179,8 +178,6 @@ public class UserController {
     @GetMapping("/public/oauth2/success")
     public ResponseEntity<String> googleLoginSuccess(HttpServletResponse response, OAuth2AuthenticationToken authentication) throws Exception {
         OAuth2User oauth2User = authentication.getPrincipal();
-
-
         String email = oauth2User.getAttribute("email");
         String providerId = authentication.getPrincipal().getAttribute("sub");
         String provider = "google";
@@ -213,20 +210,24 @@ public class UserController {
     @Transactional
     @PostMapping("/public/signin")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception {
+        String email;
+        String role;
         try {
             Authentication authentication = authen.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+            email = String.valueOf(authentication.getName());
+            GrantedAuthority authority = authentication.getAuthorities().stream().iterator().next();
+            role = authority.getAuthority();
 
         } catch (AuthenticationException authenticationException) {
             throw new Exception("Invalid username or password", authenticationException);
         }
         final CustomUserDetails userDetails = userService.loadUserByUsername(loginDTO.getEmail());
         final String jwt = jwtTokenProvider.generateToken(userDetails);
-        final String email = String.valueOf(jwtTokenProvider.getEmailFromJWT(jwt));
-        final String role = userService.getRoleName(email);
-        final Date expiryDate = jwtTokenProvider.getExpirationDateFromJWT(jwt);
+
+//        final String email = String.valueOf(jwtTokenProvider.getEmailFromJWT(jwt));
+//        final String role = userService.getRoleName(email);
 
         User user = userService.getUserByEmail(email);
-        System.out.println("User: " + user);
 
         //encode
         String encodeJWT = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
