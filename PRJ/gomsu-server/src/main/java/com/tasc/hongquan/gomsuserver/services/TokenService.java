@@ -41,20 +41,16 @@ public class TokenService {
     }
 
     public int generateOTP() {
-        List<String> numbers = List.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-        Collections.shuffle(numbers, new SecureRandom());
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            builder.append(numbers.get(i));
-        }
-        return Integer.parseInt(builder.toString());
+        SecureRandom random = new SecureRandom();
+        int otp = random.nextInt(90000000) + 10000000;
+        return otp;
     }
 
     public void revokeToken(int token, String userId) {
         try {
             Token existingToken = tokenRepository.findByToken(token, userId);
             if (existingToken == null) {
-                throw new RuntimeException("Token not found");
+                System.out.println("Token not found to revoked");
             }
             existingToken.setIsRevoked(true);
             tokenRepository.save(existingToken);
@@ -64,11 +60,8 @@ public class TokenService {
     }
 
     public boolean validateToken(int token, String userId) {
-        Token existingToken = tokenRepository.findByToken(token, userId);
-        if (existingToken == null) {
-            return false;
-        }
-        return true;
+        return tokenRepository.checkTokenValid(token, userId);
+
     }
 
     public boolean checkValidOTP(int otp, String userId) {

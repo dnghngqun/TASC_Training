@@ -24,7 +24,6 @@ public class SuperAdminAuthenticationFilter extends OncePerRequestFilter {
         String password = request.getHeader("Password");
 
         if (SUPER_ADMIN_USERNAME.equals(username) && SUPER_ADMIN_PASSWORD.equals(password)) {
-            // Nếu thông tin tài khoản đúng, cấp quyền admin cao nhất cho request
             Authentication authentication = new SuperAdminAuthenticationToken();
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

@@ -23,6 +23,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     @Query("select t from Token t where t.isRevoked = false")
     List<Token> getAllWhereIsRevoked();
 
+    //return false if token is valid
     @Query("SELECT CASE WHEN COUNT(t) > 0 THEN false ELSE true END FROM Token t " +
             "WHERE t.token = ?1 AND t.user.userId = ?2 AND (t.isRevoked = true OR t.expiresAt < current_timestamp())")
     Boolean checkTokenValid(int token, String userId);

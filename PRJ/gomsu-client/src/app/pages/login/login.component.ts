@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
     private cookieService: CookieService,
     private router: Router,
     private toastr: ToastrService,
-
   ) {}
   role!: string;
   email!: string;
@@ -67,7 +66,6 @@ export class LoginComponent implements OnInit {
   //   });
   // }
 
-
   loginComponent(email: string, password: string) {
     this.authService.login(email, password).subscribe({
       next: (res) => {
@@ -83,12 +81,16 @@ export class LoginComponent implements OnInit {
 
   private checkLoggedIn(): void {
     const roleCookie = this.cookieService.get('role');
+    console.log('Role:', roleCookie);
     if (roleCookie === 'user') {
       this.router.navigate(['/']);
-    } else if (this.role === 'shipper') {
+    } else if (roleCookie === 'shipper') {
       console.log('navigate to shipper');
-    } else {
+    } else if (roleCookie === 'admin') {
       console.log('navigate to admin');
+      window.location.href = 'http://localhost:4201/';
+    } else {
+      console.log('not login');
     }
   }
 
@@ -129,6 +131,7 @@ export class LoginComponent implements OnInit {
       this.errMessagePw = '';
     }
   }
+
   // onClickLoginWithGoogle() {
   //   this.authService.loginWithGoogle().subscribe({
   //     next: (res) => {

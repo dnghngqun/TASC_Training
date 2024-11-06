@@ -36,9 +36,15 @@
             ],
             "styles": [
               "src/styles.css",
+              "public/css/styles1.css",
               "bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "public/js/scripts.js",
+              "public/assets/demo/chart-area-demo.js",
+              "public/assets/demo/chart-bar-demo.js",
+              "public/js/datatables-simple-demo.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -117,8 +117,8 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public User changePass(String email, String password) {
-        User user = userRepository.findByEmail(email).get();
+    public User changePass(String userId, String password) {
+        User user = userRepository.findByUserId(userId).get();
         user.setPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }

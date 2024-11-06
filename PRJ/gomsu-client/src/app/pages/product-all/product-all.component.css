@@ -24,3 +24,47 @@
 .btn-quick-sort {
   border-color: #be742a;
 }
+
+.heading-left {
+  position: relative;
+}
+
+.danhmuc-list {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.16) 1px 1px 5px 2px;
+  z-index: 1000;
+  background-color: #fff;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.danhmuc-list .danhmuc-item {
+  display: flex;
+  width: 200px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.danhmuc-item .icon {
+  font-size: 18px;
+  font-weight: 200;
+}
+.danhmuc-item .text {
+  font-size: 14px;
+  font-weight: 400;
+}
+.danhmuc-item {
+  transition: 0.3s ease all;
+}
+
+.danhmuc-item:hover {
+  background-color: #f1f1f1;
+  color: #f7902a;
+}

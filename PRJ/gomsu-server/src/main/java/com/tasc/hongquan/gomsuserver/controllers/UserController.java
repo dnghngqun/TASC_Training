@@ -1,6 +1,7 @@
 package com.tasc.hongquan.gomsuserver.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tasc.hongquan.gomsuserver.DTO.ForgotResponse;
 import com.tasc.hongquan.gomsuserver.DTO.LoginDTO;
 import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
@@ -91,6 +92,26 @@ public class UserController {
         }
     }
 
+    @GetMapping("/public/forgot/find-account/{email}")
+    public ResponseEntity<Object> findUser(@PathVariable String email) {
+        try {
+            User user = userService.getUserByEmail(email);
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User not found");
+            }
+            ForgotResponse response = ForgotResponse.builder()
+                    .userId(user.getUserId())
+                    .name(user.getFullName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error finding user: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/public/request-change-password")
     public ResponseEntity<String> requestChangePassword(@RequestParam String email) {
         try {
@@ -109,7 +130,6 @@ public class UserController {
                     .user(user)
                     .build();
 
-            tokenService.saveToken(token);
             //check otp if exists and not revoked with user
             while (!tokenService.checkValidOTP(otp, user.getUserId())) {
                 //false
@@ -123,26 +143,31 @@ public class UserController {
                 otp = tokenService.generateOTP();
 
             }
+            tokenService.saveToken(token);
+
             //send email
             emailService.sendEmail(user.getEmail(), "Change password", "Your OTP is: " + otp);
 
             return ResponseEntity.ok("OTP has been sent to your email");
         } catch (Exception e) {
-            logger.error("Error requesting change password: " + e.getMessage());
+            logger.error("Error requesting change password: " + e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
 
     @PostMapping("/public/change-password")
-    public ResponseEntity<String> changePassword(@RequestParam String email, @RequestParam int otp, @RequestParam String newPassword) {
+    public ResponseEntity<String> changePassword(@RequestParam String userId, @RequestParam String otpRequest, @RequestParam String newPassword) {
+
         try {
-            if (tokenService.validateToken(otp, email)) {
+            int otp = Integer.parseInt(otpRequest);
+            if (!tokenService.validateToken(otp, userId)) {
                 logger.info("OTP is valid");
                 //changepass
-                User user = userService.changePass(email, newPassword);
+                User user = userService.changePass(userId, newPassword);
                 //revoke token
-                tokenService.revokeToken(otp, user.getUserId());
+                tokenService.revokeToken(otp, userId);
+                return ResponseEntity.ok("Password changed successfully");
             }
             return ResponseEntity.badRequest().body("OTP is invalid");
         } catch (Exception e) {
@@ -253,4 +278,6 @@ public class UserController {
         }
         return "Logout failed";
     }
+
+
 }

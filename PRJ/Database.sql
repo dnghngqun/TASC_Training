@@ -42,6 +42,66 @@ CREATE TABLE Products (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
+CREATE TABLE PriceRange (
+    price_range_id INT PRIMARY KEY,
+    range_description VARCHAR(255)
+);
+CREATE TABLE Pattern (
+    pattern_id INT PRIMARY KEY,
+    pattern_name VARCHAR(255)
+);
+CREATE TABLE Color (
+    color_id INT PRIMARY KEY,
+    color_name VARCHAR(255)
+);
+CREATE TABLE Capacity (
+    capacity_id INT PRIMARY KEY,
+    size DECIMAL(5, 2) -- Dung tích theo cm
+);
+CREATE TABLE Material (
+    material_id INT PRIMARY KEY,
+    material_name VARCHAR(255)
+);
+CREATE TABLE Product_PriceRange (
+    product_id INT,
+    price_range_id INT,
+    PRIMARY KEY (product_id, price_range_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (price_range_id) REFERENCES PriceRange(price_range_id)
+);
+
+CREATE TABLE Product_Pattern (
+    product_id INT,
+    pattern_id INT,
+    PRIMARY KEY (product_id, pattern_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (pattern_id) REFERENCES Pattern(pattern_id)
+);
+
+CREATE TABLE Product_Color (
+    product_id INT,
+    color_id INT,
+    PRIMARY KEY (product_id, color_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (color_id) REFERENCES Color(color_id)
+);
+
+CREATE TABLE Product_Capacity (
+    product_id INT,
+    capacity_id INT,
+    PRIMARY KEY (product_id, capacity_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (capacity_id) REFERENCES Capacity(capacity_id)
+);
+
+CREATE TABLE Product_Material (
+    product_id INT,
+    material_id INT,
+    PRIMARY KEY (product_id, material_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (material_id) REFERENCES Material(material_id)
+);
+
 
 -- Tạo bảng Categories
 CREATE TABLE Categories (

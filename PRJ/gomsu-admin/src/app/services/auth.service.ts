@@ -2,12 +2,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+
 const APIURL = environment.APIURL;
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   constructor(private httpClient: HttpClient) {}
+
   private _isLoggedIn: boolean = false;
   login(email: string, password: string): Observable<any> {
     const data = { email, password };
@@ -100,15 +103,18 @@ export class AuthService {
       .pipe();
   }
 
-  changePw(userId: string, otp: string, newPassword: string ):Observable<String>{
+  changePw(
+    userId: string,
+    otp: string,
+    newPassword: string,
+  ): Observable<String> {
     const params = new HttpParams()
       .set('userId', userId)
       .set('otpRequest', otp)
       .set('newPassword', newPassword);
-    return this.httpClient
-    .post(`${APIURL}users/public/change-password`, null, {
+    return this.httpClient.post(`${APIURL}users/public/change-password`, null, {
       params: params,
       responseType: 'text',
-    })
+    });
   }
 }

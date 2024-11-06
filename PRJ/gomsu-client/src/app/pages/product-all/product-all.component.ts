@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   faCartShopping,
   faHeart,
+  faPlus,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 @Component({
@@ -13,6 +14,8 @@ export class ProductAllComponent implements OnInit {
   faCartShopping = faCartShopping;
   faHeart = faHeart;
   faMagnifyingGlass = faMagnifyingGlass;
+
+  isShowDanhmuc: boolean = false;
 
   constructor() {}
 

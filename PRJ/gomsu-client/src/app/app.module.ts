@@ -19,6 +19,7 @@ import { ProductAllComponent } from './pages/product-all/product-all.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { BreadcrumbModule } from './shared/breadcrumb/breadcrumb.module';
 import { ProductModule } from './shared/product/product.module';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 const googleClientId = environment.googleClientId;
 @NgModule({
@@ -29,6 +30,7 @@ const googleClientId = environment.googleClientId;
     ProductAllComponent,
     RegisterComponent,
     LoginComponent,
+    ForgotPasswordComponent,
 
   ],
   imports: [
