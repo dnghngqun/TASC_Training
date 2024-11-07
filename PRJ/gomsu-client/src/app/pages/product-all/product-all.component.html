@@ -124,7 +124,7 @@
             ></path>
           </svg>
         </div>
-        <div class="boloc container-fluid">
+        <!-- <div class="boloc container-fluid">
           <div class="row">
             <div class="col-sm-2 mx-auto">
               <div class="boloc-header">Chọn mức giá</div>
@@ -186,7 +186,7 @@
               <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="heading-right">
         <div class="text">Sắp xếp:</div>
@@ -318,6 +318,18 @@
         <div class="product-item col-sm-3"><app-product></app-product></div>
         <div class="product-item col-sm-3"><app-product></app-product></div>
         <div class="product-item col-sm-3"><app-product></app-product></div>
+      </div>
+      <div class="row">
+        <ul>
+          <li *ngFor="let item of products | paginate: { itemsPerPage: productPerPage, currentPage: currentPage, totalItems: totalProducts  }">{{ item }}</li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <pagination-controls
+            (pageChange)="onPageChange($event)"
+          ></pagination-controls>
+        </div>
       </div>
     </div>
   </div>

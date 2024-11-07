@@ -11,3 +11,15 @@
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
 }
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #be742a;
+  border-radius: 10px;
+}
