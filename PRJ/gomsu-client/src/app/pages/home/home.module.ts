@@ -8,6 +8,6 @@ import { SliderComponent } from './slider/slider.component';
 @NgModule({
   imports: [FontAwesomeModule, ProductModule],
   declarations: [CatalogComponent, SliderComponent, HomeComponent],
-  exports: [HomeComponent],
+  exports: [HomeComponent, CatalogComponent, SliderComponent],
 })
 export class HomeModule {}

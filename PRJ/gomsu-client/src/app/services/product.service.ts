@@ -8,19 +8,26 @@ import { environment } from '../../environments/environment.development';
 })
 export class ProductService {
 
-  private apiUrl = environment.APIURL;
+  private apiUrl = environment.APIURLProduct;
 
   constructor(private http: HttpClient) { }
 
-  getProducts(page:string, size:string):Observable<Object>{
+  getProducts(page:string, size:string, categoryId:string):Observable<any>{
     const params = new HttpParams()
     .set('page', page)
-    .set('size', size);
-    return this.http.get<Object>(`${this.apiUrl}products`,{params});
+    .set('size', size)
+    .set('categoryId', categoryId);
+    return this.http.get<any>(`${this.apiUrl}products`,{params});
   }
 
-  getCountAllProducts():Observable<Object>{
-    return this.http.get<Object>(`${this.apiUrl}products/count`);
+  getCountAllProducts(categoryId:Number):Observable<any>{
+    const params = new HttpParams()
+    .set('categoryId', categoryId.toString());
+    return this.http.get<any>(`${this.apiUrl}products/count`,{params});
+  }
+
+  getCategories():Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}categories/`);
   }
 
 }

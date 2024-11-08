@@ -73,8 +73,8 @@ export class LoginComponent implements OnInit {
         this.toastr.success('Login success 🥳');
       },
       error: (error) => {
-        console.error('Login error: ', error); // Log lỗi nếu có
         this.toastr.error('Login failed 😡 Please check email and password 🙏');
+        console.error('Login error: ', error); // Log lỗi nếu có
       },
     });
   }

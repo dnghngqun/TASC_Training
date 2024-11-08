@@ -4,7 +4,6 @@ import com.tasc.hongquan.productservice.dto.ResponseBody;
 import com.tasc.hongquan.productservice.models.Product;
 import com.tasc.hongquan.productservice.services.ProductService;
 import com.tasc.hongquan.productservice.services.ProductServiceImpl;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +42,10 @@ public class ProductController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<ResponseBody> getCountProduct() {
+    public ResponseEntity<ResponseBody> getCountProduct(@RequestParam(value = "categoryId") String categoryIdParams) {
         try {
-            int count = productService.getCountProduct();
+            Integer categoryId = Integer.parseInt(categoryIdParams);
+            int count = productService.getCountProduct(categoryId);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseBody("ok", "Product count", count)
             );
@@ -57,11 +57,14 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ResponseBody> getAllProduct(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                      @RequestParam(value = "size", defaultValue = "12") int size) {
+    @GetMapping("")
+    public ResponseEntity<ResponseBody> getAllProduct(@RequestParam(value = "page", defaultValue = "0") String pageParams,
+                                                      @RequestParam(value = "size", defaultValue = "12") String sizeParams, @RequestParam(value = "categoryId") String categoryIdParams) {
         try {
-            Page<Product> products = productService.getAllProducts(page, size);
+            int page = Integer.parseInt(pageParams);
+            int size = Integer.parseInt(sizeParams);
+            Integer categoryId = Integer.parseInt(categoryIdParams);
+            Page<Product> products = productService.getAllProducts(page, size, categoryId);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseBody("ok", "Product found", products)
             );

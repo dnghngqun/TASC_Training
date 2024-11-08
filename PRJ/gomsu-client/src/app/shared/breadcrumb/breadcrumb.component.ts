@@ -9,6 +9,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
   selector: 'app-breadcrumb',
   templateUrl: './breadcrumb.component.html',
   styleUrls: ['./breadcrumb.component.css'],
+  standalone: false,
 })
 export class BreadcrumbComponent implements OnInit {
   @Input() heading!: string;

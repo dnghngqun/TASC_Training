@@ -3,7 +3,9 @@ package com.tasc.hongquan.productservice.services;
 import com.tasc.hongquan.productservice.models.Category;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
+
 public interface CategoryService {
     void add(Category category);
 
@@ -12,4 +14,6 @@ public interface CategoryService {
     void update(Category category);
 
     Category getCategoryById(int id);
+
+    List<Category> getAllCategories();
 }

@@ -10,11 +10,11 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "Categories")
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "category_id")
     private Integer id;
 
     @Column(name = "name", nullable = false)

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+
 public interface ProductService {
     void addProduct(Product product);
 
@@ -16,7 +16,7 @@ public interface ProductService {
 
     Product getProductById(int id);
 
-    Page<Product> getAllProducts(int page, int size);
+    Page<Product> getAllProducts(int page, int size, Integer categoryId);
 
-    int getCountProduct();
+    int getCountProduct(Integer categoryId);
 }

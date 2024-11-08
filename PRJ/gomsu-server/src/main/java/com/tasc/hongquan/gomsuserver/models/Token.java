@@ -12,7 +12,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Builder
-@Table(name = "Tokens")
+@Table(name = "tokens")
 @NoArgsConstructor
 @AllArgsConstructor
 

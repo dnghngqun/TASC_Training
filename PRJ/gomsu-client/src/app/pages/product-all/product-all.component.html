@@ -2,9 +2,10 @@
   <app-breadcrumb [heading]="'Tất cả sản phẩm'" [location]="'Tất cả sản phẩm'">
   </app-breadcrumb>
   <div class="container product-container">
+    <div id="pagination-target"></div>
     <div class="sort-heading">
-      <div class="heading-left">
-        <div class="danhmuc button-left">
+      <div class="heading-left" (click)="onOutsideClick($event)">
+        <div class="danhmuc button-left" (click)="onClickBtnDanhmuc($event)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"
@@ -63,130 +64,15 @@
           </svg>
         </div>
         <ul *ngIf="isShowDanhmuc" class="danhmuc-list">
-          <li class="danhmuc-item">
-            <div class="text">Phòng ăn</div>
-            <div class="icon">+</div>
-          </li>
-          <li class="danhmuc-item">
-            <div class="text">Trà - cà phê</div>
-            <div class="icon">+</div>
-          </li>
-          <li class="danhmuc-item">
-            <div class="text">Nồi sứ dưỡng sinh</div>
-            <div class="icon">+</div>
-          </li>
-          <li class="danhmuc-item">
-            <div class="text">Sứ dưỡng sinh</div>
-            <div class="icon">+</div>
-          </li>
-          <li class="danhmuc-item">
-            <div class="text">Phụ kiện bàn ăn</div>
-            <div class="icon">+</div>
-          </li>
-          <li class="danhmuc-item">
-            <div class="text">Sứ nghệ thuật</div>
+          <li
+            class="danhmuc-item"
+            (click)="onClickCategory(item.id)"
+            *ngFor="let item of categories"
+          >
+            <div class="text">{{ item.name }}</div>
             <div class="icon">+</div>
           </li>
         </ul>
-        <div class="filter button-left">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="16"
-            viewBox="0 0 20 16"
-            fill="none"
-          >
-            <path
-              d="M1.25391 0.507812H18.7422C19.4336 0.507812 19.9961 1.07031 19.9961 1.76172C19.9961 2.45313 19.4336 3.01562 18.7422 3.01562H1.25391C0.5625 3.01953 0 2.45703 0 1.76172C0 1.07031 0.5625 0.507812 1.25391 0.507812Z"
-              fill="#4B4B4B"
-            ></path>
-            <path
-              d="M4.41797 6.74609H15.5781C16.2695 6.74609 16.832 7.30859 16.832 8C16.832 8.69141 16.2695 9.25391 15.5781 9.25391H4.41797C3.72656 9.25391 3.16406 8.69141 3.16406 8C3.16406 7.30859 3.72656 6.74609 4.41797 6.74609Z"
-              fill="#4B4B4B"
-            ></path>
-            <path
-              d="M7.58203 12.9805H12.4141C13.1055 12.9805 13.668 13.543 13.668 14.2344C13.668 14.9258 13.1055 15.4883 12.4141 15.4883H7.58203C6.89063 15.4883 6.32812 14.9258 6.32812 14.2344C6.32812 13.543 6.89063 12.9805 7.58203 12.9805Z"
-              fill="#4B4B4B"
-            ></path>
-          </svg>
-          Bộ lọc
-          <svg
-            style="width: 10px; height: 10px"
-            width="10"
-            height="10"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 11 7"
-            fill="none"
-          >
-            <path
-              d="M5.05626 6.11523L10.1125 1.05894L9.05363 3.05176e-05L5.05626 3.99743L1.05888 3.05176e-05L-3.05176e-05 1.05894L5.05626 6.11523Z"
-              fill="#4B4B4B"
-            ></path>
-          </svg>
-        </div>
-        <!-- <div class="boloc container-fluid">
-          <div class="row">
-            <div class="col-sm-2 mx-auto">
-              <div class="boloc-header">Chọn mức giá</div>
-
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Dưới 100.000đ</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Từ 100.000đ - 200.000đ</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Từ 200.000đ - 300.000đ</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Từ 300.000đ - 500.000đ</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Từ 500.000đ - 1 triệu</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span>Từ 1 triệu - 2 triệu</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span>Từ 2 triệu - 5 triệu</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span>Từ 5 triệu - 10 triệu</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span>Trên 10 triệu</div>
-
-            </div>
-            <div class="col-sm-2 mx-auto">
-              <div class="boloc-header">Hoa văn</div>
-
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">An Nhiên</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Biển Ngọc</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Biển Xanh</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Bóng Bay</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Cát Tường</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Hồn Việt</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Chim Lạc</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Chỉ Bạch Kim</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Chỉ Vàng</span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text">Cá chép cobalt</span></div>
-
-            </div>
-            <div class="col-sm-2 mx-auto">
-              <div class="boloc-header">Màu sắc</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-            </div>
-            <div class="col-sm-2 mx-auto">
-              <div class="boloc-header">Dung tích</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-            </div>
-            <div class="col-sm-2 mx-auto">
-              <div class="boloc-header">Chất liệu</div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-              <div class="boloc-item"><input type="checkbox" name="" id="" class="boloc-input"><span class="boloc-text"></span></div>
-            </div>
-          </div>
-        </div> -->
       </div>
       <div class="heading-right">
         <div class="text">Sắp xếp:</div>
@@ -306,30 +192,25 @@
     </div>
     <div class="product-list container">
       <div class="row">
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-        <div class="product-item col-sm-3"><app-product></app-product></div>
-      </div>
-      <div class="row">
-        <ul>
-          <li *ngFor="let item of products | paginate: { itemsPerPage: productPerPage, currentPage: currentPage, totalItems: totalProducts  }">{{ item }}</li>
-        </ul>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <pagination-controls
-            (pageChange)="onPageChange($event)"
-          ></pagination-controls>
+        <div
+          class="product-item col-sm-3"
+          *ngFor="
+            let item of products
+              | paginate
+                : {
+                    itemsPerPage: productPerPage,
+                    currentPage: currentPage + 1,
+                    totalItems: totalProducts,
+                  }
+          "
+        >
+          <app-product [product]="item"></app-product>
         </div>
+      </div>
+      <div class="row d-flex justify-content-center align-items-center pb-5">
+        <pagination-controls
+          (pageChange)="onPageChange($event)"
+        ></pagination-controls>
       </div>
     </div>
   </div>

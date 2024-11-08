@@ -2,12 +2,12 @@ DROP DATABASE gomsu;
 CREATE DATABASE gomsu;
 USE gomsu;
 
--- Tạo bảng Users
-CREATE TABLE Users (
+-- Tạo bảng users
+CREATE TABLE users (
     user_id CHAR(36) PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255),
-    phone_number VARCHAR(20) ,
+    phone_number VARCHAR(20),
     full_name VARCHAR(255) NOT NULL,
     address TEXT,
     provider VARCHAR(255),
@@ -18,8 +18,8 @@ CREATE TABLE Users (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Roles
-CREATE TABLE Roles (
+-- Tạo bảng roles
+CREATE TABLE roles (
     role_id INT AUTO_INCREMENT PRIMARY KEY,
     role_name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -27,10 +27,10 @@ CREATE TABLE Roles (
     deleted_at TIMESTAMP NULL
 );
 
-INSERT INTO Roles (role_name) VALUES ('admin'), ('shipper'), ('user');
+INSERT INTO roles (role_name) VALUES ('admin'), ('shipper'), ('user');
 
--- Tạo bảng Products
-CREATE TABLE Products (
+-- Tạo bảng products
+CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -38,73 +38,14 @@ CREATE TABLE Products (
     image_url VARCHAR(255),
     category_id INT,
     stock INT,
+    discount DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
-CREATE TABLE PriceRange (
-    price_range_id INT PRIMARY KEY,
-    range_description VARCHAR(255)
-);
-CREATE TABLE Pattern (
-    pattern_id INT PRIMARY KEY,
-    pattern_name VARCHAR(255)
-);
-CREATE TABLE Color (
-    color_id INT PRIMARY KEY,
-    color_name VARCHAR(255)
-);
-CREATE TABLE Capacity (
-    capacity_id INT PRIMARY KEY,
-    size DECIMAL(5, 2) -- Dung tích theo cm
-);
-CREATE TABLE Material (
-    material_id INT PRIMARY KEY,
-    material_name VARCHAR(255)
-);
-CREATE TABLE Product_PriceRange (
-    product_id INT,
-    price_range_id INT,
-    PRIMARY KEY (product_id, price_range_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id),
-    FOREIGN KEY (price_range_id) REFERENCES PriceRange(price_range_id)
-);
 
-CREATE TABLE Product_Pattern (
-    product_id INT,
-    pattern_id INT,
-    PRIMARY KEY (product_id, pattern_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id),
-    FOREIGN KEY (pattern_id) REFERENCES Pattern(pattern_id)
-);
-
-CREATE TABLE Product_Color (
-    product_id INT,
-    color_id INT,
-    PRIMARY KEY (product_id, color_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id),
-    FOREIGN KEY (color_id) REFERENCES Color(color_id)
-);
-
-CREATE TABLE Product_Capacity (
-    product_id INT,
-    capacity_id INT,
-    PRIMARY KEY (product_id, capacity_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id),
-    FOREIGN KEY (capacity_id) REFERENCES Capacity(capacity_id)
-);
-
-CREATE TABLE Product_Material (
-    product_id INT,
-    material_id INT,
-    PRIMARY KEY (product_id, material_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id),
-    FOREIGN KEY (material_id) REFERENCES Material(material_id)
-);
-
-
--- Tạo bảng Categories
-CREATE TABLE Categories (
+-- Tạo bảng categories
+CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -112,8 +53,8 @@ CREATE TABLE Categories (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Orders
-CREATE TABLE Orders (
+-- Tạo bảng orders
+CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     total_price DECIMAL(10, 2),
@@ -124,8 +65,8 @@ CREATE TABLE Orders (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng OrderDetails
-CREATE TABLE OrderDetails (
+-- Tạo bảng order_details
+CREATE TABLE order_details (
     order_detail_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     product_id INT,
@@ -136,8 +77,8 @@ CREATE TABLE OrderDetails (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Cart
-CREATE TABLE Cart (
+-- Tạo bảng cart
+CREATE TABLE cart (
     cart_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     product_id INT,
@@ -146,8 +87,8 @@ CREATE TABLE Cart (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Tạo bảng Payments
-CREATE TABLE Payments (
+-- Tạo bảng payments
+CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     payment_method ENUM('online', 'on_delivery'),
@@ -158,8 +99,8 @@ CREATE TABLE Payments (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Discounts
-CREATE TABLE Discounts (
+-- Tạo bảng discounts
+CREATE TABLE discounts (
     discount_id INT AUTO_INCREMENT PRIMARY KEY,
     amount DECIMAL(10, 2) NOT NULL,
     expires TIMESTAMP,
@@ -170,8 +111,8 @@ CREATE TABLE Discounts (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Notification
-CREATE TABLE Notification (
+-- Tạo bảng notification
+CREATE TABLE notification (
     notification_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     product_id INT,
@@ -181,8 +122,8 @@ CREATE TABLE Notification (
     deleted_at TIMESTAMP NULL
 );
 
--- Tạo bảng Tokens: reset password, OTP
-CREATE TABLE Tokens (
+-- Tạo bảng tokens
+CREATE TABLE tokens (
     token_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     token INT,
@@ -192,8 +133,8 @@ CREATE TABLE Tokens (
     is_revoked BOOLEAN DEFAULT FALSE
 );
 
--- Tạo bảng Posts
-CREATE TABLE Posts (
+-- Tạo bảng posts
+CREATE TABLE posts (
     post_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     content TEXT,
@@ -203,8 +144,8 @@ CREATE TABLE Posts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Tạo bảng Comments
-CREATE TABLE Comments (
+-- Tạo bảng comments
+CREATE TABLE comments (
     comment_id INT AUTO_INCREMENT PRIMARY KEY,
     post_id INT,
     email VARCHAR(255),
@@ -215,35 +156,36 @@ CREATE TABLE Comments (
 );
 
 -- Tạo các khóa ngoại
-ALTER TABLE Users
-    ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES Roles(role_id);
+ALTER TABLE users
+    ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles(role_id);
 
-ALTER TABLE Products
-    ADD CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES Categories(category_id);
+ALTER TABLE products
+    ADD CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES categories(category_id);
 
-ALTER TABLE Orders
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    ADD CONSTRAINT fk_discount_id FOREIGN KEY (discount_id) REFERENCES Discounts(discount_id);
+ALTER TABLE orders
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
+    ADD CONSTRAINT fk_discount_id FOREIGN KEY (discount_id) REFERENCES discounts(discount_id);
 
-ALTER TABLE OrderDetails
-    ADD CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-    ADD CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES Products(product_id);
+ALTER TABLE order_details
+    ADD CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    ADD CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products(product_id);
 
-ALTER TABLE Cart
-    ADD CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    ADD CONSTRAINT fk_cart_product_id FOREIGN KEY (product_id) REFERENCES Products(product_id);
+ALTER TABLE cart
+    ADD CONSTRAINT fk_cart_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
+    ADD CONSTRAINT fk_cart_product_id FOREIGN KEY (product_id) REFERENCES products(product_id);
 
-ALTER TABLE Payments
-    ADD CONSTRAINT fk_payment_order_id FOREIGN KEY (order_id) REFERENCES Orders(order_id);
+ALTER TABLE payments
+    ADD CONSTRAINT fk_payment_order_id FOREIGN KEY (order_id) REFERENCES orders(order_id);
 
-ALTER TABLE Notification
-    ADD CONSTRAINT fk_notification_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    ADD CONSTRAINT fk_notification_product_id FOREIGN KEY (product_id) REFERENCES Products(product_id);
+ALTER TABLE notification
+    ADD CONSTRAINT fk_notification_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
+    ADD CONSTRAINT fk_notification_product_id FOREIGN KEY (product_id) REFERENCES products(product_id);
 
-ALTER TABLE Tokens
-    ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id);
-ALTER TABLE Posts
-    ADD CONSTRAINT fk_post_user_id FOREIGN KEY (user_id) REFERENCES Users(user_id);
+ALTER TABLE tokens
+    ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
 
-ALTER TABLE Comments
-    ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES Posts(post_id);
+ALTER TABLE posts
+    ADD CONSTRAINT fk_post_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+ALTER TABLE comments
+    ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(post_id);

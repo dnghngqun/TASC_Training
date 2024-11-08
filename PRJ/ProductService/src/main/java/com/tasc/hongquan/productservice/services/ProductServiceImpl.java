@@ -25,7 +25,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public int getCountProduct() {
+    public int getCountProduct(Integer categoryId) {
+        if (categoryId != null && categoryId > 0) {
+            return productDAO.getCountProductWhereCategoryId(categoryId);
+        }
         return productDAO.getCountProduct();
     }
 
@@ -72,8 +75,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProducts(int page, int size) {
+    public Page<Product> getAllProducts(int page, int size, Integer categoryId) {
         Pageable pageable = PageRequest.of(page, size);
+        if (categoryId != null && categoryId > 0) {
+            System.out.println("Category id: " + categoryId);
+            return productRepository.getAllProductsByCategory(pageable, categoryId);
+        }
         return productRepository.findAll(pageable);
     }
 }

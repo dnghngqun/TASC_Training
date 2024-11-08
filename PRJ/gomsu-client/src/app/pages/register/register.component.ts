@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
         },
         error: (error) => {
           console.error('Register error: ', error);
-          // this.toastr.error('Register failed 😡 Please check information🙏');
+          this.toastr.error('Register failed 😡 Please check information🙏');
         },
       });
   }

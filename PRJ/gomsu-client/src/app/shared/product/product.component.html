@@ -1,40 +1,104 @@
 <div class="product-container">
   <a href="" class="linkProduct linkImage">
-    <img
-      src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2.png?v=1686285750047"
-      alt="product"
-      class="imageProduct"
-    />
-    <div class="union">
-      <span class="union-text">Giảm 44%</span>
-    </div>
+    <img src="{{ product.imageUrl }}" alt="product" class="imageProduct" />
 
-    <div class="action">
-      <button class="btn-action btn-cart">
-        <fa-icon class="icon i-cart" size="sm" [icon]="faCartShopping" />
-      </button>
-      <button class="btn-action btn-heart">
-        <fa-icon class="icon i-heart" size="sm" [icon]="faHeart" />
-      </button>
-      <button class="btn-action btn-search">
-        <fa-icon
-          class="icon i-magnifyingGlass"
-          size="lg"
-          [icon]="faMagnifyingGlass"
-        />
-      </button>
+    <div
+      class="union"
+      *ngIf="
+        !(product.discount < 1) ||
+        (!(product.discount === undefined) && !(product.discount < 1)) ||
+        (!(product.discount === null) && !(product.discount < 1))
+      "
+    >
+      <span class="union-text">Giảm {{ product.discount }}%</span>
     </div>
   </a>
+
+  <div class="action">
+    <button class="btn-action btn-cart">
+      <fa-icon class="icon i-cart" size="sm" [icon]="faCartShopping" />
+    </button>
+    <button type="menu" class="btn-action btn-heart">
+      <fa-icon class="icon i-heart" size="sm" [icon]="faHeart" />
+    </button>
+    <button class="btn-action btn-search" (click)="handleShowPopup($event)">
+      <fa-icon
+        class="icon i-magnifyingGlass"
+        size="lg"
+        [icon]="faMagnifyingGlass"
+      />
+    </button>
+  </div>
   <div class="product-info">
     <a href="" class="linkProduct linkTitle">
-      <h3 class="product-name">Bộ khay mứt 31.5cm Thiên Kim</h3>
+      <h3 class="product-name">{{ product.name }}</h3>
       <div class="price-box">
         <span class="current-price"
-          >1.000.000 <span class="currency">đ</span></span
-        ><span class="old-price"
-          >2.000.000 <span class="currency">đ</span></span
+          >{{ priceAfterDiscount | number: "1.0-0" }}
+          <span class="currency">đ</span></span
         >
+        <span
+          *ngIf="
+            !(product.discount < 1) ||
+            (!(product.discount === undefined) && !(product.discount < 1)) ||
+            (!(product.discount === null) && !(product.discount < 1))
+          "
+        >
+          <span class="old-price"
+            >{{ product.price | number: "1.0-0"
+            }}<span class="currency currency-old-price">đ</span></span
+          >
+        </span>
       </div>
     </a>
+  </div>
+</div>
+<div *ngIf="isShowPopup" class="popup-product">
+  <div class="filter" (click)="onClickOutside()"></div>
+  <div class="popup">
+    <button class="exit" (click)="handleClosePopup()">x</button>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <img src="{{ product.imageUrl }}" class="image-popup" alt="" />
+        </div>
+        <div class="col-sm-6 infomation-product">
+          <div class="heading-name">
+            {{ product.name }}
+          </div>
+          <div class="status">
+            <span class="status-text">Tình trạng:</span>
+            <span class="status-value" *ngIf="product.stock > 0">Còn hàng</span>
+            <span class="status-value" *ngIf="product.stock <= 0"
+              >Còn hàng</span
+            >
+          </div>
+          <div class="price">
+            <span class="currentPrice"
+              >{{ priceAfterDiscount | number: "1.0-0" }}đ</span
+            >
+            <span class="oldPrice">{{ product.price }} đ</span>
+          </div>
+          <div class="quantity">
+            <span class="quantity-text">Số lượng:</span>
+            <div class="quantityChoose">
+              <button class="btn-quantity" (click)="handleDecreaseQuantity()">
+                -
+              </button>
+              <input
+                type="number"
+                name="quantity"
+                class="quantity-value"
+                [(ngModel)]="quantity"
+              />
+              <button class="btn-quantity" (click)="handleIncreaseQuantity()">
+                +
+              </button>
+            </div>
+            <button class="addCart">Thêm vào giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

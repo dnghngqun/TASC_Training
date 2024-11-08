@@ -13,9 +13,15 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public int getCountProduct() {
-        String sql = "SELECT COUNT(*) FROM Product";
+        String sql = "SELECT COUNT(*) FROM products";
         int count = namedParameterJdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class);
         return count;
 
+    }
+
+    public int getCountProductWhereCategoryId(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM products where category_id = " + categoryId;
+        int count = namedParameterJdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class);
+        return count;
     }
 }
