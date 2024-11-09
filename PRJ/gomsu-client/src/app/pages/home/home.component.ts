@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-home',
@@ -6,7 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  constructor(private productService:ProductService) {}
+  products: any[] = [];
+  limitProduct:string = '10';
+  ngOnInit() {
+    this.getLimitProducts();
+  }
 
-  ngOnInit() {}
+  getLimitProducts() {
+    this.productService.getLimitProducts(this.limitProduct).subscribe({
+      next: (res) => {
+        this.products = res.data;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    })
+  }
 }

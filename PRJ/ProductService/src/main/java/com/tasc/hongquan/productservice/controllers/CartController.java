@@ -1,5 +1,6 @@
 package com.tasc.hongquan.productservice.controllers;
 
+import com.tasc.hongquan.productservice.dto.CartRequest;
 import com.tasc.hongquan.productservice.dto.ResponseBody;
 import com.tasc.hongquan.productservice.services.CartService;
 import lombok.AllArgsConstructor;
@@ -19,13 +20,12 @@ public class CartController {
     private final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     @PostMapping("/add")
-    public ResponseEntity<ResponseBody> addProductToCart(@RequestParam(value = "productId") String productIdParam, @RequestParam("quantity") String quantityParam, @RequestParam String userId) {
+    public ResponseEntity<ResponseBody> addProductToCart(@RequestBody CartRequest cartRequest) {
         try {
-            int productId = Integer.parseInt(productIdParam);
-            int quantity = Integer.parseInt(quantityParam);
-            cartService.addProductToCart(productId, quantity, userId);
+            logger.info("Cart request: " + cartRequest.getUserId() + " - " + cartRequest.getProductId() + " - " + cartRequest.getQuantity());
+            cartService.addProductToCart(cartRequest.getProductId(), cartRequest.getQuantity(), cartRequest.getUserId());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseBody("ok", "Add product to cart successfully!!", null)
+                    new ResponseBody("ok", "Add product to cart successfully!!", cartRequest)
             );
         } catch (Exception e) {
             logger.error("Error when add product to cart: " + e.getMessage());
@@ -36,13 +36,11 @@ public class CartController {
     }
 
     @PutMapping("/update/quantity")
-    public ResponseEntity<ResponseBody> updateQuantityProduct(@RequestParam(value = "productId") String productIdParam, @RequestParam("quantity") String quantityParam, @RequestParam String userId) {
+    public ResponseEntity<ResponseBody> updateQuantityProduct(@RequestBody CartRequest cartRequest) {
         try {
-            int productId = Integer.parseInt(productIdParam);
-            int quantity = Integer.parseInt(quantityParam);
-            cartService.updateProductQuantity(productId, quantity, userId);
+            cartService.updateProductQuantity(cartRequest.getProductId(), cartRequest.getQuantity(), cartRequest.getUserId());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseBody("ok", "Update product quantity successfully!!", null)
+                    new ResponseBody("ok", "Update product quantity successfully!!", cartRequest)
             );
         } catch (Exception e) {
             logger.error("Error when update product quantity: " + e.getMessage());
@@ -63,6 +61,20 @@ public class CartController {
             logger.error("Error when clear cart: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ResponseBody("error", "Error when clear cart: " + e.getMessage(), null)
+            );
+        }
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<ResponseBody> getCartByUserId(@RequestParam String userId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Get cart by user id successfully!!", cartService.getCartByUserId(userId))
+            );
+        } catch (Exception e) {
+            logger.error("Error when get cart by user id: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Error when get cart by user id: " + e.getMessage(), null)
             );
         }
     }

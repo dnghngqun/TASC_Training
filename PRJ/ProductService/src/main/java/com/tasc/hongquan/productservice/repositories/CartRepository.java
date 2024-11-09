@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Modifying
@@ -19,4 +21,7 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Modifying
     @Query("DELETE FROM Cart c WHERE c.user.userId = :userId")
     void clearCartByUserId(String userId);
+
+    @Query("SELECT c FROM Cart c WHERE c.user.userId = :userId")
+    List<Cart> getCartByUserId(String userId);
 }

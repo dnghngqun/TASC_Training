@@ -5,7 +5,7 @@ import com.tasc.hongquan.productservice.models.Product;
 import org.springframework.jdbc.core.RowMapper;
 
 public class ProductMapper {
-    private RowMapper<Product> productRowMapper = (((rs, rowNum) -> {
+    public RowMapper<Product> productRowMapper = (((rs, rowNum) -> {
         Product product = new Product();
         product.setId(rs.getInt("product_id"));
         product.setName(rs.getString("name"));

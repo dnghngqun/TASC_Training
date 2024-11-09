@@ -5,9 +5,9 @@
     <div
       class="union"
       *ngIf="
-        !(product.discount < 1) ||
-        (!(product.discount === undefined) && !(product.discount < 1)) ||
-        (!(product.discount === null) && !(product.discount < 1))
+        product.discount > 0 &&
+        product.discount != undefined &&
+        product.discount != null
       "
     >
       <span class="union-text">Giảm {{ product.discount }}%</span>
@@ -15,7 +15,7 @@
   </a>
 
   <div class="action">
-    <button class="btn-action btn-cart">
+    <button (click)="handleAddToCart()" class="btn-action btn-cart">
       <fa-icon class="icon i-cart" size="sm" [icon]="faCartShopping" />
     </button>
     <button type="menu" class="btn-action btn-heart">

@@ -19,4 +19,6 @@ public interface ProductService {
     Page<Product> getAllProducts(int page, int size, Integer categoryId);
 
     int getCountProduct(Integer categoryId);
+
+    List<Product> getLimitNewProduct(int limit);
 }

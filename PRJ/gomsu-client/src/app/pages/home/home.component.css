@@ -36,3 +36,29 @@
   color: #e78c24;
   transition: all 0.4s ease;
 }
+
+.btn-viewall {
+  display: block;
+  width: 200px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #e78c24;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0px auto;
+  transition: all 0.4s ease;
+  text-align: center;
+  text-decoration: none;
+  line-height: 40px;
+  margin-bottom: 50px;
+}
+
+.btn-viewall:hover {
+  background-color: #b06107;
+  color: #fff;
+}
+
+.product{
+margin-bottom: 0px!important;
+}

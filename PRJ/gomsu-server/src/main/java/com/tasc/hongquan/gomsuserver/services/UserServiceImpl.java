@@ -129,5 +129,5 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         // same as method findUserByEmail
         return new CustomUserDetails(userOptional.get());
     }
-    
+
 }

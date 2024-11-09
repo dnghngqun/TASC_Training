@@ -228,6 +228,9 @@ public class UserController {
 //        final String role = userService.getRoleName(email);
 
         User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
 
         //encode
         String encodeJWT = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));

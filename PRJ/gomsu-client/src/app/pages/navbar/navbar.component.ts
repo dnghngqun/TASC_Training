@@ -10,6 +10,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +22,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toastr: ToastrService,
     private router: Router,
+    private productService:ProductService
   ) {}
+  quantity :number = 1;
+  totalCart:number = 0;
   isLoggedIn: boolean = false;
   private intervalId: any;
   ngOnInit() {
@@ -44,6 +48,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
     console.log('isLoggedIn: ', this.isLoggedIn);
   }
 
+
+  handleDecreaseQuantity() {
+    if (this.quantity > 1) {
+      this.quantity--;
+    }
+  }
+  handleIncreaseQuantity() {
+    this.quantity++;
+  }
+
   handleLogout() {
     // this.toastr.info("Starting logout...");
     this.authService.logout().then((success) => {
@@ -59,4 +73,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
     });
   }
+ handleGetProductFromCart(){
+ }
 }

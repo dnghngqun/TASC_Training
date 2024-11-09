@@ -152,7 +152,87 @@
 
     <a href="#" class="link-shop i-link">
       <fa-icon class="icon i-shop" size="lg" [icon]="faBagShopping" />
-      <span class="count count-shop">0</span>
+      <span class="count count-shop">{{totalCart}}</span>
     </a>
+    <div class="dropdown-cart">
+      <div class="cart-list container-fluid">
+        <div class="row cart-item">
+          <div class="col-lg-3">
+            <img
+              class="w-100"
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt="product"
+            />
+          </div>
+          <div class="col-lg-9">
+            <div class="cart-info">
+              <span class="cart-name">Bộ 6 tô sứ dưỡng sinh Luna</span>
+              <a href="" class="remove">Xóa</a>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="quantity col-sm-6">
+                    <span class="text-quantity">Số lượng</span>
+                    <div class="quantity-control w-100">
+                      <button class="btn-quantity">-</button>
+                      <input type="text" class="input-quantity" value="1" />
+                      <button class="btn-quantity">+</button>
+                    </div>
+                  </div>
+                  <div class="price col-sm-6">2.500.000đ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row cart-item">
+          <div class="col-lg-3">
+            <img
+              class="w-100"
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt="product"
+            />
+          </div>
+          <div class="col-lg-9">
+            <div class="cart-info">
+              <span class="cart-name">Bộ 6 tô sứ dưỡng sinh Luna</span>
+              <a href="" class="remove">Xóa</a>
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="quantity col-sm-6">
+                    <span class="text-quantity">Số lượng</span>
+                    <div class="quantity-control w-100">
+                      <button
+                        class="btn-quantity"
+                        (click)="handleDecreaseQuantity()"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        class="input-quantity"
+                        min="1"
+                        [(ngModel)]="quantity"
+                      />
+                      <button
+                        class="btn-quantity"
+                        (click)="handleIncreaseQuantity()"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div class="price col-sm-6">2.500.000đ</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="total">
+        <span class="total-text">Tổng Tiền:</span>
+        <span class="total-price">0đ</span>
+      </div>
+      <button class="btn-payment">Thanh Toán</button>
+    </div>
   </div>
 </header>

@@ -4,23 +4,24 @@ import com.tasc.hongquan.productservice.models.Cart;
 import com.tasc.hongquan.productservice.models.Product;
 import com.tasc.hongquan.productservice.models.User;
 import com.tasc.hongquan.productservice.repositories.CartRepository;
+import com.tasc.hongquan.productservice.repositories.ProductRepository;
+import com.tasc.hongquan.productservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
-
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public void addProductToCart(int productId, int quantity, String userId) {
-        User user = new User().builder()
-                .userId(userId)
-                .build();
-        Product product = new Product().builder()
-                .id(productId)
-                .build();
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
         Cart cart = new Cart().builder()
                 .user(user)
                 .product(product)
@@ -46,5 +47,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public void clearCart(String userId) {
         cartRepository.clearCartByUserId(userId);
+    }
+
+    @Override
+    public List<Cart> getCartByUserId(String userId) {
+        return cartRepository.getCartByUserId(userId);
     }
 }

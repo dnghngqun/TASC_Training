@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 
@@ -25,12 +26,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getLimitNewProduct(int limit) {
+        return productDAO.getLimitNewProduct(limit);
+    }
+
+    @Override
     public int getCountProduct(Integer categoryId) {
         if (categoryId != null && categoryId > 0) {
             return productDAO.getCountProductWhereCategoryId(categoryId);
         }
         return productDAO.getCountProduct();
     }
+
 
     @Override
     public void addProduct(Product product) {

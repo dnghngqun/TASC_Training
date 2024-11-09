@@ -119,4 +119,18 @@ public class ProductController {
             );
         }
     }
+
+    @GetMapping("/limit")
+    public ResponseEntity<ResponseBody> getLimitNewProduct(@RequestParam("limit") int limit) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Product found", productService.getLimitNewProduct(limit))
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Product not found", null)
+            );
+        }
+    }
 }
