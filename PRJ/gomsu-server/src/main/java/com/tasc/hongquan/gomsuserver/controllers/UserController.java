@@ -210,6 +210,7 @@ public class UserController {
     @Transactional
     @PostMapping("/public/signin")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception {
+        logger.info("Login start...");
         String email;
         String role;
         try {
