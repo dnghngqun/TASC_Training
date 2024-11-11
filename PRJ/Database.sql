@@ -102,6 +102,7 @@ CREATE TABLE payments (
 -- Tạo bảng discounts
 CREATE TABLE discounts (
     discount_id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(255) UNIQUE,
     amount DECIMAL(10, 2) NOT NULL,
     expires TIMESTAMP,
     quantity INT,
@@ -189,3 +190,34 @@ ALTER TABLE posts
 
 ALTER TABLE comments
     ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(post_id);
+   
+   
+DELIMITER $$
+
+CREATE PROCEDURE add_order_with_details(IN userId CHAR(36), IN totalPrice DECIMAL(10,2), IN discountId INT, IN orderDetails JSON)
+BEGIN
+    -- Thêm Order
+    INSERT INTO orders (user_id, total_price, discount_id, status) VALUES (userId, totalPrice, discountId, 'pending');
+    SET @orderId = LAST_INSERT_ID();
+
+    -- Thêm Order Details
+    DECLARE i INT DEFAULT 0;
+    DECLARE orderDetail JSON;
+    DECLARE productId INT;
+    DECLARE quantity INT;
+    DECLARE price DECIMAL(10, 2);
+
+    WHILE i < JSON_LENGTH(orderDetails) DO
+        SET orderDetail = JSON_EXTRACT(orderDetails, CONCAT('$[', i, ']'));
+        SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.productId'));
+        SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.quantity'));
+        SET price = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.price'));
+
+        INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (@orderId, productId, quantity, price);
+
+        SET i = i + 1;
+    END WHILE;
+END$$
+
+DELIMITER ;
+
