@@ -24,7 +24,14 @@ public class BeanConfig {
 //                        .filters(f -> f.rewritePath("/products/(?<path>.*)", "/${path}")
 //                                .rewritePath("/categories/(?<path>.*)", "/${path}")
 //                                .rewritePath("/cart/(?<path>.*)", "/${path}"))
-                        .uri("lb://product-service")).build();
+                        .uri("lb://product-service"))
+                .route("PaymentService", r -> r.path("/payments/**")
+                        .uri("lb://PaymentService"))
+                .route("OrderService", r -> r.path("/orders/**", "/order-details/**", "/discounts/**")
+                        .uri("lb://OrderService"))
+                .route("gomsu-server", r -> r.path("/users/**")
+                        .uri("lb://gomsu-server"))
+                .build();
     }
 
     private static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
