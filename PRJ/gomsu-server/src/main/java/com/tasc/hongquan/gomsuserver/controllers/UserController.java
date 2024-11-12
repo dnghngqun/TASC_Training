@@ -1,10 +1,11 @@
 package com.tasc.hongquan.gomsuserver.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tasc.hongquan.gomsuserver.DTO.ForgotResponse;
-import com.tasc.hongquan.gomsuserver.DTO.LoginDTO;
-import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
+import com.tasc.hongquan.gomsuserver.dto.ForgotResponse;
+import com.tasc.hongquan.gomsuserver.dto.LoginDTO;
+import com.tasc.hongquan.gomsuserver.dto.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.Jwt.JwtTokenProvider;
+import com.tasc.hongquan.gomsuserver.dto.UserResponse;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 import com.tasc.hongquan.gomsuserver.models.Token;
 import com.tasc.hongquan.gomsuserver.models.User;
@@ -233,9 +234,16 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found");
         }
 
+        UserResponse userResponse = new UserResponse().builder()
+                .id(user.getUserId())
+                .email(user.getEmail())
+                .full_name(user.getFullName())
+                .phone_number(user.getPhoneNumber())
+                .build();
+
         //encode
         String encodeJWT = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
-        String userJson = objectMapper.writeValueAsString(user);
+        String userJson = objectMapper.writeValueAsString(userResponse);
         String encodeUser = Base64.getEncoder().encodeToString(userJson.getBytes(StandardCharsets.UTF_8));
 
         //create a new cookie
@@ -255,7 +263,6 @@ public class UserController {
         Cookie isLoggedIn = new Cookie("isLoggedIn", "true");
         isLoggedIn.setPath("/");
         isLoggedIn.setMaxAge(MAX_AGE);
-
 
         //add cookie to response
         response.addCookie(jwtCookie);

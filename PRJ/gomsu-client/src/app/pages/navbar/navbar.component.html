@@ -152,50 +152,27 @@
 
     <a href="#" class="link-shop i-link">
       <fa-icon class="icon i-shop" size="lg" [icon]="faBagShopping" />
-      <span class="count count-shop">{{totalCart}}</span>
+      <span class="count count-shop">{{ totalCart }}</span>
     </a>
     <div class="dropdown-cart">
       <div class="cart-list container-fluid">
-        <div class="row cart-item">
+        <div *ngFor="let item of productCart" class="row cart-item">
           <div class="col-lg-3">
             <img
               class="w-100"
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              src="{{ item.product.imageUrl }}"
               alt="product"
             />
           </div>
           <div class="col-lg-9">
             <div class="cart-info">
-              <span class="cart-name">Bộ 6 tô sứ dưỡng sinh Luna</span>
-              <a href="" class="remove">Xóa</a>
-              <div class="container-fluid">
-                <div class="row">
-                  <div class="quantity col-sm-6">
-                    <span class="text-quantity">Số lượng</span>
-                    <div class="quantity-control w-100">
-                      <button class="btn-quantity">-</button>
-                      <input type="text" class="input-quantity" value="1" />
-                      <button class="btn-quantity">+</button>
-                    </div>
-                  </div>
-                  <div class="price col-sm-6">2.500.000đ</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row cart-item">
-          <div class="col-lg-3">
-            <img
-              class="w-100"
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt="product"
-            />
-          </div>
-          <div class="col-lg-9">
-            <div class="cart-info">
-              <span class="cart-name">Bộ 6 tô sứ dưỡng sinh Luna</span>
-              <a href="" class="remove">Xóa</a>
+              <span class="cart-name">{{ item.product.name }}</span>
+              <a
+                href="#"
+                class="remove"
+                (click)="handleRemoveProductFromCart(item.product.id)"
+                >Xóa</a
+              >
               <div class="container-fluid">
                 <div class="row">
                   <div class="quantity col-sm-6">
@@ -203,36 +180,43 @@
                     <div class="quantity-control w-100">
                       <button
                         class="btn-quantity"
-                        (click)="handleDecreaseQuantity()"
+                        (click)="handleDecreaseQuantity(item.product.id)"
                       >
                         -
                       </button>
                       <input
                         type="text"
                         class="input-quantity"
+                        disabled
                         min="1"
-                        [(ngModel)]="quantity"
+                        [(ngModel)]="item.quantity"
                       />
                       <button
                         class="btn-quantity"
-                        (click)="handleIncreaseQuantity()"
+                        (click)="handleIncreaseQuantity(item.product.id)"
                       >
                         +
                       </button>
                     </div>
                   </div>
-                  <div class="price col-sm-6">2.500.000đ</div>
+                  <div class="price col-sm-6">{{ item.product.price }}đ</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="total">
+      <div class="total" *ngIf="productCart.length > 0">
         <span class="total-text">Tổng Tiền:</span>
-        <span class="total-price">0đ</span>
+        <span class="total-price">{{ totalPriceProduct }}đ</span>
       </div>
-      <button class="btn-payment">Thanh Toán</button>
+      <button class="btn-payment" *ngIf="productCart.length > 0">
+        Thanh Toán
+      </button>
+      <div class="no-product" *ngIf="!(productCart.length > 0)">
+        <span class="text">Bạn chưa có sản phẩm nào trong giỏ hàng</span>
+        <img src="assets/img/cart-empty.png" class="img-empty" alt="cart-empty" />
+      </div>
     </div>
   </div>
 </header>

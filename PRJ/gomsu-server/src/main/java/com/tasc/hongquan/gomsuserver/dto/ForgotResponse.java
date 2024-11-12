@@ -1,4 +1,4 @@
-package com.tasc.hongquan.gomsuserver.DTO;
+package com.tasc.hongquan.gomsuserver.dto;
 
 import lombok.*;
 

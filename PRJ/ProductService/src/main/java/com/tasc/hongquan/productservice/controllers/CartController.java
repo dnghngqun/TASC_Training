@@ -5,6 +5,7 @@ import com.tasc.hongquan.productservice.dto.ResponseBody;
 import com.tasc.hongquan.productservice.services.CartService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,52 @@ public class CartController {
             );
         }
     }
+
+    @PutMapping("/product/increase")
+    public ResponseEntity<ResponseBody> increaseProductQuantity(@RequestBody CartRequest cartRequest) {
+        try {
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Increase product quantity successfully!!", cartService.increaseProductQuantity(cartRequest.getProductId(), cartRequest.getUserId()))
+            );
+        } catch (Exception e) {
+            logger.error("Error when increase product quantity: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Error when increase product quantity: " + e.getMessage(), null)
+            );
+        }
+    }
+
+    @PutMapping("/product/decrease")
+    public ResponseEntity<ResponseBody> decreaseProductQuantity(@RequestBody CartRequest cartRequest) {
+        try {
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Decrease product quantity successfully!!", cartService.decreaseProductQuantity(cartRequest.getProductId(), cartRequest.getUserId()))
+            );
+        } catch (Exception e) {
+            logger.error("Error when decrease product quantity: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Error when decrease product quantity: " + e.getMessage(), null)
+            );
+        }
+    }
+
+    @PutMapping("/product/remove")
+    public ResponseEntity<ResponseBody> removeProduct(@RequestBody CartRequest cartRequest) {
+        try {
+            cartService.removeProductFromCart(cartRequest.getProductId(), cartRequest.getUserId());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Remove product from cart successfully!!", cartRequest)
+            );
+        } catch (Exception e) {
+            logger.error("Error when remove product from cart: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Error when remove product from cart: " + e.getMessage(), null)
+            );
+        }
+    }
+
 
     @PutMapping("/update/quantity")
     public ResponseEntity<ResponseBody> updateQuantityProduct(@RequestBody CartRequest cartRequest) {

@@ -12,4 +12,8 @@ export class EncryptionService {
   decode(encodedData: string): string {
     return atob(encodedData);
   }
+
+  decodeObject(encodedData: string): Object {
+    return JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+  }
 }

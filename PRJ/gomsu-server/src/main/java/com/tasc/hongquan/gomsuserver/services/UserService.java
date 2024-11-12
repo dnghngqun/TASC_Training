@@ -1,6 +1,6 @@
 package com.tasc.hongquan.gomsuserver.services;
 
-import com.tasc.hongquan.gomsuserver.DTO.RegisterDTO;
+import com.tasc.hongquan.gomsuserver.dto.RegisterDTO;
 import com.tasc.hongquan.gomsuserver.exception.CustomException;
 import com.tasc.hongquan.gomsuserver.models.CustomUserDetails;
 import com.tasc.hongquan.gomsuserver.models.User;

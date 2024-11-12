@@ -44,22 +44,30 @@ export class ProductService {
       quantity: quantity,
       userId: userId,
     };
+    console.log(product);
     return this.http.post<any>(`${this.apiUrl}cart/add`, product);
   }
-
-  updateQuantityProductInCart(
-    productId: number,
-    quantity: number,
-    userId: string,
-  ): Observable<any> {
-    const updateProduct = {
+  increaseProductQuantity(productId: number, userId: string): Observable<any> {
+    const product = {
       productId: productId,
-      quantity: quantity,
       userId: userId,
     };
-    return this.http.put<any>(`${this.apiUrl}cart/update/quantity`, {
-      updateProduct,
-    });
+    return this.http.put<any>(`${this.apiUrl}cart/product/increase`, product);
+  }
+
+  removeProductCart(productId: number, userId: string): Observable<any> {
+    const product = {
+      productId: productId,
+      userId: userId,
+    };
+    return this.http.put<any>(`${this.apiUrl}cart/product/remove`, product);
+  }
+  decreaseProductQuantity(productId: number, userId: string): Observable<any> {
+    const product = {
+      productId: productId,
+      userId: userId,
+    };
+    return this.http.put<any>(`${this.apiUrl}cart/product/decrease`, product);
   }
 
   getCartByUserId(userId: string): Observable<any> {

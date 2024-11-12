@@ -7,6 +7,8 @@ import {
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { Product } from '../../models/product.model';
+import { User } from '../../models/user.model';
+import { EncryptionService } from '../../services/encryption.service';
 import { ProductService } from '../../services/product.service';
 @Component({
   selector: 'app-product',
@@ -26,6 +28,7 @@ export class ProductComponent implements OnInit {
     private cookieService: CookieService,
     private productService: ProductService,
     private toastr: ToastrService,
+    private encryptionService: EncryptionService,
   ) {}
 
   ngOnInit() {
@@ -63,18 +66,13 @@ export class ProductComponent implements OnInit {
     ) {
       const encodedUser = this.cookieService.get('user');
       if (encodedUser) {
-        //window.atob(encodedUser): Giải mã chuỗi Base64 thành chuỗi nhị phân
-        //escape(...): Chuyển chuỗi nhị phân thành chuỗi an toàn cho UTF-8.
-        //decodeURIComponent(...): Giải mã chuỗi an toàn UTF-8 thành chuỗi ký tự có dấu.
-        const decodedUser = decodeURIComponent(
-          escape(window.atob(encodedUser)),
-        );
-        //convert to json
-        const userObject = JSON.parse(decodedUser);
-        console.log('User: ', userObject);
+        const user: User = this.encryptionService.decodeObject(
+          encodedUser,
+        ) as User;
+        console.log('User: ', user);
         console.log('Add to cart: ', this.product.id, this.quantity);
         this.productService
-          .addProductToCart(this.product.id, this.quantity, userObject.userId)
+          .addProductToCart(this.product.id, this.quantity, user.userId)
           .subscribe({
             next: (response) => {
               console.log('Add to cart success: ', response);

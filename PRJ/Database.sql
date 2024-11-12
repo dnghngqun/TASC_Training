@@ -196,16 +196,18 @@ DELIMITER $$
 
 CREATE PROCEDURE add_order_with_details(IN userId CHAR(36), IN totalPrice DECIMAL(10,2), IN discountId INT, IN orderDetails JSON)
 BEGIN
+	DECLARE i INT DEFAULT 0;
+    DECLARE orderDetail JSON;
+    DECLARE productId INT;
+    DECLARE quantity INT;
+    DECLARE price DECIMAL(10, 2);
+   
     -- Thêm Order
     INSERT INTO orders (user_id, total_price, discount_id, status) VALUES (userId, totalPrice, discountId, 'pending');
     SET @orderId = LAST_INSERT_ID();
 
     -- Thêm Order Details
-    DECLARE i INT DEFAULT 0;
-    DECLARE orderDetail JSON;
-    DECLARE productId INT;
-    DECLARE quantity INT;
-    DECLARE price DECIMAL(10, 2);
+    
 
     WHILE i < JSON_LENGTH(orderDetails) DO
         SET orderDetail = JSON_EXTRACT(orderDetails, CONCAT('$[', i, ']'));
@@ -220,4 +222,20 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE delete_order_and_details(
+    IN orderId INT
+)
+BEGIN
+    -- Xóa các order_details liên quan đến order
+    DELETE FROM order_details WHERE order_id = orderId;
+
+    -- Xóa order
+    DELETE FROM orders WHERE order_id = orderId;
+END$$
+
+DELIMITER ;
+
 

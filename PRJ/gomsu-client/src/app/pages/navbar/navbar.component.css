@@ -412,3 +412,20 @@
 .dropdown-cart:hover ~ .link-shop .icon {
   color: #fa9a2b;
 }
+
+.no-product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  color: gray;
+  padding: 10px;
+  gap: 5px;
+}
+
+.no-product .img-empty {
+  width: 80%;
+}
