@@ -1,56 +1,39 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  faBagShopping,
-  faCaretDown,
-  faHeart,
-  faMagnifyingGlass,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import { BreadcrumbModule } from "../../shared/breadcrumb/breadcrumb.module";
 import { ToastrService } from 'ngx-toastr';
+import { ProductService } from '../../services/product.service';
+import { CookieService } from 'ngx-cookie-service';
 import { productCartResponse } from '../../dto/productCartResponse.model';
 import { User } from '../../models/user.model';
-import { AuthService } from '../../services/auth.service';
 import { EncryptionService } from '../../services/encryption.service';
-import { ProductService } from '../../services/product.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
+  selector: 'app-cart',
+  templateUrl: './cart.component.html',
+  styleUrls: ['./cart.component.css'],
 })
-export class NavbarComponent implements OnInit, OnDestroy {
-  constructor(
-    private authService: AuthService,
-    private toastr: ToastrService,
-    private router: Router,
-    private productService: ProductService,
-    private encryptionService: EncryptionService,
-    private cookieService: CookieService,
-  ) {}
-  quantity: number = 1;
-  totalCart: number = 0;
+export class CartComponent implements OnInit, OnDestroy {
   productCart: productCartResponse[] = [];
-  isLoggedIn: boolean = false;
   totalPriceProduct: number = 0;
+  totalPrice: number = 0;
+  totalCart: number = 0;
   private intervalId: any;
+  constructor(private toastr: ToastrService,private productService: ProductService,
+    private cookieService: CookieService,
+    private encryptionService: EncryptionService,
+    private authService: AuthService,
+  ) {}
   ngOnInit() {
     this.updateLoginStatus();
     this.intervalId = setInterval(() => {
       this.updateLoginStatus();
     }, 2000);
   }
-  faCaretDown = faCaretDown;
-  faMagnifyingGlass = faMagnifyingGlass;
-  faUser = faUser;
-  faHeart = faHeart;
-  faBagShopping = faBagShopping;
-
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
   }
+  isLoggedIn: boolean = false;
   private updateLoginStatus() {
     this.isLoggedIn = this.authService.getIsLoggedIn();
     if (this.isLoggedIn) {
@@ -129,19 +112,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return total;
   }
 
-  handleLogout() {
-    // this.toastr.info("Starting logout...");
-    this.authService.logout().then((success) => {
-      if (success) {
-        // this.showSuccess('Logout success 👋');
-        this.toastr.success('Logout success 👋');
-        this.router.navigate(['login']);
-      } else {
-        // this.showError('Logout error 🧐');
-        this.toastr.error('Logout error 🧐');
-      }
-    });
-  }
+
   handleGetProductFromCart() {
     const encodedUser = this.cookieService.get('user');
     if (!encodedUser) {
@@ -153,13 +124,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.productCart = response.data;
         this.totalCart = response.data.length;
-        this.totalPriceProduct = this.calculateTotalPrice(this.productCart);
+        this.totalPrice = this.calculateTotalPrice(this.productCart);
       },
       error: (error) => {
         console.error(error);
       },
     });
   }
-
-  getUserInformation() {}
 }

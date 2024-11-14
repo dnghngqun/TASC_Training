@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
     private final Logger logger = LoggerFactory.getLogger(ProductController.class);

@@ -1,0 +1,68 @@
+<section class="cart">
+  <app-breadcrumb
+    [heading]="'Giỏ hàng'"
+    [location]="'Giỏ hàng'"
+  ></app-breadcrumb>
+  <div class="cart-detail container">
+    <div class="col-sm-7">
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Thông tin sản phẩm</th>
+            <th scope="col">Đơn giá</th>
+            <th scope="col">Số lượng</th>
+            <th scope="col">Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of productCart">
+            <th scope="row">1</th>
+            <td class="information">
+              <div class="product">
+                <img src="{{ item.product.imageUrl }}" alt="" />
+                <div class="product-name-wrapper">
+                  <span class="product-name">{{ item.product.name }}</span>
+                  <a
+                    href="#"
+                    (click)="handleRemoveProductFromCart(item.product.id)"
+                    class="remove"
+                    >Xóa</a
+                  >
+                </div>
+              </div>
+            </td>
+            <td>{{ item.product.price | number: "1.0-0" }}đ</td>
+            <td>
+              <div class="quantity-control">
+                <button
+                  class="btn-quantity"
+                  (click)="handleDecreaseQuantity(item.product.id)"
+                >
+                  -
+                </button>
+                <input
+                  type="text"
+                  class="input-quantity"
+                  disabled
+                  min="1"
+                  [(ngModel)]="item.quantity"
+                />
+                <button
+                  class="btn-quantity"
+                  (click)="handleIncreaseQuantity(item.product.id)"
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="total-price-product">
+              {{ item.product.price * item.quantity | number: "1.0-0" }}đ
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-5" class="date"></div>
+  </div>
+</section>

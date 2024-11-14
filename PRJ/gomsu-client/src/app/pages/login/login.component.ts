@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
+import { ViewportScroller } from '@angular/common';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,12 +15,14 @@ export class LoginComponent implements OnInit {
     private cookieService: CookieService,
     private router: Router,
     private toastr: ToastrService,
+    
   ) {}
   role!: string;
   email!: string;
   password: string = '';
   private intervalId: any;
   ngOnInit() {
+
     this.checkLoggedIn();
     this.intervalId = setInterval(() => {
       this.checkLoggedIn();
@@ -34,6 +37,11 @@ export class LoginComponent implements OnInit {
     console.log('PW: ', this.password);
 
     this.loginComponent(this.email, this.password);
+  }
+
+  onClickNavigateToRegis() {
+    this.router.navigate(['/register']);
+    this.scrollToTarget();
   }
 
   // onCLickLoginWithGG():void {
@@ -81,7 +89,6 @@ export class LoginComponent implements OnInit {
 
   private checkLoggedIn(): void {
     const roleCookie = this.cookieService.get('role');
-    console.log('Role:', roleCookie);
     if (roleCookie === 'user') {
       this.router.navigate(['/']);
     } else if (roleCookie === 'shipper') {
@@ -90,10 +97,15 @@ export class LoginComponent implements OnInit {
       console.log('navigate to admin');
       window.location.href = 'http://localhost:4201/';
     } else {
-      console.log('not login');
     }
   }
 
+  scrollToTarget(): void {
+    const targetElement = document.getElementById('pagination-target');
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
   isDisabledBtn = true;
   isEmailValid!: string;
   errMessage!: string;

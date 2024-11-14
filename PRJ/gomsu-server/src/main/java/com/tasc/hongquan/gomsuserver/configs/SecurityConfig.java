@@ -33,11 +33,11 @@ public class SecurityConfig {
 
     private final UserServiceImpl userServiceImpl;
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider);
-    }
+//
+//    @Bean
+//    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+//        return new JwtAuthenticationFilter(jwtTokenProvider);
+//    }
 
 
     @Bean
@@ -45,61 +45,44 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SuperAdminAuthenticationFilter superAdminAuthenticationFilter) throws Exception {
-        http
-                .csrf().disable()
-                .sessionManagement(sesson -> sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/users/register", "/users/public/**", "/users/logout").permitAll()
-                        .requestMatchers("/oauth2/**", "/login/**").permitAll()
-                        .requestMatchers("/users/shipper/**").hasAnyAuthority("admin", "superadmin")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(superAdminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
-
+//
 //    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http, SuperAdminAuthenticationFilter superAdminAuthenticationFilter) throws Exception {
 //        http
 //                .csrf().disable()
 //                .sessionManagement(sesson -> sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .authorizeHttpRequests((requests) -> requests
-//                        .requestMatchers("/users/public/**").permitAll()
+//                        .requestMatchers("/api/v1/users/public/**", "/api/v1/users/logout").permitAll()
+//                        .requestMatchers("/api/v1/users/shipper/**").hasAnyAuthority("admin", "superadmin")
 //                        .anyRequest().authenticated()
 //                );
+////                .addFilterBefore(superAdminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+////                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 //
 //        return http.build();
 //    }
 
-    @Bean
-    public DaoAuthenticationProvider provider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userServiceImpl);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200", "http://localhost:4201")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .sessionManagement(sesson -> sesson.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests((requests) -> requests
+                        .anyRequest().permitAll()
+                );
 
-            }
-        };
+        return http.build();
     }
+
+//    @Bean
+//    public DaoAuthenticationProvider provider() {
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setUserDetailsService(userServiceImpl);
+//        provider.setPasswordEncoder(passwordEncoder());
+//        return provider;
+//    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -118,6 +101,18 @@ public class SecurityConfig {
         return objectMapper;
     }
 
-
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200", "http://localhost:4201")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
 }
 

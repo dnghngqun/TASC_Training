@@ -32,16 +32,13 @@ export class RegisterComponent implements OnInit {
   password!: string;
   fullName: string = '';
   phoneNumber: string = '';
+
+
   onClickRegister() {
-    console.log('Email: ', this.email);
-    console.log('PW: ', this.password);
-    console.log('Full name: ', this.fullName);
-    console.log('Phone number: ', this.phoneNumber);
     this.authService
       .register(this.email, this.password, this.fullName, this.phoneNumber)
       .subscribe({
         next: (res) => {
-          console.log('Message: ', res);
           this.toastr.success('Register success 🥳');
           this.authService.login(this.email, this.password).subscribe({
             next: (res) => {
@@ -50,8 +47,7 @@ export class RegisterComponent implements OnInit {
           });
         },
         error: (error) => {
-          console.error('Register error: ', error);
-          this.toastr.error('Register failed 😡 Please check information🙏');
+          this.toastr.error('Register failed 😡 ' + error.error + ' 😭');
         },
       });
   }
@@ -59,10 +55,18 @@ export class RegisterComponent implements OnInit {
     const roleCookie = this.cookieService.get('role');
     if (roleCookie === 'user') {
       this.router.navigate(['/']);
-    } else if (this.role === 'shipper') {
+    } else if (roleCookie === 'shipper') {
       console.log('navigate to shipper');
-    } else {
+    } else if (roleCookie === 'admin') {
       console.log('navigate to admin');
+      window.location.href = 'http://localhost:4201/';
+    } else {
+    }
+  }
+  scrollToTarget(): void {
+    const targetElement = document.getElementById('pagination-target');
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 

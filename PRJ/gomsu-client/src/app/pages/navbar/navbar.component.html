@@ -16,7 +16,7 @@
           routerLinkActive="router-link-active"
           >Sản phẩm
         </a>
-        <fa-icon [icon]="faCaretDown" class="caretDown" />
+        <!-- <fa-icon [icon]="faCaretDown" class="caretDown" />
         <div class="dropdown-container row">
           <div class="dropdown-left col-lg-8">
             <div class="row row-dropdown">
@@ -117,7 +117,7 @@
           <div class="dropdown-right col-lg-4">
             <img src="assets/img/megamenu_banner.webp" />
           </div>
-        </div>
+        </div> -->
       </li>
       <li class="item">
         <a href="#">Tin tức</a>
@@ -199,7 +199,9 @@
                       </button>
                     </div>
                   </div>
-                  <div class="price col-sm-6">{{ item.product.price }}đ</div>
+                  <div class="price col-sm-6">
+                    {{ item.product.price | number: "1.0-0" }}đ
+                  </div>
                 </div>
               </div>
             </div>
@@ -208,14 +210,20 @@
       </div>
       <div class="total" *ngIf="productCart.length > 0">
         <span class="total-text">Tổng Tiền:</span>
-        <span class="total-price">{{ totalPriceProduct }}đ</span>
+        <span class="total-price"
+          >{{ totalPriceProduct | number: "1.0-0" }}đ</span
+        >
       </div>
       <button class="btn-payment" *ngIf="productCart.length > 0">
         Thanh Toán
       </button>
       <div class="no-product" *ngIf="!(productCart.length > 0)">
         <span class="text">Bạn chưa có sản phẩm nào trong giỏ hàng</span>
-        <img src="assets/img/cart-empty.png" class="img-empty" alt="cart-empty" />
+        <img
+          src="assets/img/cart-empty.png"
+          class="img-empty"
+          alt="cart-empty"
+        />
       </div>
     </div>
   </div>

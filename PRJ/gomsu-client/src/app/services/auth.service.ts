@@ -13,7 +13,7 @@ export class AuthService {
     const data = { email, password };
     console.log('data: ', data);
     return this.httpClient
-      .post(`${APIURL}users/public/signin`, data, {
+      .post(`${APIURL}users/public/login`, data, {
         withCredentials: true,
         responseType: 'text',
       })

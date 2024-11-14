@@ -57,6 +57,7 @@ export class ProductComponent implements OnInit {
     this.quantity++;
   }
   handleAddToCart() {
+
     const roleCookie = this.cookieService.get('role');
     console.log('Role: ', roleCookie);
     if (
@@ -72,7 +73,7 @@ export class ProductComponent implements OnInit {
         console.log('User: ', user);
         console.log('Add to cart: ', this.product.id, this.quantity);
         this.productService
-          .addProductToCart(this.product.id, this.quantity, user.userId)
+          .addProductToCart(this.product.id, this.quantity, user.id)
           .subscribe({
             next: (response) => {
               console.log('Add to cart success: ', response);
@@ -88,4 +89,5 @@ export class ProductComponent implements OnInit {
       this.toastr.error('Please login to add to cart');
     }
   }
+
 }

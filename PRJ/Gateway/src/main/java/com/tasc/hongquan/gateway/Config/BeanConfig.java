@@ -13,31 +13,35 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
 
 @Configuration
 public class BeanConfig {
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("product-service", r -> r.path("/products/**", "/categories/**", "/cart/**")
+                .route("ProductService", r -> r.path("/api/v1/products/**", "/api/v1/categories/**", "/api/v1/cart/**")
 //                        .filters(f -> f.rewritePath("/products/(?<path>.*)", "/${path}")
 //                                .rewritePath("/categories/(?<path>.*)", "/${path}")
 //                                .rewritePath("/cart/(?<path>.*)", "/${path}"))
-                        .uri("lb://product-service"))
-                .route("PaymentService", r -> r.path("/payments/**")
+                        .uri("lb://ProductService"))
+                .route("PaymentService", r -> r.path("/api/v1/payments/**")
                         .uri("lb://PaymentService"))
-                .route("OrderService", r -> r.path("/orders/**", "/order-details/**", "/discounts/**")
+                .route("OrderService", r -> r.path("/api/v1/orders/**", "/api/v1/order-details/**", "/api/v1/discounts/**")
                         .uri("lb://OrderService"))
-                .route("gomsu-server", r -> r.path("/users/**")
+                .route("gomsu-server", r -> r.path("/api/v1/users/**")
                         .uri("lb://gomsu-server"))
                 .build();
     }
 
     private static final String ALLOWED_HEADERS = "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN";
     private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS";
-    private static final String ALLOWED_ORIGIN = "*";
-    private static final String MAX_AGE = "3600";
+    private static final String[] ALLOWED_ORIGINS = {"http://localhost:4200", "http://localhost:4201"};
+    private static final String MAX_AGE = "3600"; // 1 hour
 
     @Bean
     public WebFilter corsFilter() {
@@ -45,12 +49,21 @@ public class BeanConfig {
             ServerHttpRequest request = ctx.getRequest();
             if (CorsUtils.isCorsRequest(request)) {
                 ServerHttpResponse response = ctx.getResponse();
+                // Kiểm tra nếu là OPTIONS request
                 if (request.getMethod() == HttpMethod.OPTIONS) {
                     HttpHeaders headers = response.getHeaders();
-                    headers.add("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+                    String origin = request.getHeaders().getOrigin();
+
+                    // Chỉ thêm header Access-Control-Allow-Origin nếu origin hợp lệ
+                    if (Arrays.asList(ALLOWED_ORIGINS).contains(origin)) {
+                        headers.add("Access-Control-Allow-Origin", origin);
+                    }
+
                     headers.add("Access-Control-Allow-Methods", ALLOWED_METHODS);
-                    headers.add("Access-Control-Max-Age", MAX_AGE);
+//                    headers.add("Access-Control-Max-Age", MAX_AGE);
                     headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+                    headers.setAccessControlAllowCredentials(true);
+
                     response.setStatusCode(HttpStatus.OK);
                     return Mono.empty();
                 }
@@ -58,4 +71,6 @@ public class BeanConfig {
             return chain.filter(ctx);
         };
     }
+
+
 }

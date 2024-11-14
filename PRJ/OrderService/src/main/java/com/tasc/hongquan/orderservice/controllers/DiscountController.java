@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/discounts")
+@RequestMapping("/api/v1/discounts")
 @AllArgsConstructor
 public class DiscountController {
     private final DiscountService discountService;

@@ -13,6 +13,7 @@ import com.tasc.hongquan.gomsuserver.services.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +35,9 @@ import java.util.*;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @Slf4j
+@AllArgsConstructor
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authen;
@@ -46,15 +48,6 @@ public class UserController {
     public static final int MAX_AGE = 3600 * 24;// 1 day
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    public UserController(UserServiceImpl userServiceImpl, AuthenticationManager authen, JwtTokenProvider jwt, ObjectMapper objectMapper, TokenServiceImpl tokenServiceImpl, EmailServiceImpl emailServiceImpl) {
-        this.userService = userServiceImpl;
-        this.authen = authen;
-        this.jwtTokenProvider = jwt;
-        this.objectMapper = objectMapper;
-        this.tokenService = tokenServiceImpl;
-        this.emailService = emailServiceImpl;
-    }
 
     @PostMapping("/public/register")
     public ResponseEntity<String> createUser(@RequestBody RegisterDTO user) {
@@ -81,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/shipper/register")
-    @PreAuthorize("hasAuthority('admin')")
+//    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<String> createShipper(@RequestBody RegisterDTO user) {
         try {
             userService.createAccount(user, 2);
@@ -209,7 +202,7 @@ public class UserController {
 
 
     @Transactional
-    @PostMapping("/public/signin")
+    @PostMapping("/public/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception {
         logger.info("Login start...");
         String email;

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px auto;
+  margin: 0px auto 20px auto;
   width: 97.95%;
 }
 
@@ -94,8 +94,8 @@
   color: #464646 !important;
   border: 1px solid #f7902a !important;
   border-radius: 6px !important;
-  margin-right: 10px!important;
-  overflow: hidden!important;
+  margin-right: 10px !important;
+  overflow: hidden !important;
 }
 
 ::ng-deep .ngx-pagination .current {
