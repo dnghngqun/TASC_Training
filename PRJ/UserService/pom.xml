@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tasc.hongquan</groupId>
-    <artifactId>gomsu-server</artifactId>
+    <artifactId>UserService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gomsu-server</name>
     <description>gomsu-server</description>

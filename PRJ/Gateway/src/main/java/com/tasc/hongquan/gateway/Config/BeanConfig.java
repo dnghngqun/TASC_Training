@@ -33,8 +33,8 @@ public class BeanConfig {
                         .uri("lb://PaymentService"))
                 .route("OrderService", r -> r.path("/api/v1/orders/**", "/api/v1/order-details/**", "/api/v1/discounts/**")
                         .uri("lb://OrderService"))
-                .route("gomsu-server", r -> r.path("/api/v1/users/**")
-                        .uri("lb://gomsu-server"))
+                .route("user-service", r -> r.path("/api/v1/users/**")
+                        .uri("lb://user-service"))
                 .build();
     }
 
