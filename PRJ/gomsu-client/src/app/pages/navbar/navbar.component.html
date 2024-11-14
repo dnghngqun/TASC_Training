@@ -150,7 +150,7 @@
       <span class="count count-heart">1</span>
     </a>
 
-    <a href="#" class="link-shop i-link">
+    <a [routerLink]="['cart']" class="link-shop i-link">
       <fa-icon class="icon i-shop" size="lg" [icon]="faBagShopping" />
       <span class="count count-shop">{{ totalCart }}</span>
     </a>

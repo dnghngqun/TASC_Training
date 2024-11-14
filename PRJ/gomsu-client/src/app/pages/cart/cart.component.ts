@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BreadcrumbModule } from "../../shared/breadcrumb/breadcrumb.module";
-import { ToastrService } from 'ngx-toastr';
-import { ProductService } from '../../services/product.service';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { CookieService } from 'ngx-cookie-service';
+import { ToastrService } from 'ngx-toastr';
 import { productCartResponse } from '../../dto/productCartResponse.model';
 import { User } from '../../models/user.model';
-import { EncryptionService } from '../../services/encryption.service';
 import { AuthService } from '../../services/auth.service';
-
+import { EncryptionService } from '../../services/encryption.service';
+import { ProductService } from '../../services/product.service';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -15,20 +14,31 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CartComponent implements OnInit, OnDestroy {
   productCart: productCartResponse[] = [];
-  totalPriceProduct: number = 0;
   totalPrice: number = 0;
   totalCart: number = 0;
+  datePicker!: Date;
+  timePicker: String = '';
+  minDate: string = '';
+  faChevronDown = faChevronDown;
   private intervalId: any;
-  constructor(private toastr: ToastrService,private productService: ProductService,
+  constructor(
+    private toastr: ToastrService,
+    private productService: ProductService,
     private cookieService: CookieService,
     private encryptionService: EncryptionService,
     private authService: AuthService,
-  ) {}
+  ) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = today.getDate().toString().padStart(2, '0');
+    this.minDate = `${year}-${month}-${day}`;
+  }
   ngOnInit() {
     this.updateLoginStatus();
     this.intervalId = setInterval(() => {
       this.updateLoginStatus();
-    }, 2000);
+    }, 500);
   }
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
@@ -111,7 +121,6 @@ export class CartComponent implements OnInit, OnDestroy {
     });
     return total;
   }
-
 
   handleGetProductFromCart() {
     const encodedUser = this.cookieService.get('user');
