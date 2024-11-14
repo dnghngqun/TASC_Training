@@ -13,6 +13,7 @@ import com.tasc.hongquan.gomsuserver.services.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -50,8 +52,11 @@ public class UserController {
 
 
     @PostMapping("/public/register")
-    public ResponseEntity<String> createUser(@RequestBody RegisterDTO user) {
+    public ResponseEntity<String> createUser(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body("Invalid input");
+            }
             userService.createAccount(user, 3);
             return ResponseEntity.ok("Account created successfully");
         } catch (Exception ex) {
@@ -63,8 +68,11 @@ public class UserController {
 
     @PostMapping("/admin/register")
     @PreAuthorize("hasAnyAuthority('admin', 'superadmin')")
-    public ResponseEntity<String> createAdmin(@RequestBody RegisterDTO user) {
+    public ResponseEntity<String> createAdmin(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body("Invalid input");
+            }
             userService.createAccount(user, 1);
             return ResponseEntity.ok("Account admin created successfully");
         } catch (Exception ex) {
@@ -75,8 +83,11 @@ public class UserController {
 
     @PostMapping("/shipper/register")
 //    @PreAuthorize("hasAuthority('admin')")
-    public ResponseEntity<String> createShipper(@RequestBody RegisterDTO user) {
+    public ResponseEntity<String> createShipper(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body("Invalid input");
+            }
             userService.createAccount(user, 2);
             return ResponseEntity.ok("Account shipper created successfully");
         } catch (Exception ex) {
@@ -169,41 +180,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("/public/oauth2/success")
-    public ResponseEntity<String> googleLoginSuccess(HttpServletResponse response, OAuth2AuthenticationToken authentication) throws Exception {
-        OAuth2User oauth2User = authentication.getPrincipal();
-        String email = oauth2User.getAttribute("email");
-        String providerId = authentication.getPrincipal().getAttribute("sub");
-        String provider = "google";
-        User user = userService.getUserByEmail(email);
-        if (user == null) {
-            String randomPassword = UUID.randomUUID().toString();
-            user = new User();
-            user.setFullName(oauth2User.getAttribute("name"));
-            user.setEmail(email);
-            user.setPassword(randomPassword);
-            user.setProvider(provider);
-            user.setProviderId(providerId);
-            userService.createAccountWithGG(user, 3);
-        }
-        LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setEmail(email);
-        loginDTO.setPassword(user.getPassword());
-        login(loginDTO, response);
-
-        return ResponseEntity.ok("<html><body>" +
-                "<script>" +
-                "window.opener.postMessage(" +
-                "{ email: '" + email + "' }, '*');" +
-                "window.close();" +  // Đóng popup sau khi gửi dữ liệu
-                "</script>" +
-                "</body></html>");
-    }
-
 
     @Transactional
     @PostMapping("/public/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws Exception {
+    public ResponseEntity<String> login(@RequestBody @Valid LoginDTO loginDTO, HttpServletResponse response, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Invalid input");
+        }
         logger.info("Login start...");
         String email;
         String role;
