@@ -3,6 +3,11 @@
   padding: 10px;
 }
 
+section.cart {
+  position: relative;
+  top: -10px;
+}
+
 .order-table th {
   min-width: 30px;
   padding: 10px;
@@ -16,6 +21,7 @@
 .remove {
   cursor: pointer;
 }
+
 .information .product {
   display: flex;
   justify-content: left;
@@ -47,6 +53,7 @@
   font-size: 12px;
   font-weight: 350;
 }
+
 .information {
   padding: 10px;
 }
@@ -158,6 +165,7 @@ td.total-price-product {
   color: #5f5e5e;
   padding-left: 19px !important;
 }
+
 .picker .date-picker {
   padding: 10px;
 }

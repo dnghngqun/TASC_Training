@@ -9,7 +9,6 @@ CREATE TABLE users (
     password VARCHAR(255),
     phone_number VARCHAR(20),
     full_name VARCHAR(255) NOT NULL,
-    address TEXT,
     provider VARCHAR(255),
     provider_id VARCHAR(255),
     role_id INT,
@@ -53,12 +52,22 @@ CREATE TABLE categories (
     deleted_at TIMESTAMP NULL
 );
 
+-- Bảng addressbook
+CREATE TABLE address_book(
+	address_book_id INT AUTO_INCREMENT PRIMARY KEY,
+	full_name VARCHAR(255) NOT NULL,
+	address TEXT,
+	user_id CHAR(36)
+);
+
 -- Tạo bảng orders
 CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     total_price DECIMAL(10, 2),
     status ENUM('pending', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    address_book_id INT,
+    note TEXT,
     discount_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -160,12 +169,16 @@ CREATE TABLE comments (
 ALTER TABLE users
     ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles(role_id);
 
+ALTER TABLE address_book
+	ADD CONSTRAINT fk_address_book_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
+
 ALTER TABLE products
     ADD CONSTRAINT fk_category_id FOREIGN KEY (category_id) REFERENCES categories(category_id);
 
 ALTER TABLE orders
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id),
-    ADD CONSTRAINT fk_discount_id FOREIGN KEY (discount_id) REFERENCES discounts(discount_id);
+    ADD CONSTRAINT fk_discount_id FOREIGN KEY (discount_id) REFERENCES discounts(discount_id),
+   	ADD CONSTRAINT fk_order_address_book_id FOREIGN KEY (address_book_id) REFERENCES address_book(address_book_id);
 
 ALTER TABLE order_details
     ADD CONSTRAINT fk_order_id FOREIGN KEY (order_id) REFERENCES orders(order_id),
@@ -191,10 +204,17 @@ ALTER TABLE posts
 ALTER TABLE comments
     ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(post_id);
    
-   
+  
 DELIMITER $$
 
-CREATE PROCEDURE add_order_with_details(IN userId CHAR(36), IN totalPrice DECIMAL(10,2), IN discountId INT, IN orderDetails JSON)
+CREATE PROCEDURE add_order_with_details(
+	IN userId CHAR(36), 
+	IN totalPrice DECIMAL(10,2), 
+	IN discountId INT,
+	IN noteRq TEXT,
+	IN addressBookId INT,
+	IN orderDetails JSON
+)
 BEGIN
 	DECLARE i INT DEFAULT 0;
     DECLARE orderDetail JSON;
@@ -203,7 +223,7 @@ BEGIN
     DECLARE price DECIMAL(10, 2);
    
     -- Thêm Order
-    INSERT INTO orders (user_id, total_price, discount_id, status) VALUES (userId, totalPrice, discountId, 'pending');
+    INSERT INTO orders (user_id, total_price, discount_id, status, note, address_book_id) VALUES (userId, totalPrice, discountId, 'pending',noteRq, addressBookId);
     SET @orderId = LAST_INSERT_ID();
 
     -- Thêm Order Details
@@ -211,9 +231,9 @@ BEGIN
 
     WHILE i < JSON_LENGTH(orderDetails) DO
         SET orderDetail = JSON_EXTRACT(orderDetails, CONCAT('$[', i, ']'));
-        SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.productId'));
-        SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.quantity'));
-        SET price = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.price'));
+    	SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.productId'));
+    	SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.quantity'));
+    	SET price = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.price'));
 
         INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (@orderId, productId, quantity, price);
 

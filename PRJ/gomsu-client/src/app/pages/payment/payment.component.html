@@ -1,0 +1,227 @@
+<section class="container" id="payment">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="heading-logo m-auto">
+        <img src="assets/img/logo.webp" alt="logo" class="logo w-100">
+      </div>
+      <div class="container information-address">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="heading-text">
+              Thông tin nhận hàng
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <select class="form-select" id="floatingSodiachi">
+                <option selected value="abcd">Abcd</option>
+                <option value="">Địa chỉ khác ...</option>
+              </select>
+              <label for="floatingSodiachi">Sổ địa chỉ</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <input type="email" class="form-control" id="floatingEmail" placeholder="abcd@example.com">
+              <label for="floatingEmail">Email</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <input type="text" class="form-control" id="floatingFullName" placeholder="Fullname">
+              <label for="floatingFullName">Họ và tên</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <input type="text" class="form-control" id="floatingPhoneNumber" placeholder="Phonenumber">
+              <label for="floatingPhoneNumber">Số điện thoại</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <input type="text" class="form-control" id="floatingAddress" placeholder="Address">
+              <label for="floatingAddress">Địa chỉ (tùy chọn)</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <select class="form-select" id="floatingCity">
+                <option selected>---</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+              <label for="floatingCity">Tỉnh thành</label>
+            </div>
+
+
+            <div class="form-floating my-1 form-custom">
+              <select class="form-select" id="floatingDistrict">
+                <option selected>---</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+              <label for="floatingDistrict">Quận huyện</label>
+            </div>
+
+            <div class="form-floating my-1 form-custom">
+              <select class="form-select" id="floatingWard">
+                <option selected>---</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+              <label for="floatingWard">Phường xã</label>
+            </div>
+            <div class="form-floating my-1 form-custom">
+              <textarea class="form-control form-note" id="floatingNote" placeholder="Note here..."></textarea>
+              <label for="floatingNote">Ghi chú (tùy chọn)</label>
+            </div>
+          </div>
+          <div class="col-sm-6">
+
+            <div class="payment-method">
+              <div class="heading-text">
+                Thanh toán
+              </div>
+              <div class="input-group choose-payment my-1">
+                <div class="input-group-text ">
+                  <input class="form-check-input mt-0" type="radio" name="paymentMethod" value="online">
+                </div>
+                <input type="text" class="form-control" value="Thanh toán qua mã QR" disabled>
+              </div>
+              <div class="input-group choose-payment my-1">
+                <div class="input-group-text ">
+                  <input class="form-check-input mt-0" type="radio" name="paymentMethod" value="on_delivery">
+                </div>
+                <input type="text" class="form-control" value="Thanh toán khi nhận hàng" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4 " style="background-color: #fAfAfa">
+      <div class="heading-cart">Đơn hàng ({{ totalCart }} sản phẩm)</div>
+      <hr>
+      <div class="product-container">
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén cao cấp gốm sứ trung hoa abcd xys</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+        <div class="product-item my-3">
+          <div class="image ">
+            <img
+              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              alt=""
+              class="h-100 w-100 object-fit-cover">
+            <div class="badge-quantity">1</div>
+          </div>
+          <div class="information">
+            <div class="product-name">Bộ ấm chén</div>
+            <div class="price">100.000đ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="discount-container">
+        <div class="row-discount">
+          <div class="form-floating my-1 form-discount-custom">
+            <input type="text" class="form-control" id="floatingDiscount" placeholder="Discount">
+            <label for="floatingDiscount">Mã giảm giá</label>
+          </div>
+          <button class="btn-discount btn btn-primary">Áp dụng</button>
+        </div>
+        <div class="err-discount">
+          {{ errDiscount }}
+        </div>
+      </div>
+      <div class="total-temporary">
+        <div class="price">
+          <div class="price-text">Tạm tính</div>
+          <div class="price-value">{{ totalPriceTemporaty| number: "1.0-0" }}đ</div>
+        </div>
+        <div class="discount-price" *ngIf="discount > 0">
+          <div class="discount-text">Giảm giá</div>
+          <div class="discount-value">{{ discount| number: "1.0-0" }}đ</div>
+        </div>
+      </div>
+      <div class="total">
+        <div class="total-price">
+          <div class="total-text">Tổng cộng</div>
+          <div class="total-value">{{ totalValue| number: "1.0-0" }}đ</div>
+        </div>
+        <div class="action">
+          <a class="returnCart">Quay về giỏ hàng</a>
+          <button class="btn-order">Đặt Hàng</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -92,7 +92,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
 
-    public User updateUser(User user) {
+    public User updateUser(User newUser) {
+        User user = userRepository.findByUserId(newUser.getUserId()).get();
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        if (newUser.getEmail() != null) {
+            user.setEmail(newUser.getEmail());
+        }
+        if (newUser.getFullName() != null) {
+            user.setFullName(newUser.getFullName());
+        }
+        if (newUser.getPhoneNumber() != null) {
+            user.setPhoneNumber(newUser.getPhoneNumber());
+        }
+        if (newUser.getRole() != null) {
+            user.setRole(newUser.getRole());
+        }
+        user.setUpdatedAt(Instant.now());
         return userRepository.save(user);
     }
 

@@ -41,10 +41,6 @@ public class User {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Lob
-    @Column(name = "address")
-    private String address;
-
     @Size(max = 255)
     @Column(name = "provider")
     private String provider;
