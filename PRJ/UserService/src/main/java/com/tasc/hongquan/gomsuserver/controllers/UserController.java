@@ -180,7 +180,7 @@ public class UserController {
 
         try {
             int otp = Integer.parseInt(otpRequest);
-            if (!tokenService.validateToken(otp, userId)) {
+            if (tokenService.validateToken(otp, userId)) {
                 logger.info("OTP is valid");
                 //changepass
                 User user = userService.changePass(userId, newPassword);

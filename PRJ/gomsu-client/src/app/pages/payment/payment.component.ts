@@ -6,10 +6,10 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrl: './payment.component.css'
 })
 export class PaymentComponent implements OnInit {
-  @Input() totalPriceTemporaty: number = 0;
+  @Input() totalPriceTemporary: number = 0;
   @Input() productCart: any[] = [];
   discount: number = 0;
-  totalValue: number = this.totalPriceTemporaty - this.discount;
+  totalValue: number = this.totalPriceTemporary - this.discount;
   errDiscount: string = "";
   totalCart: number = this.productCart.length;
 

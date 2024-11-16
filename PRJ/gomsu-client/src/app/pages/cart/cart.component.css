@@ -3,10 +3,6 @@
   padding: 10px;
 }
 
-section.cart {
-  position: relative;
-  top: -10px;
-}
 
 .order-table th {
   min-width: 30px;
