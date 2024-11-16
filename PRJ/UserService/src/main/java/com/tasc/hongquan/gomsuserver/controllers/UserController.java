@@ -30,6 +30,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
@@ -54,9 +55,9 @@ public class UserController {
     @PostMapping("/public/register")
     public ResponseEntity<String> createUser(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body("Invalid input");
-            }
+            ResponseEntity<String> errMessage = getErrValidateResponseEntity(bindingResult);
+            if (errMessage != null) return errMessage;
+
             userService.createAccount(user, 3);
             return ResponseEntity.ok("Account created successfully");
         } catch (Exception ex) {
@@ -70,9 +71,9 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('admin', 'superadmin')")
     public ResponseEntity<String> createAdmin(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body("Invalid input");
-            }
+            ResponseEntity<String> errMessage = getErrValidateResponseEntity(bindingResult);
+            if (errMessage != null) return errMessage;
+
             userService.createAccount(user, 1);
             return ResponseEntity.ok("Account admin created successfully");
         } catch (Exception ex) {
@@ -85,15 +86,29 @@ public class UserController {
 //    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<String> createShipper(@RequestBody @Valid RegisterDTO user, BindingResult bindingResult) {
         try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body("Invalid input");
-            }
+            ResponseEntity<String> errMessage = getErrValidateResponseEntity(bindingResult);
+            if (errMessage != null) return errMessage;
+
             userService.createAccount(user, 2);
             return ResponseEntity.ok("Account shipper created successfully");
         } catch (Exception ex) {
             logger.error("Error creating account: " + ex.getMessage());
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
+    }
+
+    private ResponseEntity<String> getErrValidateResponseEntity(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errMessage = new StringBuilder();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                errMessage.append(fieldError.getField())
+                        .append(": ")
+                        .append(fieldError.getDefaultMessage())
+                        .append("\n");
+            }
+            return ResponseEntity.badRequest().body(errMessage.toString());
+        }
+        return null;
     }
 
     @GetMapping("/public/forgot/find-account/{email}")

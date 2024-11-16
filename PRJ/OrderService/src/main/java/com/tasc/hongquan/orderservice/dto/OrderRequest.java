@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,6 +21,10 @@ public class OrderRequest {
     private BigDecimal totalPrice;
     @NotEmpty(message = "Discount id is required")
     private Integer discountId;
+    @NotEmpty(message = "Address id is required")
+    private Integer addressId;
+
+    private String note;
     @NotEmpty(message = "Order details is required")
     private List<OrderDetail> orderDetails;
 }

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,18 +46,35 @@ public class OrderRepositoryImpl implements OrderRepository{
         String sql = "SELECT * FROM orders WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToOrder, id);
     }
+
+
     @Override
-    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails) {
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("add_order_with_details");
+    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId) {
+        // Khởi tạo ObjectMapper để chuyển đổi List thành JSON
+        ObjectMapper objectMapper = new ObjectMapper();
+        String orderDetailsJson = "";
+
+        try {
+            //convert list to JSON
+            orderDetailsJson = objectMapper.writeValueAsString(orderDetails);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("add_order_with_details");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id", userId);
-        params.put("total_price", totalPrice);
-        params.put("discount_id", discountId);
-        params.put("order_details", orderDetails);
+        params.put("userId", userId);
+        params.put("totalPrice", totalPrice);
+        params.put("discountId", discountId);
+        params.put("orderDetails", orderDetailsJson);
+        params.put("noteRq", note);
+        params.put("addressBookId", addressId);
 
         jdbcCall.execute(params);
     }
+
 
     private Order mapRowToOrder(ResultSet rs, int rowNum) throws SQLException {
         return new Order().builder()

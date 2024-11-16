@@ -56,8 +56,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails) {
-        orderRepository.addOrderWithDetailsUsingProcedure(userId, totalPrice, discountId, orderDetails);
+    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId) {
+        orderRepository.addOrderWithDetailsUsingProcedure(userId, totalPrice, discountId, orderDetails, note, addressId);
     }
 
 }

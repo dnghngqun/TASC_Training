@@ -11,5 +11,5 @@ public interface OrderService {
     void addOrder(Order order);
     void updateOrderById(int id, Order order);
     void deleteOrderById(int id);
-    void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails) ;
+    void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId);
 }

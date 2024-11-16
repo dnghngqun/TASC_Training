@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.Instant;
 
 @Getter
@@ -17,6 +16,7 @@ public class Order {
     private String userId;
     private BigDecimal totalPrice;
     private String status;
+    private Integer addressId;
     private Integer discountId;
     private Instant createdAt;
     private Instant updatedAt;
