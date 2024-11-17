@@ -16,6 +16,7 @@ public class DiscountServiceImpl implements DiscountService{
         discount.setCreatedAt(Instant.now());
         discount.setUpdatedAt(Instant.now());
         discountRepository.addDiscount(discount);
+
     }
 
     @Override

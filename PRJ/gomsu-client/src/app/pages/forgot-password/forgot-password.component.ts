@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../services/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -17,18 +17,23 @@ export class ForgotPasswordComponent implements OnInit {
   userId: string = '';
   phoneNumber: string = '';
   isDisableInputEmail: boolean = false;
+
   setFindedAccount() {
     this.findedAccount = !this.findedAccount;
   }
+
   name: string = '';
 
   constructor(
     private authService: AuthService,
     private toastr: ToastrService,
     private router: Router,
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
+
   isDisabledBtn = true;
   isEmailValid!: string;
   errMessage!: string;
@@ -49,12 +54,14 @@ export class ForgotPasswordComponent implements OnInit {
       this.isDisabledBtn = false;
     }
   }
+
   isDisableBtnChange = true;
   isOTPValid!: string;
   errOTPMessage!: string;
   isNewPWValid!: string;
   isPwAgainValid!: string;
   errPwMessage!: string;
+
   onOTPChange() {
     if (this.otp === '') {
       this.isOTPValid = '';
@@ -96,6 +103,7 @@ export class ForgotPasswordComponent implements OnInit {
       this.errPwMessage = '';
     }
   }
+
   onNewPwAgainChange() {
     if (this.newPassAgain === '') {
       this.isPwAgainValid = '';
@@ -155,12 +163,12 @@ export class ForgotPasswordComponent implements OnInit {
     this.authService.changePw(this.userId, this.otp, this.newPass).subscribe({
       next: (res) => {
         console.log('res: ', res);
-        this.toastr.success('Thay đổi mật khẩu thành công!');
+        this.toastr.success('Thay đổi mật khẩu thành công 🎉');
         this.router.navigate(['/login']);
       },
       error: (err) => {
         console.log('err: ', err);
-        this.toastr.error('Thay đổi mật khẩu thất bại!');
+        this.toastr.error(`Thay đổi mật khẩu thất bại! ${err.error} 😭`);
       },
     });
   }

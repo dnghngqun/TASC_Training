@@ -3,6 +3,7 @@ package com.tasc.hongquan.orderservice.repositories;
 import com.tasc.hongquan.orderservice.models.Order;
 import com.tasc.hongquan.orderservice.models.OrderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
@@ -49,7 +50,7 @@ public class OrderRepositoryImpl implements OrderRepository{
 
 
     @Override
-    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId) {
+    public Order addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId) {
         // Khởi tạo ObjectMapper để chuyển đổi List thành JSON
         ObjectMapper objectMapper = new ObjectMapper();
         String orderDetailsJson = "";
@@ -62,7 +63,8 @@ public class OrderRepositoryImpl implements OrderRepository{
         }
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("add_order_with_details");
+                .withProcedureName("add_order_with_details")
+                .returningResultSet("order", new BeanPropertyRowMapper<>(Order.class));
 
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
@@ -72,7 +74,8 @@ public class OrderRepositoryImpl implements OrderRepository{
         params.put("noteRq", note);
         params.put("addressBookId", addressId);
 
-        jdbcCall.execute(params);
+        Map<String, Object> result = jdbcCall.execute(params);
+        return (Order) result.get("order");
     }
 
 

@@ -1,10 +1,15 @@
 package com.tasc.hongquan.orderservice.services;
 
+import com.tasc.hongquan.orderservice.client.PaymentClient;
+import com.tasc.hongquan.orderservice.dto.ResponseObject;
 import com.tasc.hongquan.orderservice.models.OrderDetail;
+import com.tasc.hongquan.orderservice.models.Payment;
 import lombok.AllArgsConstructor;
 import com.tasc.hongquan.orderservice.models.Order;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.tasc.hongquan.orderservice.repositories.OrderRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
-
+    private PaymentClient paymentClient;
     @Override
     public List<Order> getAllOrders() {
         return orderRepository.getAllOrders();
@@ -56,8 +61,24 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId) {
-        orderRepository.addOrderWithDetailsUsingProcedure(userId, totalPrice, discountId, orderDetails, note, addressId);
+    @Transactional
+    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId, String paymentMethod) {
+        Order order = orderRepository.addOrderWithDetailsUsingProcedure(userId, totalPrice, discountId, orderDetails, note, addressId);
+        try {
+            Payment payment = new Payment().builder()
+                    .order(order)
+                    .paymentMethod(paymentMethod)
+                    .build();
+            ResponseEntity<ResponseObject> response = paymentClient.addPayment(payment);
+            if(response.getStatusCode().is2xxSuccessful()) {
+                order.setStatus("success");
+            }
+            else {
+                order.setStatus("error");
+            }
+        }catch(Exception exception) {
+            throw new RuntimeException("Payment failed");
+        }
     }
 
 }

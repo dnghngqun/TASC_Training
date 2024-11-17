@@ -12,5 +12,5 @@ public interface OrderRepository {
     void updateOrderById( Order order);
     void deleteOrderById(int id);
     Order findById(int id);
-    void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId);
+    Order addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId);
 }

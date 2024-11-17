@@ -27,4 +27,6 @@ public class OrderRequest {
     private String note;
     @NotEmpty(message = "Order details is required")
     private List<OrderDetail> orderDetails;
+    @NotEmpty(message = "Payment method is required")
+    private String paymentMethod;
 }

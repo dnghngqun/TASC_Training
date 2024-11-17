@@ -65,7 +65,7 @@ CREATE TABLE orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36),
     total_price DECIMAL(10, 2),
-    status ENUM('pending', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    status ENUM('pending', 'delivered', 'success', 'cancel', 'error') DEFAULT 'pending',
     address_book_id INT,
     note TEXT,
     discount_id INT,
@@ -81,6 +81,7 @@ CREATE TABLE order_details (
     product_id INT,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    status ENUM ('pending', 'success', 'cancel', 'error') DEFAULT 'pending' ,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
@@ -101,7 +102,7 @@ CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT,
     payment_method ENUM('online', 'on_delivery'),
-    payment_status ENUM('pending', 'completed') DEFAULT 'pending',
+    payment_status ENUM('pending','success','error', 'cancel') DEFAULT 'pending',
     paid_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -208,40 +209,42 @@ ALTER TABLE comments
 DELIMITER $$
 
 CREATE PROCEDURE add_order_with_details(
-	IN userId CHAR(36), 
-	IN totalPrice DECIMAL(10,2), 
-	IN discountId INT,
-	IN noteRq TEXT,
-	IN addressBookId INT,
-	IN orderDetails JSON
+    IN userId CHAR(36), 
+    IN totalPrice DECIMAL(10,2), 
+    IN discountId INT,
+    IN noteRq TEXT,
+    IN addressBookId INT,
+    IN orderDetails JSON
 )
 BEGIN
-	DECLARE i INT DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
     DECLARE orderDetail JSON;
     DECLARE productId INT;
     DECLARE quantity INT;
     DECLARE price DECIMAL(10, 2);
-   
+
     -- Thêm Order
-    INSERT INTO orders (user_id, total_price, discount_id, status, note, address_book_id) VALUES (userId, totalPrice, discountId, 'pending',noteRq, addressBookId);
+    INSERT INTO orders (user_id, total_price, discount_id, status, note, address_book_id) 
+    VALUES (userId, totalPrice, discountId, 'pending', noteRq, addressBookId);
+    
     SET @orderId = LAST_INSERT_ID();
 
-    -- Thêm Order Details
-    
-
+    -- Thêm Order Details với status 'pending'
     WHILE i < JSON_LENGTH(orderDetails) DO
         SET orderDetail = JSON_EXTRACT(orderDetails, CONCAT('$[', i, ']'));
-    	SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.productId'));
-    	SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.quantity'));
-    	SET price = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.price'));
+        SET productId = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.productId'));
+        SET quantity = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.quantity'));
+        SET price = JSON_UNQUOTE(JSON_EXTRACT(orderDetail, '$.price'));
 
-        INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (@orderId, productId, quantity, price);
+        INSERT INTO order_details (order_id, product_id, quantity, price, status) 
+        VALUES (@orderId, productId, quantity, price, 'pending');
 
         SET i = i + 1;
     END WHILE;
 END$$
 
 DELIMITER ;
+
 
 DELIMITER $$
 

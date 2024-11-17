@@ -4,21 +4,27 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.math.BigDecimal;
 import java.time.Instant;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class OrderDetail {
-    private Integer id;
-    private Integer orderId;
-    private Integer quantity;
-    private Integer productId;
-    private BigDecimal price;
-    private String status; //'create','pending', 'success', 'cancel', 'error'
+@NoArgsConstructor
+public class Payment {
+
+    private Order order;
+
+    private String paymentMethod;
+
+    private String paymentStatus;
+
+    private Instant paidAt;
+
     private Instant createdAt;
+
     private Instant updatedAt;
+
     private Instant deletedAt;
+
 }
