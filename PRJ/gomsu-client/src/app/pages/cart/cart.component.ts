@@ -1,12 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { CookieService } from 'ngx-cookie-service';
-import { ToastrService } from 'ngx-toastr';
-import { productCartResponse } from '../../dto/productCartResponse.model';
-import { User } from '../../models/user.model';
-import { AuthService } from '../../services/auth.service';
-import { EncryptionService } from '../../services/encryption.service';
-import { ProductService } from '../../services/product.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {faChevronDown} from '@fortawesome/free-solid-svg-icons';
+import {CookieService} from 'ngx-cookie-service';
+import {ToastrService} from 'ngx-toastr';
+import {productCartResponse} from '../../dto/productCartResponse.model';
+import {User} from '../../models/user.model';
+import {AuthService} from '../../services/auth.service';
+import {EncryptionService} from '../../services/encryption.service';
+import {ProductService} from '../../services/product.service';
+import {DataCartService} from '../../services/dataCart.service';
+import {Router} from '@angular/router';
+
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -17,16 +20,20 @@ export class CartComponent implements OnInit, OnDestroy {
   totalPrice: number = 0;
   totalCart: number = 0;
   datePicker!: Date;
+
   timePicker: String = '';
   minDate: string = '';
   faChevronDown = faChevronDown;
   private intervalId: any;
+
   constructor(
     private toastr: ToastrService,
     private productService: ProductService,
     private cookieService: CookieService,
     private encryptionService: EncryptionService,
     private authService: AuthService,
+    private router: Router,
+    private dataCartService: DataCartService
   ) {
     const today = new Date();
     const year = today.getFullYear();
@@ -34,21 +41,34 @@ export class CartComponent implements OnInit, OnDestroy {
     const day = today.getDate().toString().padStart(2, '0');
     this.minDate = `${year}-${month}-${day}`;
   }
+
   ngOnInit() {
     this.updateLoginStatus();
     this.intervalId = setInterval(() => {
       this.updateLoginStatus();
     }, 500);
   }
+
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
   }
+
   isLoggedIn: boolean = false;
+
   private updateLoginStatus() {
     this.isLoggedIn = this.authService.getIsLoggedIn();
     if (this.isLoggedIn) {
       this.handleGetProductFromCart();
     }
+  }
+
+  handleClickPayment() {
+    const dataSent = {
+      productCart: this.productCart,
+      totalPrice: this.totalPrice
+    }
+    this.dataCartService.setData(dataSent);
+    this.router.navigate(['/payment']);
   }
 
   handleDecreaseQuantity(productId: number) {
@@ -94,6 +114,7 @@ export class CartComponent implements OnInit, OnDestroy {
         });
     }
   }
+
   handleRemoveProductFromCart(productId: number) {
     const encodedUser = this.cookieService.get('user');
     if (encodedUser) {

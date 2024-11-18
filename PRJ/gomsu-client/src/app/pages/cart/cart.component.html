@@ -8,56 +8,56 @@
       <div class="col-sm-9">
         <table class="order-table w-100">
           <thead>
-            <tr>
-              <th scope="col">Thông tin sản phẩm</th>
-              <th scope="col" class="col-price">Đơn giá</th>
-              <th scope="col" class="col-quantity">Số lượng</th>
-              <th scope="col" class="col-totalprice">Thành tiền</th>
-            </tr>
+          <tr>
+            <th scope="col">Thông tin sản phẩm</th>
+            <th scope="col" class="col-price">Đơn giá</th>
+            <th scope="col" class="col-quantity">Số lượng</th>
+            <th scope="col" class="col-totalprice">Thành tiền</th>
+          </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of productCart">
-              <td class="information">
-                <div class="product">
-                  <img src="{{ item.product.imageUrl }}" alt="" />
-                  <div class="product-name-wrapper">
-                    <span class="product-name">{{ item.product.name }}</span>
-                    <a
-                      (click)="handleRemoveProductFromCart(item.product.id)"
-                      class="remove"
-                      >Xóa</a
-                    >
-                  </div>
-                </div>
-              </td>
-              <td class="price">{{ item.product.price | number: "1.0-0" }}đ</td>
-              <td>
-                <div class="quantity-control">
-                  <button
-                    class="btn-quantity"
-                    (click)="handleDecreaseQuantity(item.product.id)"
+          <tr *ngFor="let item of productCart">
+            <td class="information">
+              <div class="product">
+                <img src="{{ item.product.imageUrl }}" alt=""/>
+                <div class="product-name-wrapper">
+                  <span class="product-name">{{ item.product.name }}</span>
+                  <a
+                    (click)="handleRemoveProductFromCart(item.product.id)"
+                    class="remove"
+                  >Xóa</a
                   >
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    class="input-quantity"
-                    disabled
-                    min="1"
-                    [(ngModel)]="item.quantity"
-                  />
-                  <button
-                    class="btn-quantity"
-                    (click)="handleIncreaseQuantity(item.product.id)"
-                  >
-                    +
-                  </button>
                 </div>
-              </td>
-              <td class="total-price-product">
-                {{ item.product.price * item.quantity | number: "1.0-0" }}đ
-              </td>
-            </tr>
+              </div>
+            </td>
+            <td class="price">{{ item.product.price | number: "1.0-0" }}đ</td>
+            <td>
+              <div class="quantity-control">
+                <button
+                  class="btn-quantity"
+                  (click)="handleDecreaseQuantity(item.product.id)"
+                >
+                  -
+                </button>
+                <input
+                  type="text"
+                  class="input-quantity"
+                  disabled
+                  min="1"
+                  [(ngModel)]="item.quantity"
+                />
+                <button
+                  class="btn-quantity"
+                  (click)="handleIncreaseQuantity(item.product.id)"
+                >
+                  +
+                </button>
+              </div>
+            </td>
+            <td class="total-price-product">
+              {{ item.product.price * item.quantity | number: "1.0-0" }}đ
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -91,20 +91,22 @@
           </select>
         </div>
         <label for="hoadon" class="xuathoadon">
-          <input id="hoadon" type="checkbox" />
+          <input id="hoadon" type="checkbox"/>
           Xuất hóa đơn công ty
         </label>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-9">
-        <br />
+        <br/>
         <div class="total-price">
           <span class="text">Tổng tiền: </span>
           <span class="value">{{ totalPrice | number: "1.0-0" }}đ</span>
         </div>
-        <br />
-        <br /><button class="btn-payment">Thanh toán</button><br />
+        <br/>
+        <br/>
+        <button class="btn-payment" (click)="handleClickPayment()">Thanh toán</button>
+        <br/>
       </div>
     </div>
   </div>

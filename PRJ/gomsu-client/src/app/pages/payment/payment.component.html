@@ -31,7 +31,7 @@
             </div>
             <div class="form-floating my-1 form-custom">
               <input type="text" class="form-control" id="floatingAddress" placeholder="Address">
-              <label for="floatingAddress">Địa chỉ (tùy chọn)</label>
+              <label for="floatingAddress">Số nhà, tên đường (tùy chọn)</label>
             </div>
             <div class="form-floating my-1 form-custom">
               <select class="form-select" id="floatingCity">
@@ -95,95 +95,17 @@
       <div class="heading-cart">Đơn hàng ({{ totalCart }} sản phẩm)</div>
       <hr>
       <div class="product-container">
-        <div class="product-item my-3">
+        <div class="product-item my-3" *ngFor="let item of productCart">
           <div class="image ">
             <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
+              src="{{item.product.imageUrl}}"
               alt=""
               class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
+            <div class="badge-quantity">{{ item.quantity }}</div>
           </div>
           <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén cao cấp gốm sứ trung hoa abcd xys</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
-          </div>
-        </div>
-        <div class="product-item my-3">
-          <div class="image ">
-            <img
-              src="https://bizweb.dktcdn.net/thumb/large/100/485/241/products/untitled-2-03162065-80a1-4a78-b15c-1902bac875e1.png?v=1686285555017"
-              alt=""
-              class="h-100 w-100 object-fit-cover">
-            <div class="badge-quantity">1</div>
-          </div>
-          <div class="information">
-            <div class="product-name">Bộ ấm chén</div>
-            <div class="price">100.000đ</div>
+            <div class="product-name">{{ item.product.name }}</div>
+            <div class="price">{{ item.product.price| number: "1.0-0" }}</div>
           </div>
         </div>
       </div>
@@ -216,7 +138,7 @@
           <div class="total-value">{{ totalValue| number: "1.0-0" }}đ</div>
         </div>
         <div class="action">
-          <a class="returnCart">Quay về giỏ hàng</a>
+          <a class="returnCart" [routerLink]="['/cart']">Quay về giỏ hàng</a>
           <button class="btn-order">Đặt Hàng</button>
         </div>
 

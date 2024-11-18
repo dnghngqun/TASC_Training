@@ -6,6 +6,9 @@ import com.tasc.hongquan.orderservice.models.OrderDetail;
 import com.tasc.hongquan.orderservice.models.Payment;
 import lombok.AllArgsConstructor;
 import com.tasc.hongquan.orderservice.models.Order;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.tasc.hongquan.orderservice.repositories.OrderRepository;
@@ -14,10 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService{
+    private final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
     private PaymentClient paymentClient;
     @Override
@@ -62,7 +66,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     @Transactional
-    public void addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId, String paymentMethod) {
+    public Object addOrderWithDetailsUsingProcedure(String userId, BigDecimal totalPrice, Integer discountId, List<OrderDetail> orderDetails, String note, Integer addressId, String paymentMethod) {
         Order order = orderRepository.addOrderWithDetailsUsingProcedure(userId, totalPrice, discountId, orderDetails, note, addressId);
         try {
             Payment payment = new Payment().builder()
@@ -70,14 +74,18 @@ public class OrderServiceImpl implements OrderService{
                     .paymentMethod(paymentMethod)
                     .build();
             ResponseEntity<ResponseObject> response = paymentClient.addPayment(payment);
+            logger.info("Payment response: " + response);
             if(response.getStatusCode().is2xxSuccessful()) {
                 order.setStatus("success");
+                return response.getBody().getData();
             }
             else {
                 order.setStatus("error");
+                return null;
             }
         }catch(Exception exception) {
             throw new RuntimeException("Payment failed");
+
         }
     }
 

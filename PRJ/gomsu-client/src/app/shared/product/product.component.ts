@@ -1,15 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
   faCartShopping,
   faHeart,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
-import { CookieService } from 'ngx-cookie-service';
-import { ToastrService } from 'ngx-toastr';
-import { Product } from '../../models/product.model';
-import { User } from '../../models/user.model';
-import { EncryptionService } from '../../services/encryption.service';
-import { ProductService } from '../../services/product.service';
+import {CookieService} from 'ngx-cookie-service';
+import {ToastrService} from 'ngx-toastr';
+import {Product} from '../../models/product.model';
+import {User} from '../../models/user.model';
+import {EncryptionService} from '../../services/encryption.service';
+import {ProductService} from '../../services/product.service';
+
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -24,12 +25,14 @@ export class ProductComponent implements OnInit {
   priceAfterDiscount: number = 0;
   isShowPopup: boolean = false;
   quantity: number = 1;
+
   constructor(
     private cookieService: CookieService,
     private productService: ProductService,
     private toastr: ToastrService,
     private encryptionService: EncryptionService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.priceAfterDiscount =
@@ -40,11 +43,13 @@ export class ProductComponent implements OnInit {
   onClickOutside() {
     this.isShowPopup = false;
   }
+
   handleClosePopup() {
     this.isShowPopup = false;
   }
 
   handleShowPopup(event: Event) {
+    this.quantity = 1;
     this.isShowPopup = !this.isShowPopup;
   }
 
@@ -53,9 +58,11 @@ export class ProductComponent implements OnInit {
       this.quantity--;
     }
   }
+
   handleIncreaseQuantity() {
     this.quantity++;
   }
+
   handleAddToCart() {
 
     const roleCookie = this.cookieService.get('role');
@@ -72,6 +79,7 @@ export class ProductComponent implements OnInit {
         ) as User;
         console.log('User: ', user);
         console.log('Add to cart: ', this.product.id, this.quantity);
+        this.quantity = 1;
         this.productService
           .addProductToCart(this.product.id, this.quantity, user.id)
           .subscribe({

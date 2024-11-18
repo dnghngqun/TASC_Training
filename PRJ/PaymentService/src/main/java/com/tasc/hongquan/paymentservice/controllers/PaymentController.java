@@ -1,9 +1,12 @@
 package com.tasc.hongquan.paymentservice.controllers;
 
+import com.tasc.hongquan.paymentservice.dto.MomoNotifyResponse;
 import com.tasc.hongquan.paymentservice.dto.ResponseObject;
 import com.tasc.hongquan.paymentservice.models.Order;
 import com.tasc.hongquan.paymentservice.models.Payment;
+import com.tasc.hongquan.paymentservice.models.momo.PaymentResponse;
 import com.tasc.hongquan.paymentservice.services.PaymentService;
+import com.tasc.hongquan.paymentservice.util.Encoder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -35,11 +38,64 @@ public class PaymentController {
     @PostMapping("/add")
     public ResponseEntity<ResponseObject> addPayment(@RequestBody Payment payment) {
         try {
-            paymentService.addPayment(payment);
-            return ResponseEntity.ok(new ResponseObject("ok", "Add payment successfully", null));
+            PaymentResponse paymentResponse = paymentService.addPayment(payment);
+            String payUrl = paymentResponse.getPayUrl();
+            return ResponseEntity.ok(new ResponseObject("ok", "Add payment successfully", payUrl));
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseEntity.status(500).body(new ResponseObject("error", "Add payment failed", null));
+        }
+    }
+    @PostMapping("/notify")
+    public ResponseEntity<?> handleNotify(@RequestBody MomoNotifyResponse notifyResponse) {
+        logger.info("Received notify from MoMo: {}", notifyResponse);
+        try {
+            logger.info("Received notify from MoMo: {}", notifyResponse);
+//            try {
+//                // 1. Kiểm tra chữ ký
+//                String rawData = "partnerCode=" + notifyResponse.getPartnerCode() +
+//                        "&orderId=" + notifyResponse.getOrderId() +
+//                        "&requestId=" + notifyResponse.getRequestId() +
+//                        "&amount=" + notifyResponse.getAmount() +
+//                        "&orderInfo=" + notifyResponse.getOrderInfo() +
+//                        "&orderType=" + notifyResponse.getOrderType() +
+//                        "&transId=" + notifyResponse.getTransId() +
+//                        "&errorCode=" + notifyResponse.getErrorCode() +
+//                        "&message=" + notifyResponse.getMessage() +
+//                        "&localMessage=" + notifyResponse.getLocalMessage() +
+//                        "&responseTime=" + notifyResponse.getResponseTime();
+//
+//                String secretKey = "your_secret_key"; // Lấy từ tài khoản MoMo
+//                String calculatedSignature = Encoder.hashSHA256(rawData);
+//
+//                if (!calculatedSignature.equals(notifyResponse.getSignature())) {
+//                    throw new IllegalArgumentException("Invalid signature from MoMo");
+//                }
+//
+//                // 2. Cập nhật trạng thái giao dịch
+//                if ("0".equals(notifyResponse.getErrorCode())) {
+//                    // Giao dịch thành công
+////                    paymentService.updatePaymentStatus(notifyResponse.getOrderId(), "success");
+//                } else {
+//                    // Giao dịch thất bại
+////                    paymentService.updatePaymentStatus(notifyResponse.getOrderId(), "failed");
+//                }
+//            paymentService.updatePaymentStatus(notifyResponse);
+            return ResponseEntity.ok("Notify received successfully");
+        } catch (Exception e) {
+            logger.error("Error processing notify: " + e.getMessage(), e);
+            return ResponseEntity.status(500).body("Error processing notify");
+        }
+    }
+
+    @GetMapping("/momo/response")
+    public ResponseEntity<String> momoResponse(@RequestParam Map<String, String> params) {
+        try {
+            logger.info("Momo response: " + params);
+            return ResponseEntity.ok("Momo Response");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(500).body("Momo failed");
         }
     }
 

@@ -19,7 +19,6 @@ public class OrderRequest {
     private String userId;
     @NotEmpty(message = "Total price is required")
     private BigDecimal totalPrice;
-    @NotEmpty(message = "Discount id is required")
     private Integer discountId;
     @NotEmpty(message = "Address id is required")
     private Integer addressId;

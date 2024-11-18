@@ -83,10 +83,10 @@ public class OrderController{
                         new ResponseObject("error", bindingResult.getAllErrors().get(0).getDefaultMessage(), null)
                 );
             }
-            orderService.addOrderWithDetailsUsingProcedure(orderRequest.getUserId(), orderRequest.getTotalPrice(), orderRequest.getDiscountId(), orderRequest.getOrderDetails(), orderRequest.getNote(), orderRequest.getAddressId(), orderRequest.getPaymentMethod());
+            Object payUrl = orderService.addOrderWithDetailsUsingProcedure(orderRequest.getUserId(), orderRequest.getTotalPrice(), orderRequest.getDiscountId(), orderRequest.getOrderDetails(), orderRequest.getNote(), orderRequest.getAddressId(), orderRequest.getPaymentMethod());
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Add order with details successfully!", orderRequest)
+                    new ResponseObject("ok", "Add order with details successfully!", payUrl)
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
