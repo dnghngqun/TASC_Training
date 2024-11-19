@@ -12,13 +12,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 public class OrderDetail {
-    private Integer id;
-    private Integer orderId;
     private Integer quantity;
     private Integer productId;
     private BigDecimal price;
-    private String status; //'create','pending', 'success', 'cancel', 'error'
-    private Instant createdAt;
-    private Instant updatedAt;
-    private Instant deletedAt;
 }

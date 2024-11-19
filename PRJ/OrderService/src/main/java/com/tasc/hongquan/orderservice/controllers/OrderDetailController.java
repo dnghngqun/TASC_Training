@@ -19,7 +19,7 @@ public class OrderDetailController {
     @PostMapping("/add")
     public ResponseEntity<ResponseObject> addOrderDetail(@RequestBody OrderDetail orderDetail){
         try {
-            orderDetailService.addOrderDetail(orderDetail);
+//            orderDetailService.addOrderDetail(orderDetail);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Add order detail successfully", orderDetail)
             );
@@ -33,7 +33,7 @@ public class OrderDetailController {
     @PutMapping("/update")
     public ResponseEntity<ResponseObject> updateOrderDetail(@RequestBody OrderDetail orderDetail){
         try {
-            orderDetailService.updateOrderDetail(orderDetail);
+//            orderDetailService.updateOrderDetail(orderDetail);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Update order detail successfully", orderDetail)
             );

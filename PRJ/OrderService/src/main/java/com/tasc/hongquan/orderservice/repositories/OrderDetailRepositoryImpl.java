@@ -14,17 +14,17 @@ import java.util.List;
 public class OrderDetailRepositoryImpl implements OrderDetailRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Override
-    public void addOrderDetail(OrderDetail orderDetail) {
-        String sql = "INSERT INTO order_details (order_id, quantity, price, product_id, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, orderDetail.getOrderId(), orderDetail.getQuantity(), orderDetail.getPrice(), orderDetail.getProductId(), orderDetail.getCreatedAt(), orderDetail.getUpdatedAt(), orderDetail.getDeletedAt());
-    }
-
-    @Override
-    public void updateOrderDetail(OrderDetail orderDetail) {
-        String sql = "UPDATE order_details SET order_id = ?, quantity = ?, price = ?, product_id = ?, created_at = ?, updated_at = ?, deleted_at = ? WHERE id = ?";
-        jdbcTemplate.update(sql, orderDetail.getOrderId(), orderDetail.getQuantity(), orderDetail.getPrice(), orderDetail.getProductId(), orderDetail.getCreatedAt(), orderDetail.getUpdatedAt(), orderDetail.getDeletedAt(), orderDetail.getId());
-    }
+//    @Override
+//    public void addOrderDetail(OrderDetail orderDetail) {
+//        String sql = "INSERT INTO order_details (order_id, quantity, price, product_id, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//        jdbcTemplate.update(sql, orderDetail.getOrderId(), orderDetail.getQuantity(), orderDetail.getPrice(), orderDetail.getProductId(), orderDetail.getCreatedAt(), orderDetail.getUpdatedAt(), orderDetail.getDeletedAt());
+//    }
+//
+//    @Override
+//    public void updateOrderDetail(OrderDetail orderDetail) {
+//        String sql = "UPDATE order_details SET order_id = ?, quantity = ?, price = ?, product_id = ?, created_at = ?, updated_at = ?, deleted_at = ? WHERE id = ?";
+//        jdbcTemplate.update(sql, orderDetail.getOrderId(), orderDetail.getQuantity(), orderDetail.getPrice(), orderDetail.getProductId(), orderDetail.getCreatedAt(), orderDetail.getUpdatedAt(), orderDetail.getDeletedAt(), orderDetail.getId());
+//    }
 
     @Override
     public void deleteOrderDetail(int id) {
@@ -46,14 +46,14 @@ public class OrderDetailRepositoryImpl implements OrderDetailRepository {
 
     private OrderDetail mapToOrderDetail(ResultSet rs, int rowNum) throws SQLException {
         return new OrderDetail().builder()
-                .id(rs.getInt("order_detail_id"))
-                .orderId(rs.getInt("order_id"))
+//                .id(rs.getInt("order_detail_id"))
+//                .orderId(rs.getInt("order_id"))
                 .quantity(rs.getInt("quantity"))
                 .price(rs.getBigDecimal("price"))
                 .productId(rs.getInt("product_id"))
-                .createdAt(rs.getTimestamp("created_at").toInstant())
-                .updatedAt(rs.getTimestamp("updated_at").toInstant())
-                .deletedAt(rs.getTimestamp("deleted_at").toInstant())
+//                .createdAt(rs.getTimestamp("created_at").toInstant())
+//                .updatedAt(rs.getTimestamp("updated_at").toInstant())
+//                .deletedAt(rs.getTimestamp("deleted_at").toInstant())
                 .build();
     }
 

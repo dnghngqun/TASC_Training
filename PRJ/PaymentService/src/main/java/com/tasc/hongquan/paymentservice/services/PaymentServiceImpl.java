@@ -37,13 +37,12 @@ public class PaymentServiceImpl implements PaymentService{
         String returnURL = "http://localhost:8088/api/v1/payments/momo/response";
         String notifyURL = "http://localhost:8088/api/v1/payments/notify";
         Environment environment = Environment.selectEnv("dev");
-//        Integer orderId = payment.getOrder().getId();
-        String orderId = String.valueOf(System.currentTimeMillis());
-//        BigDecimal amount = payment.getOrder().getTotalPrice();
-        BigDecimal amount = new BigDecimal(10000);
-        PaymentResponse captureWalletMoMoResponse = CreateOrderMomo.process(environment, orderId, requestId, amount.toString(),
+        String orderId = payment.getOrder().getId().toString();
+        BigDecimal totalPrice = payment.getOrder().getTotalPrice();
+        logger.info("Amount: " + totalPrice);
+        BigDecimal amount = new BigDecimal(Double.parseDouble(totalPrice.toString()));
+        PaymentResponse captureWalletMoMoResponse = CreateOrderMomo.process(environment, orderId, requestId, amount,
                 orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
-
 
         payment.setCreatedAt(Instant.now());
         payment.setPaymentStatus("pending");

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   faBagShopping,
   faCaretDown,
@@ -7,14 +7,15 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { ToastrService } from 'ngx-toastr';
-import { productCartResponse } from '../../dto/productCartResponse.model';
-import { User } from '../../models/user.model';
-import { AuthService } from '../../services/auth.service';
-import { EncryptionService } from '../../services/encryption.service';
-import { ProductService } from '../../services/product.service';
+import {Router} from '@angular/router';
+import {CookieService} from 'ngx-cookie-service';
+import {ToastrService} from 'ngx-toastr';
+import {productCartResponse} from '../../dto/productCartResponse.model';
+import {User} from '../../models/user.model';
+import {AuthService} from '../../services/auth.service';
+import {EncryptionService} from '../../services/encryption.service';
+import {ProductService} from '../../services/product.service';
+import {DataCartService} from '../../services/dataCart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -29,19 +30,24 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private encryptionService: EncryptionService,
     private cookieService: CookieService,
-  ) {}
+    private dataCartService: DataCartService
+  ) {
+  }
+
   quantity: number = 1;
   totalCart: number = 0;
   productCart: productCartResponse[] = [];
   isLoggedIn: boolean = false;
   totalPriceProduct: number = 0;
   private intervalId: any;
+
   ngOnInit() {
     this.updateLoginStatus();
     this.intervalId = setInterval(() => {
       this.updateLoginStatus();
     }, 2000);
   }
+
   faCaretDown = faCaretDown;
   faMagnifyingGlass = faMagnifyingGlass;
   faUser = faUser;
@@ -51,12 +57,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     clearInterval(this.intervalId);
   }
+
   private updateLoginStatus() {
     this.isLoggedIn = this.authService.getIsLoggedIn();
     if (this.isLoggedIn) {
       this.handleGetProductFromCart();
     }
   }
+
+  handleClickPayment() {
+    const dataSent = {
+      productCart: this.productCart,
+      totalPrice: this.totalPriceProduct
+    }
+    this.dataCartService.setData(dataSent);
+    this.router.navigate(['/payment']);
+  }
+
 
   handleDecreaseQuantity(productId: number) {
     const encodedUser = this.cookieService.get('user');
@@ -101,6 +118,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         });
     }
   }
+
   handleRemoveProductFromCart(productId: number) {
     const encodedUser = this.cookieService.get('user');
     if (encodedUser) {
@@ -142,6 +160,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   handleGetProductFromCart() {
     const encodedUser = this.cookieService.get('user');
     if (!encodedUser) {
@@ -161,5 +180,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
-  getUserInformation() {}
+  getUserInformation() {
+  }
 }

@@ -12,34 +12,34 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDetailServiceImpl implements OrderDetailService{
     private final OrderDetailRepository orderDetailRepository;
-    @Override
-    public void addOrderDetail(OrderDetail orderDetail) {
-        orderDetail.setCreatedAt(Instant.now());
-        orderDetail.setUpdatedAt(Instant.now());
-        orderDetailRepository.addOrderDetail(orderDetail);
-    }
-
-    @Override
-    public void updateOrderDetail(OrderDetail orderDetailUpdate) {
-        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailUpdate.getId());
-        if(orderDetail == null){
-            throw new RuntimeException("OrderDetail not found");
-        }
-        if(orderDetailUpdate.getOrderId() != null){
-            orderDetail.setOrderId(orderDetailUpdate.getOrderId());
-        }
-        if(orderDetailUpdate.getProductId() != null){
-            orderDetail.setProductId(orderDetailUpdate.getProductId());
-        }
-        if(orderDetailUpdate.getQuantity() != null){
-            orderDetail.setQuantity(orderDetailUpdate.getQuantity());
-        }
-        if(orderDetailUpdate.getPrice() != null){
-            orderDetail.setPrice(orderDetailUpdate.getPrice());
-        }
-        orderDetail.setUpdatedAt(Instant.now());
-        orderDetailRepository.updateOrderDetail(orderDetail);
-    }
+//    @Override
+//    public void addOrderDetail(OrderDetail orderDetail) {
+//        orderDetail.setCreatedAt(Instant.now());
+//        orderDetail.setUpdatedAt(Instant.now());
+//        orderDetailRepository.addOrderDetail(orderDetail);
+//    }
+//
+//    @Override
+//    public void updateOrderDetail(OrderDetail orderDetailUpdate) {
+//        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailUpdate.getId());
+//        if(orderDetail == null){
+//            throw new RuntimeException("OrderDetail not found");
+//        }
+//        if(orderDetailUpdate.getOrderId() != null){
+//            orderDetail.setOrderId(orderDetailUpdate.getOrderId());
+//        }
+//        if(orderDetailUpdate.getProductId() != null){
+//            orderDetail.setProductId(orderDetailUpdate.getProductId());
+//        }
+//        if(orderDetailUpdate.getQuantity() != null){
+//            orderDetail.setQuantity(orderDetailUpdate.getQuantity());
+//        }
+//        if(orderDetailUpdate.getPrice() != null){
+//            orderDetail.setPrice(orderDetailUpdate.getPrice());
+//        }
+//        orderDetail.setUpdatedAt(Instant.now());
+//        orderDetailRepository.updateOrderDetail(orderDetail);
+//    }
 
     @Override
     public void deleteOrderDetail(int id) {

@@ -56,6 +56,7 @@ CREATE TABLE categories (
 CREATE TABLE address_book(
 	address_book_id INT AUTO_INCREMENT PRIMARY KEY,
 	full_name VARCHAR(255) NOT NULL,
+    phoneNumber VARCHAR(255) NOT NULL,
 	address TEXT,
 	user_id CHAR(36)
 );
@@ -205,9 +206,7 @@ ALTER TABLE posts
 ALTER TABLE comments
     ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(post_id);
    
-  
 DELIMITER $$
-
 CREATE PROCEDURE add_order_with_details(
     IN userId CHAR(36), 
     IN totalPrice DECIMAL(10,2), 
@@ -225,7 +224,7 @@ BEGIN
 
     -- Thêm Order
     INSERT INTO orders (user_id, total_price, discount_id, status, note, address_book_id) 
-    VALUES (userId, totalPrice, discountId, 'pending', noteRq, addressBookId);
+    VALUES (userId, totalPrice, IFNULL(discountId, NULL), 'pending', IFNULL(noteRq, NULL), addressBookId);
     
     SET @orderId = LAST_INSERT_ID();
 
@@ -241,10 +240,12 @@ BEGIN
 
         SET i = i + 1;
     END WHILE;
+
+    -- Trả về thông tin Order vừa được thêm
+    SELECT * FROM orders WHERE id = @orderId;
 END$$
 
 DELIMITER ;
-
 
 DELIMITER $$
 
@@ -260,5 +261,15 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+CALL add_order_with_details(
+    'ef5e6a60-3fc6-4b06-86c0-82120b3a2b3b', 
+    10000, 
+    NULL, 
+    'Test note', 
+    1, 
+    '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
+);
 
 

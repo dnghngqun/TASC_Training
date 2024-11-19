@@ -1,17 +1,14 @@
 package com.tasc.hongquan.orderservice.models;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-
 @NoArgsConstructor
 public class Order {
     private Integer id;
@@ -23,5 +20,20 @@ public class Order {
     private Instant createdAt;
     private Instant updatedAt;
     private Instant deletedAt;
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", totalPrice=" + totalPrice +
+                ", status='" + status + '\'' +
+                ", addressId=" + addressId +
+                ", discountId=" + discountId +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
+                '}';
+    }
 }
 

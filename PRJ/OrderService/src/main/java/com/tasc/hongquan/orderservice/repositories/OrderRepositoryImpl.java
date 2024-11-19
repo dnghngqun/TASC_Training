@@ -1,7 +1,11 @@
 package com.tasc.hongquan.orderservice.repositories;
 
+import com.tasc.hongquan.orderservice.mapper.OrderRowMapper;
 import com.tasc.hongquan.orderservice.models.Order;
 import com.tasc.hongquan.orderservice.models.OrderDetail;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,11 +19,13 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 @Repository
 public class OrderRepositoryImpl implements OrderRepository{
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private final Logger logger = LoggerFactory.getLogger(OrderRepositoryImpl.class);
 
     public List<Order> getAllOrders(){
         String sql = "SELECT * FROM orders";
@@ -58,24 +64,31 @@ public class OrderRepositoryImpl implements OrderRepository{
         try {
             //convert list to JSON
             orderDetailsJson = objectMapper.writeValueAsString(orderDetails);
+            logger.info("Order Details JSON: " + orderDetailsJson);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("add_order_with_details")
-                .returningResultSet("order", new BeanPropertyRowMapper<>(Order.class));
+                .returningResultSet("order", new OrderRowMapper());
 
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         params.put("totalPrice", totalPrice);
-        params.put("discountId", discountId);
+        params.put("discountId", discountId != null ? discountId : null);
         params.put("orderDetails", orderDetailsJson);
-        params.put("noteRq", note);
+        params.put("noteRq", note != null ? note : null);
         params.put("addressBookId", addressId);
 
         Map<String, Object> result = jdbcCall.execute(params);
-        return (Order) result.get("order");
+
+        logger.info("Rs: {}",result);
+        List<Order> orders = (List<Order>) result.get("order");
+        Order order = orders.get(0);
+        System.out.println(order);
+        return order;
+
     }
 
 
@@ -83,6 +96,7 @@ public class OrderRepositoryImpl implements OrderRepository{
         return new Order().builder()
                 .id(rs.getInt("order_id"))
                 .userId(rs.getString("user_id"))
+                .addressId(rs.getInt("address_book_id"))
                 .totalPrice(rs.getBigDecimal("total_price"))
                 .status(rs.getString("status"))
                 .discountId(rs.getInt("discount_id"))

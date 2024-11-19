@@ -1,6 +1,6 @@
 <header id="header">
   <div class="h-left">
-    <img src="assets/img/logo.webp" alt="logo" />
+    <img src="assets/img/logo.webp" alt="logo"/>
   </div>
   <div class="h-center">
     <ul class="item-head">
@@ -14,7 +14,7 @@
         <a
           [routerLink]="['collections', 'all']"
           routerLinkActive="router-link-active"
-          >Sản phẩm
+        >Sản phẩm
         </a>
         <!-- <fa-icon [icon]="faCaretDown" class="caretDown" />
         <div class="dropdown-container row">
@@ -132,10 +132,10 @@
   </div>
   <div class="h-right">
     <a href="#">
-      <fa-icon class="icon i-search" size="lg" [icon]="faMagnifyingGlass" />
+      <fa-icon class="icon i-search" size="lg" [icon]="faMagnifyingGlass"/>
     </a>
     <a href="#" class="dropdown-user">
-      <fa-icon class="icon i-user" size="lg" [icon]="faUser" />
+      <fa-icon class="icon i-user" size="lg" [icon]="faUser"/>
       <div *ngIf="!isLoggedIn" class="dropdown-user-container">
         <a [routerLink]="['/register']" class="dropdown-user-item"> Đăng ký </a>
         <a [routerLink]="['/login']" class="dropdown-user-item"> Đăng nhập </a>
@@ -146,12 +146,12 @@
       </div>
     </a>
     <a href="#" class="link-heart i-link" title="Sản phẩm yêu thích">
-      <fa-icon class="icon i-heart" size="lg" [icon]="faHeart" />
+      <fa-icon class="icon i-heart" size="lg" [icon]="faHeart"/>
       <span class="count count-heart">1</span>
     </a>
 
     <a [routerLink]="['cart']" class="link-shop i-link">
-      <fa-icon class="icon i-shop" size="lg" [icon]="faBagShopping" />
+      <fa-icon class="icon i-shop" size="lg" [icon]="faBagShopping"/>
       <span class="count count-shop">{{ totalCart }}</span>
     </a>
     <div class="dropdown-cart">
@@ -171,7 +171,7 @@
                 href="#"
                 class="remove"
                 (click)="handleRemoveProductFromCart(item.product.id)"
-                >Xóa</a
+              >Xóa</a
               >
               <div class="container-fluid">
                 <div class="row">
@@ -211,10 +211,10 @@
       <div class="total" *ngIf="productCart.length > 0">
         <span class="total-text">Tổng Tiền:</span>
         <span class="total-price"
-          >{{ totalPriceProduct | number: "1.0-0" }}đ</span
+        >{{ totalPriceProduct | number: "1.0-0" }}đ</span
         >
       </div>
-      <button class="btn-payment" *ngIf="productCart.length > 0">
+      <button class="btn-payment" (click)="handleClickPayment()" *ngIf="productCart.length > 0">
         Thanh Toán
       </button>
       <div class="no-product" *ngIf="!(productCart.length > 0)">

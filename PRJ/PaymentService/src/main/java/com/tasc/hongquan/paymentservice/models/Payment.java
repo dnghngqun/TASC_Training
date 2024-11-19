@@ -19,7 +19,7 @@ public class Payment {
     @Column(name = "payment_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")
     private Order order;
 

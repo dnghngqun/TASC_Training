@@ -2,11 +2,13 @@ package com.tasc.hongquan.paymentservice.models.momo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class PaymentRequest extends Request{
     private String orderInfo;
 
-    private long amount;
+    private BigDecimal amount;
     private String partnerName;
     private String subPartnerCode;
     private RequestType requestType;
@@ -19,7 +21,7 @@ public class PaymentRequest extends Request{
     private Long orderGroupId;
     private String signature;
 
-    public PaymentRequest(String partnerCode, String orderId, String requestId, Language lang, String orderInfo, long amount, String partnerName, String subPartnerCode, RequestType requestType, String redirectUrl, String ipnUrl, String storeId, String extraData, String partnerClientId, Boolean autoCapture, Long orderGroupId, String signature) {
+    public PaymentRequest(String partnerCode, String orderId, String requestId, Language lang, String orderInfo, BigDecimal amount, String partnerName, String subPartnerCode, RequestType requestType, String redirectUrl, String ipnUrl, String storeId, String extraData, String partnerClientId, Boolean autoCapture, Long orderGroupId, String signature) {
         super(partnerCode, orderId, requestId, lang);
         this.orderInfo = orderInfo;
         this.amount = amount;

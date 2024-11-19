@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.processing.AbstractProcessor;
+import java.math.BigDecimal;
+
 @Slf4j
 public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResponse> {
     public CreateOrderMomo(Environment environment) {
@@ -32,7 +34,7 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
      * @return PaymentResponse
      **/
 
-    public static PaymentResponse process(Environment env, String orderId, String requestId, String amount, String orderInfo, String returnURL, String notifyURL, String extraData, RequestType requestType, Boolean autoCapture) throws Exception {
+    public static PaymentResponse process(Environment env, String orderId, String requestId, BigDecimal amount, String orderInfo, String returnURL, String notifyURL, String extraData, RequestType requestType, Boolean autoCapture) throws Exception {
         try {
             CreateOrderMomo m2Processor = new CreateOrderMomo(env);
 
@@ -87,7 +89,7 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
      * @param extraData
      * @return
      */
-    public PaymentRequest createPaymentCreationRequest(String orderId, String requestId, String amount, String orderInfo,
+    public PaymentRequest createPaymentCreationRequest(String orderId, String requestId, BigDecimal amount, String orderInfo,
                                                        String returnUrl, String notifyUrl, String extraData, RequestType requestType, Boolean autoCapture) {
 
         try {
@@ -107,7 +109,7 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
             String signRequest = Encoder.signHmacSHA256(requestRawData, partnerInfo.getSecretKey());
             logger.debug("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
 
-            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo, Long.valueOf(amount), "test MoMo", null, requestType,
+            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo, amount, "test MoMo", null, requestType,
                     returnUrl, notifyUrl, "test store ID", extraData, null, autoCapture, null, signRequest);
         } catch (Exception e) {
             logger.error("[PaymentRequest] " + e);
