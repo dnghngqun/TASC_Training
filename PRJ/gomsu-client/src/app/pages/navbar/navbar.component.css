@@ -447,3 +447,9 @@
 .no-product .img-empty {
   width: 80%;
 }
+
+.cart-list {
+  scroll-behavior: smooth;
+  overflow: auto;
+  max-height: 50vh;
+}

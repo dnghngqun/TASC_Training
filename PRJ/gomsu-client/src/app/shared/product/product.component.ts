@@ -49,7 +49,7 @@ export class ProductComponent implements OnInit {
   }
 
   handleShowPopup(event: Event) {
-    this.quantity = 1;
+
     this.isShowPopup = !this.isShowPopup;
   }
 
@@ -79,7 +79,7 @@ export class ProductComponent implements OnInit {
         ) as User;
         console.log('User: ', user);
         console.log('Add to cart: ', this.product.id, this.quantity);
-        this.quantity = 1;
+
         this.productService
           .addProductToCart(this.product.id, this.quantity, user.id)
           .subscribe({
@@ -92,6 +92,8 @@ export class ProductComponent implements OnInit {
               this.toastr.error('Add to cart error');
             },
           });
+        this.quantity = 1;
+        this.isShowPopup = false;
       }
     } else {
       this.toastr.error('Please login to add to cart');
