@@ -16,6 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId")
     Page<Product> getAllProductsByCategory(Pageable pageable, int categoryId);
 
-    @Query(value = "SELECT * FROM order_details od JOIN products p ON od.product_id = p.product_id WHERE od.order_detail_id = :orderDetailId", nativeQuery = true)
+    @Query(value = "SELECT p.* FROM order_details od JOIN products p ON od.product_id = p.product_id WHERE od.order_detail_id = :orderDetailId", nativeQuery = true)
     Optional<Product> findByOrderDetailId(@Param("orderDetailId") int orderDetailId);
 }

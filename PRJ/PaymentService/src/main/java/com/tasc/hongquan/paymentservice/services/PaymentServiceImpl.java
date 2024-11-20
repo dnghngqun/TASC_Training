@@ -1,6 +1,9 @@
 package com.tasc.hongquan.paymentservice.services;
 
+import com.tasc.hongquan.paymentservice.client.OrderClient;
+import com.tasc.hongquan.paymentservice.client.ProductClient;
 import com.tasc.hongquan.paymentservice.config.Environment;
+import com.tasc.hongquan.paymentservice.dto.ResponseObject;
 import com.tasc.hongquan.paymentservice.exception.MoMoException;
 import com.tasc.hongquan.paymentservice.models.Order;
 import com.tasc.hongquan.paymentservice.models.Payment;
@@ -12,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +25,17 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-@AllArgsConstructor
+
 @Service
 @Slf4j
+@AllArgsConstructor
 public class PaymentServiceImpl implements PaymentService{
     private final PaymentRepository paymentRepository;
     private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private final OrderDetailRepository orderDetailRepository;
+    private OrderClient orderClient;
+    private ProductClient productClient;
+    private final OrderDetailService orderDetailService;
     @Override
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
@@ -96,5 +105,86 @@ public class PaymentServiceImpl implements PaymentService{
 
         }
         return mapOrderDetailIdAndQuantity;
+    }
+
+    @Override
+    public String executePayment(String orderId, String requestId, String orderInfo, String message, Integer resultCode) {
+        // 1. Kiểm tra chữ ký (signature)
+//            String requestRawData = new StringBuilder()
+//                    .append("accessKey=").append(accessKey).append("&")
+//                    .append("amount=").append(amount).append("&")
+//                    .append("extraData=").append(extraData).append("&")
+//                    .append("ipnUrl=").append(notifyURL).append("&")
+//                    .append("orderId=").append(orderId).append("&")
+//                    .append("orderInfo=").append(orderInfo).append("&")
+//                    .append("partnerCode=").append(partnerCode).append("&")
+//                    .append("redirectUrl=").append(returnURL).append("&")
+//                    .append("requestId=").append(requestId).append("&")
+//                    .append("requestType=").append("captureWallet")
+//                    .toString();
+//
+//            logger.info("Signature: " + signature);
+//            logger.info("SecretKey: " + secretKey);
+//            String expectedSignature = Encoder.signHmacSHA256(requestRawData, secretKey);
+//            logger.info("Expected signature: " + expectedSignature);
+//            if (!expectedSignature.equals(signature)) {
+//                logger.error("Invalid signature");
+//                return "<html><body>" +
+//                        "<script>" +
+//                        "window.opener.postMessage(" +
+//                        "{ message: 'Invalid signature' }, '*');" +
+//                        "window.close();" +  // Đóng popup sau khi gửi dữ liệu
+//                        "</script>" +
+//                        "</body></html>";
+////                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid signature");
+//            }
+
+        // 2. Xử lý kết quả giao dịch
+        if (resultCode == 0) {
+            // Giao dịch thành công
+            logger.info("Order " + orderId + " has been paid successfully.");
+            //TODO: Update status payment
+            updatePaymentById(requestId, new Payment().builder().paymentStatus("success").build());
+            //TODO: UPDATE STOCK PRODUCT
+            ConcurrentHashMap<Integer, Integer> productStock = getMapOrderDetailIdAndQuantityByOrderId(Integer.parseInt(orderId));
+            ResponseEntity<ResponseObject> updateStock = productClient.updateStockProduct(productStock);
+            if(updateStock.getStatusCode().is2xxSuccessful()) {
+                logger.info("Update stock successfully");
+                //Todo: Update database success for orderDetails
+                List<Integer> orderDetailSuccess = (List<Integer>) updateStock.getBody().getData();
+                for(Integer orderDetailId: productStock.keySet()){
+                    if(orderDetailSuccess.contains(orderDetailId)) {
+                        //update status success for orderDetail
+                        orderDetailService.updateOrderDetailStatus(orderDetailId, "success");
+                    }else {
+                        //update status error for orderDetail
+                        orderDetailService.updateOrderDetailStatus(orderDetailId, "error");
+                    }
+                }
+            }else {
+                logger.error("Update stock error");
+            }
+            // TODO: Update database for orderId
+            ResponseEntity<ResponseObject> orderResponse = orderClient.updateOrderById(Integer.parseInt(orderId), new Order().builder().status("success").build());
+            if(orderResponse.getStatusCode() == HttpStatus.OK) {
+                logger.info("Update order " + orderId + " successfully");
+            } else {
+                logger.error("Update order " + orderId + " failed");
+            }
+        } else {
+            // Failed transaction
+            //TODO: Update Payment to error
+            updatePaymentById(requestId, new Payment().builder().paymentStatus("error").build());
+            logger.error("Payment for Order " + orderId + " failed: " + message);
+        }
+
+        return "<html><body>" +
+                "<script>" +
+                "window.opener.postMessage(" +
+                "{ message: '" + message + "', orderId: '" + orderId + "', orderInfo: '" + orderInfo + "' }, '*');" +
+                "window.close();" +  // Đóng popup sau khi gửi dữ liệu
+                "</script>" +
+                "</body></html>";
+
     }
 }

@@ -98,9 +98,10 @@ CREATE TABLE cart (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
 -- Tạo bảng payments
 CREATE TABLE payments (
-    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    payment_id varchar(500) PRIMARY KEY,
     order_id INT,
     payment_method ENUM('online', 'on_delivery'),
     payment_status ENUM('pending','success','error', 'cancel') DEFAULT 'pending',
@@ -207,6 +208,7 @@ ALTER TABLE comments
     ADD CONSTRAINT fk_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(post_id);
    
 DELIMITER $$
+
 CREATE PROCEDURE add_order_with_details(
     IN userId CHAR(36), 
     IN totalPrice DECIMAL(10,2), 
@@ -242,7 +244,7 @@ BEGIN
     END WHILE;
 
     -- Trả về thông tin Order vừa được thêm
-    SELECT * FROM orders WHERE id = @orderId;
+    SELECT * FROM orders WHERE order_id = @orderId;
 END$$
 
 DELIMITER ;
@@ -267,7 +269,7 @@ CALL add_order_with_details(
     'ef5e6a60-3fc6-4b06-86c0-82120b3a2b3b', 
     10000, 
     NULL, 
-    'Test note', 
+    NULL, 
     1, 
     '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
 );

@@ -13,4 +13,5 @@ public interface PaymentService {
     void updatePaymentById(String id, Payment payment);
     void deletePaymentById(String id);
     ConcurrentHashMap<Integer, Integer> getMapOrderDetailIdAndQuantityByOrderId(int orderId);
+    String executePayment(String orderId,String requestId,String orderInfo,String message,Integer resultCode);
 }

@@ -64,14 +64,19 @@ public class ProductServiceImpl implements ProductService {
                     Integer quantity = entry.getValue();
                     int result = updateStock(orderDetailId, quantity);
                     if (result == 0) {
-                        productSuccess.add(orderDetailId);
+                        synchronized (productSuccess) {
+                            productSuccess.add(orderDetailId);
+                        }
                     }
 
                 }
             }));
-            for (Future<?> future : futures) {
-                future.get();
+            if (end == entries.size()) {
+                break;
             }
+        }
+        for (Future<?> future : futures) {
+            future.get();
         }
         return productSuccess;
 
