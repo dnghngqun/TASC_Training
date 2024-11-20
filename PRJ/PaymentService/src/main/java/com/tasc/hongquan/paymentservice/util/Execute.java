@@ -15,15 +15,17 @@ import java.io.IOException;
 public class Execute {
     OkHttpClient client = new OkHttpClient();
     Logger logger = LoggerFactory.getLogger(Execute.class);
-    public HttpResponse sendToMoMo(String endpoint, String payload) {
+    public HttpResponse sendToMoMo(String endpoint, String payload, String existingSignature) {
 
         try {
-
+            logger.info("[ExecuteSendToMoMo] Payload: " + payload);
+            payload = payload.replaceFirst("\"signature\":\"[^\"]*\"", "\"signature\":\"" + existingSignature + "\"");
+            logger.info("[ExecuteSendToMoMo] Payload after: " + payload);
             HttpRequest httpRequest = new HttpRequest("POST", endpoint, payload, "application/json");
 
             Request request = createRequest(httpRequest);
 
-            logger.debug("[HttpPostToMoMo] Endpoint:: " + httpRequest.getEndpoint() + ", RequestBody:: " + httpRequest.getPayload());
+            logger.info("[HttpPostToMoMo] Endpoint:: " + httpRequest.getEndpoint() + ", RequestBody:: " + httpRequest.getPayload());
 
             Response result = client.newCall(request).execute();
             HttpResponse response = new HttpResponse(result.code(), result.body().string(), result.headers());

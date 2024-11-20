@@ -5,12 +5,12 @@ import com.tasc.hongquan.paymentservice.models.Payment;
 import com.tasc.hongquan.paymentservice.models.momo.PaymentResponse;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface PaymentService {
     List<Payment> getAllPayments();
     PaymentResponse addPayment(Payment payment) throws Exception;
-    void updatePaymentById(int id, Payment payment);
-    void deletePaymentById(int id);
-
-
+    void updatePaymentById(String id, Payment payment);
+    void deletePaymentById(String id);
+    ConcurrentHashMap<Integer, Integer> getMapOrderDetailIdAndQuantityByOrderId(int orderId);
 }

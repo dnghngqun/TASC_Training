@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 public interface ProductService {
@@ -21,4 +23,6 @@ public interface ProductService {
     int getCountProduct(Integer categoryId);
 
     List<Product> getLimitNewProduct(int limit);
+
+    List<Integer> updateStockProduct(Map<Integer, Integer> productStocks) throws ExecutionException, InterruptedException;
 }

@@ -15,9 +15,8 @@ import java.time.Instant;
 @NoArgsConstructor
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_id", nullable = false)
-    private Integer id;
+    private String id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")

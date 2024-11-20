@@ -53,8 +53,9 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
         try {
 
             String payload = getGson().toJson(request, PaymentRequest.class);
-
-            HttpResponse response = execute.sendToMoMo(environment.getMomoEndpoint().getCreateUrl(), payload);
+            logger.info("[PaymentMoMoRequest] request payload: " + payload);
+            logger.info("[PaymentMoMoRequest] request signature: " +request.getSignature());
+            HttpResponse response = execute.sendToMoMo(environment.getMomoEndpoint().getCreateUrl(), payload, request.getSignature());
 
             if (response.getStatus() != 200) {
                 throw new MoMoException("[PaymentResponse] [" + request.getOrderId() + "] -> Error API");
@@ -106,8 +107,9 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
                     .append(Parameter.REQUEST_TYPE).append("=").append(requestType.getRequestType())
                     .toString();
 
+            logger.info("SecretKey: " + partnerInfo.getSecretKey());
             String signRequest = Encoder.signHmacSHA256(requestRawData, partnerInfo.getSecretKey());
-            logger.debug("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
+            logger.info("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
 
             return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo, amount, "test MoMo", null, requestType,
                     returnUrl, notifyUrl, "test store ID", extraData, null, autoCapture, null, signRequest);

@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/products")
@@ -37,6 +41,21 @@ public class ProductController {
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ResponseBody("error", "Product not added", null)
+            );
+        }
+    }
+
+    @PutMapping("/updateStock")
+    public ResponseEntity<ResponseBody> updateStockProduct(@RequestBody ConcurrentHashMap<Integer, Integer> productStock) {
+        try {
+            List<Integer> orderDetailSuccess = productService.updateStockProduct(productStock);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseBody("ok", "Product stock updated successfully", orderDetailSuccess)
+            );
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseBody("error", "Product stock not updated", null)
             );
         }
     }
