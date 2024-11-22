@@ -47,30 +47,31 @@ public class BeanConfig {
     public WebFilter corsFilter() {
         return (ServerWebExchange ctx, WebFilterChain chain) -> {
             ServerHttpRequest request = ctx.getRequest();
-            if (CorsUtils.isCorsRequest(request)) {
-                ServerHttpResponse response = ctx.getResponse();
-                // Kiểm tra nếu là OPTIONS request
-                if (request.getMethod() == HttpMethod.OPTIONS) {
-                    HttpHeaders headers = response.getHeaders();
-                    String origin = request.getHeaders().getOrigin();
+            ServerHttpResponse response = ctx.getResponse();
+            HttpHeaders headers = response.getHeaders();
 
-                    // Chỉ thêm header Access-Control-Allow-Origin nếu origin hợp lệ
-                    if (Arrays.asList(ALLOWED_ORIGINS).contains(origin)) {
-                        headers.add("Access-Control-Allow-Origin", origin);
-                    }
-
-                    headers.add("Access-Control-Allow-Methods", ALLOWED_METHODS);
-//                    headers.add("Access-Control-Max-Age", MAX_AGE);
-                    headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
-                    headers.setAccessControlAllowCredentials(true);
-
-                    response.setStatusCode(HttpStatus.OK);
-                    return Mono.empty();
+            // check origin valid
+            if (!headers.containsKey("Access-Control-Allow-Origin")) {
+                String origin = request.getHeaders().getOrigin();
+                if (origin != null && Arrays.asList(ALLOWED_ORIGINS).contains(origin)) {
+                    headers.add("Access-Control-Allow-Origin", origin);
                 }
+                headers.add("Access-Control-Allow-Credentials", "true");
+                headers.add("Access-Control-Allow-Methods", ALLOWED_METHODS);
+                headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+                headers.add("Access-Control-Max-Age", MAX_AGE);
             }
+
+            // Xử lý request OPTIONS
+            if (CorsUtils.isCorsRequest(request) && request.getMethod() == HttpMethod.OPTIONS) {
+                response.setStatusCode(HttpStatus.OK);
+                return Mono.empty();
+            }
+
             return chain.filter(ctx);
         };
     }
+
 
 
 }

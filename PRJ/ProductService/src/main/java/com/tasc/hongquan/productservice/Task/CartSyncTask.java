@@ -36,7 +36,6 @@ public class CartSyncTask {
     private RedisTemplate redisTemplate;
 
     @Scheduled(fixedRate = 1000 * 60 * 10) // 10 minutes
-    @Scheduled(fixedRate = 600000)  // Đồng bộ mỗi 10 phút
     public void syncCartFromRedisToDb() {
         List<String> userIds = (List<String>) redisTemplate
                 .opsForSet()
@@ -52,9 +51,9 @@ public class CartSyncTask {
             Map<Object, Object> cart = redisTemplate.opsForHash().entries(cartKey);
 
             if (!cart.isEmpty()) {
-                // Nếu giỏ hàng có trong Redis, đồng bộ dữ liệu vào DB
+                // if cart is not empty, save to db
                 cart.forEach((productId, quantity) -> {
-                    // Tạo hoặc cập nhật giỏ hàng trong DB
+                    //create or update to db
                     int productIdInt = Integer.parseInt(productId.toString());
                     Cart cartItem = new Cart();
                     cartItem.setUser(userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
@@ -63,8 +62,6 @@ public class CartSyncTask {
 
                     cartRepository.save(cartItem);
                 });
-
-                // Sau khi đồng bộ, có thể xóa giỏ hàng trong Redis
                 redisTemplate.delete(cartKey);
             }
         }

@@ -24,34 +24,39 @@ import java.util.Map;
 public class OrderRepositoryImpl implements OrderRepository{
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
+    private OrderRowMapper orderRowMapper = new OrderRowMapper();
     private final Logger logger = LoggerFactory.getLogger(OrderRepositoryImpl.class);
 
     public List<Order> getAllOrders(){
         String sql = "SELECT * FROM orders";
-        return jdbcTemplate.query(sql, this::mapRowToOrder);
+        return jdbcTemplate.query(sql, orderRowMapper);
     }
 
     public void addOrder(Order order){
-        String sql = "INSERT INTO orders (user_id, total_price, status, discount_id, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, order.getUserId(), order.getTotalPrice(), order.getStatus(), order.getDiscountId(), order.getCreatedAt(), order.getUpdatedAt(), order.getDeletedAt());
+        String sql = "INSERT INTO orders (user_id, total_price, status, discount_id,address_book_id,note, created_at, updated_at, deleted_at) VALUES (?,?,?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, order.getUserId(), order.getTotalPrice(), order.getStatus(), order.getDiscountId(),order.getAddressId(),order.getNote(), order.getCreatedAt(), order.getUpdatedAt(), order.getDeletedAt());
     }
 
-    public void updateOrderById( Order order){
-        String sql = "UPDATE orders SET user_id = ?, total_price = ?, status = ?, discount_id = ?, created_at = ?, updated_at = ?, deleted_at = ? WHERE id = ?";
-        jdbcTemplate.update(sql, order.getUserId(), order.getTotalPrice(), order.getStatus(), order.getDiscountId(), order.getCreatedAt(), order.getUpdatedAt(), order.getDeletedAt(), order.getId());
+    public Order updateOrderById( Order order){
+        String sql = "UPDATE orders SET user_id = ?, total_price = ?, status = ?, discount_id = ?, created_at = ?, updated_at = ?, deleted_at = ? WHERE order_id = ?";
+        int result = jdbcTemplate.update(sql, order.getUserId(), order.getTotalPrice(), order.getStatus(), order.getDiscountId(), order.getCreatedAt(), order.getUpdatedAt(), order.getDeletedAt(), order.getId());
+        if(result == 1){
+            return order;
+        }
+        return null;
     }
 
     @Override
     public void deleteOrderById(int id) {
-        String sql = "UPDATE orders SET deleted_at = ? WHERE id = ?";
+        String sql = "UPDATE orders SET deleted_at = ? WHERE order_id = ?";
         jdbcTemplate.update(sql, Instant.now(), id);
     }
 
     @Override
     public Order findById(int id) {
-        String sql = "SELECT * FROM orders WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, this::mapRowToOrder, id);
+        String sql = "SELECT * FROM orders WHERE order_id = ?";
+        logger.info("Executing SQL: {} with id: {}", sql, id);
+        return jdbcTemplate.queryForObject(sql, orderRowMapper, id);
     }
 
 
@@ -71,7 +76,7 @@ public class OrderRepositoryImpl implements OrderRepository{
 
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("add_order_with_details")
-                .returningResultSet("order", new OrderRowMapper());
+                .returningResultSet("order", orderRowMapper);
 
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);

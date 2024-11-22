@@ -16,6 +16,7 @@ public class Order {
     private BigDecimal totalPrice;
     private String status; //'create','pending', 'delivered', 'success', 'cancel', 'error'
     private Integer addressId;
+    private String note;
     private Integer discountId;
     private Instant createdAt;
     private Instant updatedAt;

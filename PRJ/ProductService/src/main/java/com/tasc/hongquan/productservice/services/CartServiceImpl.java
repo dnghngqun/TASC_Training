@@ -113,7 +113,7 @@ public class CartServiceImpl implements CartService {
     public void clearCart(String userId) {
         String cartKey = CART_KEY_PREFIX + userId;
         redisTemplate.delete(cartKey);
-
+        cartRepository.clearCartByUserId(userId);
         // Xóa userId khỏi set activeCarts khi giỏ hàng đã được xóa
         redisTemplate.opsForSet().remove("activeCarts", userId);
     }

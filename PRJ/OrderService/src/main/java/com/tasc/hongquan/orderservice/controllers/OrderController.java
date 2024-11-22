@@ -2,9 +2,13 @@ package com.tasc.hongquan.orderservice.controllers;
 
 import com.tasc.hongquan.orderservice.dto.OrderRequest;
 import com.tasc.hongquan.orderservice.dto.ResponseObject;
+import com.tasc.hongquan.orderservice.kafka.ProducerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.tasc.hongquan.orderservice.models.Order;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,13 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import com.tasc.hongquan.orderservice.services.OrderService;
 
 import java.util.List;
-
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/orders")
 public class OrderController{
     private final OrderService orderService;
-
+    private final ProducerService producerService;
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllOrders() {
         try {
@@ -50,11 +55,12 @@ public class OrderController{
     @PutMapping("/update")
     public ResponseEntity<ResponseObject> updateOrderById(@RequestParam int id, @RequestBody Order order){
         try{
-            orderService.updateOrderById(id, order);
+            Order orderUpdate = orderService.updateOrderById(id, order);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update order successfully!", order)
+                    new ResponseObject("ok", "Update order successfully!", orderUpdate)
             );
         } catch (Exception e) {
+            logger.error("Error to update order: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ResponseObject("error", "Update order failed!", null)
             );
@@ -84,7 +90,7 @@ public class OrderController{
                 );
             }
             Object payUrl = orderService.addOrderWithDetailsUsingProcedure(orderRequest.getUserId(), orderRequest.getTotalPrice(), orderRequest.getDiscountId(), orderRequest.getOrderDetails(), orderRequest.getNote(), orderRequest.getAddressId(), orderRequest.getPaymentMethod());
-
+            producerService.sendMessage("insertOrderTopic","order created");
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Add order with details successfully!", payUrl)
             );

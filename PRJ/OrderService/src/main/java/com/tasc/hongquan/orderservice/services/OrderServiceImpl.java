@@ -37,8 +37,10 @@ public class OrderServiceImpl implements OrderService{
 
 
     @Override
-    public void updateOrderById(int id, Order updateOrder) {
+    public Order updateOrderById(int id, Order updateOrder) {
         Order order = orderRepository.findById(id);
+        logger.info("Order found: " + order);
+        logger.info("Order to update: " + updateOrder);
         if(order == null){
             throw new RuntimeException("Order not found");
         }
@@ -51,11 +53,18 @@ public class OrderServiceImpl implements OrderService{
         if(updateOrder.getStatus() != null){
             order.setStatus(updateOrder.getStatus());
         }
+        if(updateOrder.getAddressId() != null){
+            order.setAddressId(updateOrder.getAddressId());
+        }
+        if(updateOrder.getNote() != null){
+            order.setNote(updateOrder.getNote());
+        }
         if(updateOrder.getDiscountId() != null){
             order.setDiscountId(updateOrder.getDiscountId());
         }
         order.setUpdatedAt(Instant.now());
-        orderRepository.updateOrderById(order);
+        logger.info("Order update: "+ order);
+        return orderRepository.updateOrderById(order);
     }
 
     @Override

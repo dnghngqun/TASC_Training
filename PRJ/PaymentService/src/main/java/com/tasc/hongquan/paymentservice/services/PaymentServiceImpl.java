@@ -109,6 +109,9 @@ public class PaymentServiceImpl implements PaymentService{
 
     @Override
     public String executePayment(String orderId, String requestId, String orderInfo, String message, Integer resultCode) {
+        String paymentStatus = "error";
+        String userId = paymentRepository.getUserIdByPaymentId(requestId);
+        logger.debug("User id: " + userId);
         // 1. Kiểm tra chữ ký (signature)
 //            String requestRawData = new StringBuilder()
 //                    .append("accessKey=").append(accessKey).append("&")
@@ -143,8 +146,11 @@ public class PaymentServiceImpl implements PaymentService{
         if (resultCode == 0) {
             // Giao dịch thành công
             logger.info("Order " + orderId + " has been paid successfully.");
+            paymentStatus = "success";
             //TODO: Update status payment
             updatePaymentById(requestId, new Payment().builder().paymentStatus("success").build());
+            //TODO: DELETE CART
+            ResponseEntity<ResponseObject> deleteCart = productClient.clearCart(userId);
             //TODO: UPDATE STOCK PRODUCT
             ConcurrentHashMap<Integer, Integer> productStock = getMapOrderDetailIdAndQuantityByOrderId(Integer.parseInt(orderId));
             ResponseEntity<ResponseObject> updateStock = productClient.updateStockProduct(productStock);
@@ -181,10 +187,9 @@ public class PaymentServiceImpl implements PaymentService{
         return "<html><body>" +
                 "<script>" +
                 "window.opener.postMessage(" +
-                "{ message: '" + message + "', orderId: '" + orderId + "', orderInfo: '" + orderInfo + "' }, '*');" +
+                "{ message: '" + message + "', orderId: '" + orderId + "', orderInfo: '" + orderInfo + "' , paymentStatus: '" + paymentStatus + "'}, '*');" +
                 "window.close();" +  // Đóng popup sau khi gửi dữ liệu
                 "</script>" +
                 "</body></html>";
-
     }
 }

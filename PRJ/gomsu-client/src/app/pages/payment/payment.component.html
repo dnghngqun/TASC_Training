@@ -139,7 +139,7 @@
         </div>
         <div class="action">
           <a class="returnCart" [routerLink]="['/cart']">Quay về giỏ hàng</a>
-          <button class="btn-order">Đặt Hàng</button>
+          <button class="btn-order" (click)="handlePayment()" [disabled]="isLoading">Đặt Hàng</button>
         </div>
 
       </div>
@@ -147,3 +147,7 @@
     </div>
   </div>
 </section>
+<div class="loader-container" *ngIf="isLoading">
+  <div class="loader"></div>
+</div>
+
