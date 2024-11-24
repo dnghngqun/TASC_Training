@@ -22,6 +22,12 @@ import { RegisterComponent } from './pages/register/register.component';
 import { BreadcrumbModule } from './shared/breadcrumb/breadcrumb.module';
 import { ProductModule } from './shared/product/product.module';
 import { PaymentComponent } from './pages/payment/payment.component';
+import { AccountComponent } from './pages/account/account.component';
+import { SidebarAccountComponent } from './pages/account/sidebar-account/sidebar-account.component';
+import { InfomationComponent } from './pages/account/infomation/infomation.component';
+import { OrderComponent } from './pages/account/order/order.component';
+import { ChangePasswordComponent } from './pages/account/change-password/change-password.component';
+import { AddressComponent } from './pages/account/address/address.component';
 
 const googleClientId = environment.googleClientId;
 @NgModule({
@@ -34,6 +40,12 @@ const googleClientId = environment.googleClientId;
     LoginComponent,
     ForgotPasswordComponent,
     PaymentComponent,
+    AccountComponent,
+    SidebarAccountComponent,
+    InfomationComponent,
+    OrderComponent,
+    ChangePasswordComponent,
+    AddressComponent,
   ],
   imports: [
     BrowserModule,
