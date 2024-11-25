@@ -1,5 +1,6 @@
 package com.tasc.hongquan.productservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tasc.hongquan.productservice.models.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,10 @@ public interface ProductService {
 
     Product getProductById(int id);
 
-    Page<Product> getAllProducts(int page, int size, Integer categoryId);
+    Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException;
 
     int getCountProduct(Integer categoryId);
 
-    List<Product> getLimitNewProduct(int limit);
 
     List<Integer> updateStockProduct(Map<Integer, Integer> productStocks) throws ExecutionException, InterruptedException;
 }

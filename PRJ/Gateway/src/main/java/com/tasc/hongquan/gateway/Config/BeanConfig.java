@@ -71,7 +71,4 @@ public class BeanConfig {
             return chain.filter(ctx);
         };
     }
-
-
-
 }

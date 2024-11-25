@@ -1,25 +1,25 @@
 <div class="wrapper">
-  <app-slider></app-slider>
-  <app-catalog></app-catalog>
-  <div class="product">
-    <div class="heading container">
-      <h1 class="heading-text">Sản phẩm mới nhất</h1>
-      <div class="filter">
-        <a href="#" class="filter-item filter-item-active">Tất cả</a>
-        <a href="#" class="filter-item">Bộ Trà</a>
-        <a href="#" class="filter-item">Cà Phê</a>
-        <a href="#" class="filter-item">Phụ kiện trà - Cà phê</a>
-      </div>
-    </div>
-    <div class="products container">
-      <div class="row">
-        <div class="product-item col-sm-3" *ngFor="let item of products">
-          <app-product [product]="item"></app-product>
+    <app-slider></app-slider>
+    <app-catalog></app-catalog>
+    <div class="product">
+        <div class="heading container">
+            <h1 class="heading-text">Sản phẩm mới nhất</h1>
+            <div class="filter">
+                <a href="#" class="filter-item filter-item-active">Tất cả</a>
+                <a href="#" class="filter-item">Bộ Trà</a>
+                <a href="#" class="filter-item">Cà Phê</a>
+                <a href="#" class="filter-item">Phụ kiện trà - Cà phê</a>
+            </div>
         </div>
-      </div>
+        <div class="products container">
+            <div class="row">
+                <div class="product-item col-sm-3" *ngFor="let item of products">
+                    <app-product [product]="item"></app-product>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <a [routerLink]="['collections', 'all']" class="btn-viewall">
-    <span class="btn-viewall-text">Xem tất cả</span>
-  </a>
+    <a [routerLink]="['collections', 'all']" class="btn-viewall">
+        <span class="btn-viewall-text">Xem tất cả</span>
+    </a>
 </div>

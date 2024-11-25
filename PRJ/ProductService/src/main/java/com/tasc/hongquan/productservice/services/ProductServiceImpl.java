@@ -1,5 +1,8 @@
 package com.tasc.hongquan.productservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAO;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAOImpl;
 import com.tasc.hongquan.productservice.models.Product;
@@ -8,9 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +24,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @Service
 @Slf4j
@@ -32,17 +35,20 @@ public class ProductServiceImpl implements ProductService {
     private final List<Future<?>> futures = new ArrayList<>();
     private final ExecutorService excecutorService = Executors.newFixedThreadPool(numThread);
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+    //key moi san pham se la product-page:
+    public static final String PRODUCT_PAGE_KEY_PREFIX = "product-page:";
+    public static long EXPIRES_TIME_CACHE = (long) (Math.floor(Math.random() * 2) + 10);
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductDAOImpl productDAO) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductDAOImpl productDAO, @Qualifier("redisTemplate") RedisTemplate redisTemplate, ObjectMapper objectMapper) {
         this.productRepository = productRepository;
         this.productDAO = productDAO;
+        this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
     }
 
-    @Override
-    public List<Product> getLimitNewProduct(int limit) {
-        return productDAO.getLimitNewProduct(limit);
-    }
 
     @Transactional
     @Override
@@ -145,12 +151,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProducts(int page, int size, Integer categoryId) {
+    public Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException {
         Pageable pageable = PageRequest.of(page, size);
-        if (categoryId != null && categoryId > 0) {
-            System.out.println("Category id: " + categoryId);
-            return productRepository.getAllProductsByCategory(pageable, categoryId);
+        String productPageKey = categoryId != null && categoryId > 0
+                ? PRODUCT_PAGE_KEY_PREFIX + page + "+" + size + "+" + categoryId
+                : PRODUCT_PAGE_KEY_PREFIX + page + "+" + size;
+        //check cache
+        if (redisTemplate.hasKey(productPageKey)) {
+            String json = String.valueOf(redisTemplate.opsForValue().get(productPageKey));
+            return objectMapper.readValue(json, new TypeReference<PageImpl<Product>>() {
+            });
         }
-        return productRepository.findAll(pageable);
+        //no cache
+        Page<Product> products = categoryId != null && categoryId > 0
+                ? productRepository.getAllProductsByCategory(pageable, categoryId)
+                : productRepository.findAll(pageable);
+
+        String json = objectMapper.writeValueAsString(products);
+        redisTemplate.opsForValue().set(productPageKey, json, EXPIRES_TIME_CACHE, TimeUnit.SECONDS);
+
+        return products;
     }
 }

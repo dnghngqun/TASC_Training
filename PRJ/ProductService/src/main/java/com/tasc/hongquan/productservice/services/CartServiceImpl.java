@@ -8,6 +8,9 @@ import com.tasc.hongquan.productservice.repositories.CartRepository;
 import com.tasc.hongquan.productservice.repositories.ProductRepository;
 import com.tasc.hongquan.productservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ import java.util.Map;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
@@ -24,12 +28,13 @@ public class CartServiceImpl implements CartService {
     //KEY moi gio hang se la cart:userId
     public static final String CART_KEY_PREFIX = "cart:";
     private RedisTemplate<String, Object> redisTemplate;
+    private final Logger logger = LoggerFactory.getLogger(CartServiceImpl.class);
 
     @Override
     public void addProductToCart(int productId, int quantity, String userId) {
         String cartKey = CART_KEY_PREFIX + userId;
 
-        // Lấy số lượng hiện tại của sản phẩm từ Redis (nếu có)
+        // Lấy số lượng hiện tại của sản phẩm từ Redis
         Object currentQuantityObj = redisTemplate.opsForHash().get(cartKey, String.valueOf(productId));
 
         Integer currentQuantity = null;
@@ -45,6 +50,7 @@ public class CartServiceImpl implements CartService {
 
         // Cập nhật giỏ hàng với số lượng mới
         redisTemplate.opsForHash().put(cartKey, String.valueOf(productId), String.valueOf(quantity));
+        //lưu userid để còn lưu vào db
         redisTemplate.opsForSet().add("activeCarts", userId);
     }
 
