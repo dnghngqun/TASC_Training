@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +25,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -48,7 +45,7 @@ public class UserController {
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
-    public static final int MAX_AGE = 3600 * 24;// 1 day
+    public static final int MAX_AGE = 3600;// 1 hour
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
@@ -142,7 +139,6 @@ public class UserController {
             //generate token otp
             int otp = tokenService.generateOTP();
 
-
             Token token = new Token().builder()
                     .token(otp)
                     .tokenType("otp")
@@ -183,7 +179,7 @@ public class UserController {
             if (tokenService.validateToken(otp, userId)) {
                 logger.info("OTP is valid");
                 //changepass
-                User user = userService.changePass(userId, newPassword);
+                userService.changePass(userId, newPassword);
                 //revoke token
                 tokenService.revokeToken(otp, userId);
                 return ResponseEntity.ok("Password changed successfully");
