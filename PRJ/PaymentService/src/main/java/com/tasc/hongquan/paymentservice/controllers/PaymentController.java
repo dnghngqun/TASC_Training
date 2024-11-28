@@ -82,6 +82,15 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/check-status-payment")
+    public void checkStatusPayment(@RequestParam String orderId, @RequestParam String requestId){
+        try {
+            paymentService.checkStatusPayment(orderId, requestId);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+    }
+
     @GetMapping("/momo/response")
     public String momoResponse(@RequestParam Map<String, String> params) {
         try {

@@ -1,14 +1,18 @@
 package com.tasc.hongquan.paymentservice.services;
 
+
 import com.tasc.hongquan.paymentservice.client.OrderClient;
 import com.tasc.hongquan.paymentservice.client.ProductClient;
 import com.tasc.hongquan.paymentservice.config.Environment;
+import com.tasc.hongquan.paymentservice.dto.PaymentDataDTO;
 import com.tasc.hongquan.paymentservice.dto.ResponseObject;
 import com.tasc.hongquan.paymentservice.exception.MoMoException;
 import com.tasc.hongquan.paymentservice.models.Order;
 import com.tasc.hongquan.paymentservice.models.Payment;
 import com.tasc.hongquan.paymentservice.models.momo.PaymentResponse;
+import com.tasc.hongquan.paymentservice.models.momo.QueryStatusTransactionResponse;
 import com.tasc.hongquan.paymentservice.models.momo.RequestType;
+import com.tasc.hongquan.paymentservice.processor.QueryTransactionStatus;
 import com.tasc.hongquan.paymentservice.repositories.OrderDetailRepository;
 import com.tasc.hongquan.paymentservice.repositories.PaymentRepository;
 import lombok.AllArgsConstructor;
@@ -63,6 +67,23 @@ public class PaymentServiceImpl implements PaymentService{
         logger.info("Save payment to database");
         paymentRepository.save(payment);
         return captureWalletMoMoResponse;
+    }
+
+    @Override
+    public QueryStatusTransactionResponse checkStatusPayment(String orderId, String requestId) {
+        try {
+            Environment environment = Environment.selectEnv("dev");
+            QueryStatusTransactionResponse queryStatusTransactionResponse = QueryTransactionStatus.process(environment, orderId, requestId);
+            logger.info("Query status response: " + queryStatusTransactionResponse);
+            return queryStatusTransactionResponse;
+        }catch (Exception e) {
+            log.error("Error when check status payment: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<PaymentDataDTO> checkTransaction() {
+        return paymentRepository.finalAllTransactionPendingAndTimeLongerThan5Minutes();
     }
 
     @Override

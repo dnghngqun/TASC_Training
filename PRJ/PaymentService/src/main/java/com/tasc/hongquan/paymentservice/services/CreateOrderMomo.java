@@ -1,10 +1,11 @@
 package com.tasc.hongquan.paymentservice.services;
 
-import com.tasc.hongquan.paymentservice.config.Environment;
+
 import com.tasc.hongquan.paymentservice.constant.Parameter;
 import com.tasc.hongquan.paymentservice.exception.MoMoException;
+import com.mservice.shared.utils.Encoder;
+import com.tasc.hongquan.paymentservice.config.Environment;
 import com.tasc.hongquan.paymentservice.models.momo.*;
-import com.tasc.hongquan.paymentservice.util.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,10 @@ import java.math.BigDecimal;
 
 @Slf4j
 public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResponse> {
+
     public CreateOrderMomo(Environment environment) {
         super(environment);
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(CreateOrderMomo.class);
 
     /**
      * Capture MoMo Process on Payment Gateway
@@ -43,7 +43,7 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
 
             return captureMoMoResponse;
         } catch (Exception exception) {
-            logger.error("[CreateOrderMoMoProcess] " + exception);
+            log.error("[CreateOrderMoMoProcess] "+ exception);
         }
         return null;
     }
@@ -53,29 +53,28 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
         try {
 
             String payload = getGson().toJson(request, PaymentRequest.class);
-            logger.info("[PaymentMoMoRequest] request payload: " + payload);
-            logger.info("[PaymentMoMoRequest] request signature: " +request.getSignature());
-            HttpResponse response = execute.sendToMoMo(environment.getMomoEndpoint().getCreateUrl(), payload, request.getSignature());
+
+            HttpResponse response = execute.sendToMoMo(environment.getMomoEndpoint().getCreateUrl(), payload);
 
             if (response.getStatus() != 200) {
                 throw new MoMoException("[PaymentResponse] [" + request.getOrderId() + "] -> Error API");
             }
 
-            System.out.println("uweryei7rye8wyreow8: " + response.getData());
+            System.out.println("uweryei7rye8wyreow8: "+ response.getData());
 
             PaymentResponse captureMoMoResponse = getGson().fromJson(response.getData(), PaymentResponse.class);
-            String responserawData = Parameter.REQUEST_ID + "=" + captureMoMoResponse.getRequestId() +
+            String responserawData = com.mservice.shared.constants.Parameter.REQUEST_ID + "=" + captureMoMoResponse.getRequestId() +
                     "&" + Parameter.ORDER_ID + "=" + captureMoMoResponse.getOrderId() +
                     "&" + Parameter.MESSAGE + "=" + captureMoMoResponse.getMessage() +
                     "&" + Parameter.PAY_URL + "=" + captureMoMoResponse.getPayUrl() +
                     "&" + Parameter.RESULT_CODE + "=" + captureMoMoResponse.getResultCode();
 
-            logger.info("[PaymentMoMoResponse] rawData: " + responserawData);
+            log.info("[PaymentMoMoResponse] rawData: " + responserawData);
 
             return captureMoMoResponse;
 
         } catch (Exception exception) {
-            logger.error("[PaymentMoMoResponse] " + exception);
+            log.error("[PaymentMoMoResponse] "+ exception);
             throw new IllegalArgumentException("Invalid params capture MoMo Request");
         }
     }
@@ -107,17 +106,17 @@ public class CreateOrderMomo extends AbstractProcess<PaymentRequest, PaymentResp
                     .append(Parameter.REQUEST_TYPE).append("=").append(requestType.getRequestType())
                     .toString();
 
-            logger.info("SecretKey: " + partnerInfo.getSecretKey());
             String signRequest = Encoder.signHmacSHA256(requestRawData, partnerInfo.getSecretKey());
-            logger.info("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
+            log.debug("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
 
             return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo, amount, "test MoMo", null, requestType,
                     returnUrl, notifyUrl, "test store ID", extraData, null, autoCapture, null, signRequest);
         } catch (Exception e) {
-            logger.error("[PaymentRequest] " + e);
+            log.error("[PaymentRequest] "+ e);
         }
 
         return null;
     }
+
 }
 

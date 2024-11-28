@@ -12,29 +12,29 @@ import okio.Buffer;
 import java.io.IOException;
 
 @Slf4j
+
 public class Execute {
+
     OkHttpClient client = new OkHttpClient();
-    Logger logger = LoggerFactory.getLogger(Execute.class);
-    public HttpResponse sendToMoMo(String endpoint, String payload, String existingSignature) {
+
+    public HttpResponse sendToMoMo(String endpoint, String payload) {
 
         try {
-            logger.info("[ExecuteSendToMoMo] Payload: " + payload);
-            payload = payload.replaceFirst("\"signature\":\"[^\"]*\"", "\"signature\":\"" + existingSignature + "\"");
-            logger.info("[ExecuteSendToMoMo] Payload after: " + payload);
+
             HttpRequest httpRequest = new HttpRequest("POST", endpoint, payload, "application/json");
 
             Request request = createRequest(httpRequest);
 
-            logger.info("[HttpPostToMoMo] Endpoint:: " + httpRequest.getEndpoint() + ", RequestBody:: " + httpRequest.getPayload());
+            log.debug("[HttpPostToMoMo] Endpoint:: " + httpRequest.getEndpoint() + ", RequestBody:: " + httpRequest.getPayload());
 
             Response result = client.newCall(request).execute();
             HttpResponse response = new HttpResponse(result.code(), result.body().string(), result.headers());
 
-            logger.info("[HttpResponseFromMoMo] " + response.toString());
+            log.info("[HttpResponseFromMoMo] " + response.toString());
 
             return response;
         } catch (Exception e) {
-            logger.error("[ExecuteSendToMoMo] "+ e);
+            log.error("[ExecuteSendToMoMo] "+ e);
         }
 
         return null;
@@ -54,5 +54,4 @@ public class Execute {
         body.writeTo(buffer);
         return buffer.readUtf8();
     }
-
 }

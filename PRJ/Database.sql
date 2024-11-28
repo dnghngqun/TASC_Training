@@ -264,14 +264,13 @@ END$$
 
 DELIMITER ;
 
-
--- CALL add_order_with_details(
---     'ef5e6a60-3fc6-4b06-86c0-82120b3a2b3b', 
---     10000, 
---     NULL, 
---     NULL, 
---     1, 
---     '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
--- );
+CALL add_order_with_details(
+    '2350c9c5-7b0a-4a55-9c2b-820e595fe30a', 
+    10000, 
+    NULL, 
+    NULL, 
+    1, 
+    '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
+);
 
 
