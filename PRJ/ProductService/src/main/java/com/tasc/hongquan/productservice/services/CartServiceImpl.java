@@ -118,12 +118,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public void clearCart(String userId) {
         String cartKey = CART_KEY_PREFIX + userId;
-        redisTemplate.delete(cartKey);
         //check if cart is saved in database
         List<Cart> carts = cartRepository.getCartByUserId(userId);
         if (!carts.isEmpty()) {
             cartRepository.clearCartByUserId(userId);
         }
+        redisTemplate.delete(cartKey);
         // Xóa userId khỏi set activeCarts khi giỏ hàng đã được xóa
         redisTemplate.opsForSet().remove("activeCarts", userId);
     }
