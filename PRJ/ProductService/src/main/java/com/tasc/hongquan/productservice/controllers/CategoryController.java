@@ -1,5 +1,6 @@
 package com.tasc.hongquan.productservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tasc.hongquan.productservice.dto.ResponseBody;
 import com.tasc.hongquan.productservice.models.Category;
 import com.tasc.hongquan.productservice.services.CategoryService;
@@ -68,7 +69,12 @@ public class CategoryController {
 
     @GetMapping("/")
     public ResponseEntity<ResponseBody> getAllCategory() {
-        List<Category> categories = categoryService.getAllCategories();
+        List<Category> categories = null;
+        try {
+            categories = categoryService.getAllCategories();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         if (categories.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseBody("ok", "No category found.", null)

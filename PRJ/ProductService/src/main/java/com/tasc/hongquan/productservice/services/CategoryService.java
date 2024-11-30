@@ -1,5 +1,6 @@
 package com.tasc.hongquan.productservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tasc.hongquan.productservice.models.Category;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +16,5 @@ public interface CategoryService {
 
     Category getCategoryById(int id);
 
-    List<Category> getAllCategories();
+    List<Category> getAllCategories() throws JsonProcessingException;
 }

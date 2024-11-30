@@ -17,15 +17,13 @@ import java.util.concurrent.*;
 @AllArgsConstructor
 public class PaymentSchedule {
     private final PaymentService paymentService;
-    private static int numThread;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(numThread);
+    private static final int NUM_THREADS = Runtime.getRuntime().availableProcessors();
+    private final ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
     private List<PaymentDataDTO> listTransaction;
     private List<Future<QueryStatusTransactionResponse>> futures;
 
     @Scheduled(fixedRate = 1000 * 60 * 5) //5 minutes
     public void checkTransaction() {
-        int numThread = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newFixedThreadPool(numThread);
 
         // Lấy danh sách giao dịch cần kiểm tra
         List<PaymentDataDTO> listTransaction = paymentService.checkTransaction();

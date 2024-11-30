@@ -36,8 +36,8 @@ public class ProductServiceImpl implements ProductService {
     private final ExecutorService excecutorService = Executors.newFixedThreadPool(numThread);
     private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
     //key moi san pham se la product-page:
-    public static final String PRODUCT_PAGE_KEY_PREFIX = "product-page:";
-    public static long EXPIRES_TIME_CACHE = (long) (Math.floor(Math.random() * 2) + 10);
+    public static final String PRODUCT_PAGE_KEY_PREFIX = "product_all:";
+    public static double EXPIRES_TIME_CACHE = 10 * 60 + Math.ceil(Math.random() * 10);
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -150,6 +150,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+
     @Override
     public Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException {
         Pageable pageable = PageRequest.of(page, size);
@@ -168,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
                 : productRepository.findAll(pageable);
 
         String json = objectMapper.writeValueAsString(products);
-        redisTemplate.opsForValue().set(productPageKey, json, EXPIRES_TIME_CACHE, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(productPageKey, json, (long) EXPIRES_TIME_CACHE, TimeUnit.SECONDS);
 
         return products;
     }

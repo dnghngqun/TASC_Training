@@ -4,17 +4,21 @@ package com.tasc.hongquan.paymentservice.services;
 import com.tasc.hongquan.paymentservice.client.OrderClient;
 import com.tasc.hongquan.paymentservice.client.ProductClient;
 import com.tasc.hongquan.paymentservice.config.Environment;
+import com.tasc.hongquan.paymentservice.dto.EmailRequest;
 import com.tasc.hongquan.paymentservice.dto.PaymentDataDTO;
 import com.tasc.hongquan.paymentservice.dto.ResponseObject;
 import com.tasc.hongquan.paymentservice.exception.MoMoException;
+import com.tasc.hongquan.paymentservice.kafka.KafkaProducer;
 import com.tasc.hongquan.paymentservice.models.Order;
 import com.tasc.hongquan.paymentservice.models.Payment;
+import com.tasc.hongquan.paymentservice.models.User;
 import com.tasc.hongquan.paymentservice.models.momo.PaymentResponse;
 import com.tasc.hongquan.paymentservice.models.momo.QueryStatusTransactionResponse;
 import com.tasc.hongquan.paymentservice.models.momo.RequestType;
 import com.tasc.hongquan.paymentservice.processor.QueryTransactionStatus;
 import com.tasc.hongquan.paymentservice.repositories.OrderDetailRepository;
 import com.tasc.hongquan.paymentservice.repositories.PaymentRepository;
+import com.tasc.hongquan.paymentservice.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -33,13 +37,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class PaymentServiceImpl implements PaymentService{
+public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
     private final OrderDetailRepository orderDetailRepository;
     private OrderClient orderClient;
     private ProductClient productClient;
     private final OrderDetailService orderDetailService;
+    private final KafkaProducer kafkaProducer;
+    private final UserRepository userRepository;
+
     @Override
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
@@ -76,8 +83,9 @@ public class PaymentServiceImpl implements PaymentService{
             QueryStatusTransactionResponse queryStatusTransactionResponse = QueryTransactionStatus.process(environment, orderId, requestId);
             logger.info("Query status response: " + queryStatusTransactionResponse);
             return queryStatusTransactionResponse;
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error when check status payment: " + e.getMessage());
+            return null;
         }
     }
 
@@ -89,16 +97,16 @@ public class PaymentServiceImpl implements PaymentService{
     @Override
     public void updatePaymentById(String id, Payment paymentUpdate) {
         Payment payment = paymentRepository.findById(id).orElse(null);
-        if(payment == null) {
+        if (payment == null) {
             throw new RuntimeException("Payment not found");
         }
-        if(paymentUpdate.getOrder() != null) {
+        if (paymentUpdate.getOrder() != null) {
             payment.setOrder(paymentUpdate.getOrder());
         }
-        if(paymentUpdate.getPaymentMethod() != null) {
+        if (paymentUpdate.getPaymentMethod() != null) {
             payment.setPaymentMethod(paymentUpdate.getPaymentMethod());
         }
-        if(paymentUpdate.getPaymentStatus() != null) {
+        if (paymentUpdate.getPaymentStatus() != null) {
             payment.setPaymentStatus(paymentUpdate.getPaymentStatus());
         }
         payment.setUpdatedAt(Instant.now());
@@ -108,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService{
     @Override
     public void deletePaymentById(String id) {
         Payment payment = paymentRepository.findById(id).orElse(null);
-        if(payment == null) {
+        if (payment == null) {
             throw new RuntimeException("Payment not found");
         }
         paymentRepository.delete(payment);
@@ -116,10 +124,10 @@ public class PaymentServiceImpl implements PaymentService{
 
     @Override
     public ConcurrentHashMap<Integer, Integer> getMapOrderDetailIdAndQuantityByOrderId(int orderId) {
-        List<Object[]> listOrderDetailAndQuantity =  orderDetailRepository.getMapOrderDetailIdAndQuantityByOrderId(orderId);
+        List<Object[]> listOrderDetailAndQuantity = orderDetailRepository.getMapOrderDetailIdAndQuantityByOrderId(orderId);
         ConcurrentHashMap<Integer, Integer> mapOrderDetailIdAndQuantity = new ConcurrentHashMap<>();
         //convert to concurentHashMap
-        for(Object[] row: listOrderDetailAndQuantity){
+        for (Object[] row : listOrderDetailAndQuantity) {
             int orderDetailId = (int) row[0];
             int quantity = (int) row[1];
             mapOrderDetailIdAndQuantity.put(orderDetailId, quantity);
@@ -175,29 +183,32 @@ public class PaymentServiceImpl implements PaymentService{
             //TODO: UPDATE STOCK PRODUCT
             ConcurrentHashMap<Integer, Integer> productStock = getMapOrderDetailIdAndQuantityByOrderId(Integer.parseInt(orderId));
             ResponseEntity<ResponseObject> updateStock = productClient.updateStockProduct(productStock);
-            if(updateStock.getStatusCode().is2xxSuccessful()) {
+            if (updateStock.getStatusCode().is2xxSuccessful()) {
                 logger.info("Update stock successfully");
                 //Todo: Update database success for orderDetails
                 List<Integer> orderDetailSuccess = (List<Integer>) updateStock.getBody().getData();
-                for(Integer orderDetailId: productStock.keySet()){
-                    if(orderDetailSuccess.contains(orderDetailId)) {
+                for (Integer orderDetailId : productStock.keySet()) {
+                    if (orderDetailSuccess.contains(orderDetailId)) {
                         //update status success for orderDetail
                         orderDetailService.updateOrderDetailStatus(orderDetailId, "success");
-                    }else {
+                    } else {
                         //update status error for orderDetail
                         orderDetailService.updateOrderDetailStatus(orderDetailId, "error");
                     }
                 }
-            }else {
+            } else {
                 logger.error("Update stock error");
             }
             // TODO: Update database for orderId
             ResponseEntity<ResponseObject> orderResponse = orderClient.updateOrderById(Integer.parseInt(orderId), new Order().builder().status("success").build());
-            if(orderResponse.getStatusCode() == HttpStatus.OK) {
+            if (orderResponse.getStatusCode() == HttpStatus.OK) {
                 logger.info("Update order " + orderId + " successfully");
             } else {
                 logger.error("Update order " + orderId + " failed");
             }
+            // TODO: add send email to kafka
+            User user = userRepository.findById(userId).orElse(null);
+            kafkaProducer.sendEmail("email-topic", new EmailRequest(user.getEmail(), "Payment Success", "Your order has been paid successfully"));
         } else {
             // Failed transaction
             //TODO: Update Payment to error

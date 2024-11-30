@@ -32,8 +32,10 @@ public class PaymentController {
     private final String secretKey;
     private final String accessKey;
     private final String partnerCode;
+
     private final String returnURL = "http://localhost:8088/api/v1/payments/momo/response";
     private final String notifyURL = "http://localhost:8088/api/v1/payments/notify";
+
     @Autowired
     public PaymentController(PaymentServiceImpl paymentService, OrderDetailsServiceImpl orderDetailService, @Value("${DEV_SECRET_KEY}") String secretKey,
                              @Value("${DEV_ACCESS_KEY}") String accessKey, @Value("${DEV_PARTNER_CODE}") String partnerCode) {
@@ -44,6 +46,7 @@ public class PaymentController {
         this.partnerCode = partnerCode;
 
     }
+
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllPayments() {
         try {
@@ -83,10 +86,10 @@ public class PaymentController {
     }
 
     @GetMapping("/check-status-payment")
-    public void checkStatusPayment(@RequestParam String orderId, @RequestParam String requestId){
+    public void checkStatusPayment(@RequestParam String orderId, @RequestParam String requestId) {
         try {
             paymentService.checkStatusPayment(orderId, requestId);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
@@ -113,7 +116,7 @@ public class PaymentController {
 
             logger.info("Secret key: " + secretKey);
             logger.info("Access key: " + accessKey);
-            return paymentService.executePayment( orderId,  requestId,  orderInfo,  message,  resultCode);
+            return paymentService.executePayment(orderId, requestId, orderInfo, message, resultCode);
         } catch (Exception e) {
             logger.error(e.getMessage());
 //            return ResponseEntity.status(500).body("Momo failed");

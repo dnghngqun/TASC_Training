@@ -1,8 +1,11 @@
 package com.tasc.hongquan.productservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.productservice.models.Category;
 import com.tasc.hongquan.productservice.repositories.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -11,7 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
     private CategoryRepository categoryRepository;
+    //category:id
+    public static String CATEGORY_KEY = "categories";
 
     @Override
     public void add(Category category) {
@@ -42,7 +49,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<Category> getAllCategories() throws JsonProcessingException {
+        String jsonCate = redisTemplate.opsForValue().get(CATEGORY_KEY).toString();
+        if (jsonCate != null) {
+            return objectMapper.readValue(jsonCate, objectMapper.getTypeFactory().constructCollectionType(List.class, Category.class));
+
+        }
+        return null;
     }
 }

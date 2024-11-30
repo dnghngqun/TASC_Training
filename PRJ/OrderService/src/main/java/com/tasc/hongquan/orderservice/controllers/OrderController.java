@@ -2,6 +2,7 @@ package com.tasc.hongquan.orderservice.controllers;
 
 import com.tasc.hongquan.orderservice.dto.OrderRequest;
 import com.tasc.hongquan.orderservice.dto.ResponseObject;
+import com.tasc.hongquan.orderservice.kafka.KafkaProducer;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import com.tasc.hongquan.orderservice.models.Order;
@@ -23,6 +24,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final Logger logger = LoggerFactory.getLogger(OrderController.class);
+    private final KafkaProducer kafkaProducer;
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAllOrders() {
