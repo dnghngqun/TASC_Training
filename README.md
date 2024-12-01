@@ -1,5 +1,5 @@
 # Dự án Xây dựng website bán gốm sứ Online: 
-#### Được triển khai theo mô hình microservice, trong đó em có được giao cho làm 2 service:product, order và payment(em được chỉ định dùng MoMo để xử lý thanh toán), caching product và lưu cart.
+#### Được triển khai theo mô hình microservice, trong đó em có được giao cho làm 3 service:product, order và payment(em được chỉ định dùng MoMo để xử lý thanh toán), caching product và lưu cart.
 
 #### 1: Kafka (Dùng gửi email cho khách hàng)
 Khi khách hàng đặt hàng thành công:
