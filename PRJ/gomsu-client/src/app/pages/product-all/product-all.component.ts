@@ -1,10 +1,11 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {
   faCartShopping,
   faHeart,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
-import { ProductService } from '../../services/product.service';
+import {ProductService} from '../../services/product.service';
+
 @Component({
   selector: 'app-product-all',
   templateUrl: './product-all.component.html',
@@ -22,8 +23,12 @@ export class ProductAllComponent implements OnInit {
   currentPage: number = 0;
   products: any[] = [];
   categoryId: number = 0;
-  constructor(private productService: ProductService) {}
+
+  constructor(private productService: ProductService) {
+  }
+
   categories: any[] = [];
+
   ngOnInit(): void {
     this.getCountAllProducts();
     this.loadProducts();
@@ -44,6 +49,9 @@ export class ProductAllComponent implements OnInit {
   }
 
   loadProducts() {
+    console.log("CurrentPage Send: ", this.currentPage);
+    console.log("ProductPerPage Send: ", this.productPerPage);
+    console.log("CategoryId Send: ", this.categoryId);
     this.productService
       .getProducts(
         this.currentPage.toString(),
@@ -53,7 +61,7 @@ export class ProductAllComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('response: ', response);
-          this.products = response.data.content;
+          this.products = response.data;
           console.log('products: ', this.products);
         },
         error: (error) => {
@@ -61,9 +69,10 @@ export class ProductAllComponent implements OnInit {
         },
       });
   }
+
   onPageChange(page: number) {
     console.log('Page: ', page);
-    this.currentPage = page - 1;
+    this.currentPage = page;
     this.loadProducts();
     this.scrollToTarget();
   }
@@ -91,6 +100,7 @@ export class ProductAllComponent implements OnInit {
     event.stopPropagation();
     this.isShowDanhmuc = !this.isShowDanhmuc;
   }
+
   getCategories() {
     this.productService.getCategories().subscribe({
       next: (res) => {
@@ -102,10 +112,11 @@ export class ProductAllComponent implements OnInit {
       },
     });
   }
+
   scrollToTarget(): void {
     const targetElement = document.getElementById('pagination-target');
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
     }
   }
 }

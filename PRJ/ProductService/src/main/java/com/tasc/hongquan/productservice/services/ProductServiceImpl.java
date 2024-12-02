@@ -1,7 +1,5 @@
 package com.tasc.hongquan.productservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAO;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAOImpl;
@@ -13,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +20,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     //key moi san pham se la product-page:
     public static final String PRODUCT_PAGE_KEY_PREFIX = "product_all:";
     public static double EXPIRES_TIME_CACHE = 10 * 60 + Math.ceil(Math.random() * 10);
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -150,27 +148,61 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-
     @Override
-    public Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException {
-        Pageable pageable = PageRequest.of(page, size);
-        String productPageKey = categoryId != null && categoryId > 0
-                ? PRODUCT_PAGE_KEY_PREFIX + page + "+" + size + "+" + categoryId
-                : PRODUCT_PAGE_KEY_PREFIX + page + "+" + size;
-        //check cache
-        if (redisTemplate.hasKey(productPageKey)) {
-            String json = String.valueOf(redisTemplate.opsForValue().get(productPageKey));
-            return objectMapper.readValue(json, new TypeReference<PageImpl<Product>>() {
-            });
+    public List<Product> getRelatedProducts(int productId) {
+        return null;
+    }
+
+    //    @Override
+//    public Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException {
+//        Pageable pageable = PageRequest.of(page, size);
+//        String productPageKey = categoryId != null && categoryId > 0
+//                ? PRODUCT_PAGE_KEY_PREFIX + page + "+" + size + "+" + categoryId
+//                : PRODUCT_PAGE_KEY_PREFIX + page + "+" + size;
+//        //check cache
+//        if (redisTemplate.hasKey(productPageKey)) {
+//            String json = String.valueOf(redisTemplate.opsForValue().get(productPageKey));
+//            return objectMapper.readValue(json, new TypeReference<PageImpl<Product>>() {
+//            });
+//        }
+//        //no cache
+//        Page<Product> products = categoryId != null && categoryId > 0
+//                ? productRepository.getAllProductsByCategory(pageable, categoryId)
+//                : productRepository.findAll(pageable);
+//
+//        String json = objectMapper.writeValueAsString(products);
+//        redisTemplate.opsForValue().set(productPageKey, json, (long) EXPIRES_TIME_CACHE, TimeUnit.SECONDS);
+//
+//        return products;
+//    }
+    public List<Product> getAllProducts(int page, int size, int categoryId) {
+        try {
+            Set<Object> productIds = redisTemplate.opsForHash().keys("products");
+
+            List<Product> products = redisTemplate.opsForHash().multiGet("products", productIds).stream()
+                    .map(obj -> (Product) obj)
+                    .collect(Collectors.toList());
+
+            if (categoryId != 0) {
+                products = products.stream()
+                        .map(obj -> (Product) obj)
+                        .filter(product -> product.getCategory().getId() == categoryId)
+                        .collect(Collectors.toList());
+            }
+
+            int totalProduct = products.size();
+            int start = (page - 1) * size;
+            int end = Math.min(start + size, totalProduct);
+
+            List<Product> pageProducts = products.subList(start, end);
+            return pageProducts;
+        } catch (Exception e) {
+            log.error("Disconnect to Redis: " + e.getMessage());
+            if (categoryId == 0) {
+                Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
+                return products.getContent();
+            }
+            return productRepository.getAllProductsByCategory(PageRequest.of(page, size), categoryId).getContent();
         }
-        //no cache
-        Page<Product> products = categoryId != null && categoryId > 0
-                ? productRepository.getAllProductsByCategory(pageable, categoryId)
-                : productRepository.findAll(pageable);
-
-        String json = objectMapper.writeValueAsString(products);
-        redisTemplate.opsForValue().set(productPageKey, json, (long) EXPIRES_TIME_CACHE, TimeUnit.SECONDS);
-
-        return products;
     }
 }

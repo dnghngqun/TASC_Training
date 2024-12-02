@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +24,9 @@ public class Order {
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetail> orderDetails;
+
     @ColumnDefault("'pending'")
     @Lob
     @Column(name = "status")
@@ -38,5 +42,21 @@ public class Order {
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Lob
+    @Column(name = "note")
+    private String note;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_book_id")
+    private AddressBook addressBook;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "discount_id")
+    private Discount discount;
 
 }

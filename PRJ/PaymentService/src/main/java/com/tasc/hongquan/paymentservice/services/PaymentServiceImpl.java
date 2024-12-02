@@ -1,14 +1,18 @@
 package com.tasc.hongquan.paymentservice.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.paymentservice.client.OrderClient;
 import com.tasc.hongquan.paymentservice.client.ProductClient;
 import com.tasc.hongquan.paymentservice.config.Environment;
 import com.tasc.hongquan.paymentservice.dto.EmailRequest;
+import com.tasc.hongquan.paymentservice.dto.OrderConfirm;
 import com.tasc.hongquan.paymentservice.dto.PaymentDataDTO;
 import com.tasc.hongquan.paymentservice.dto.ResponseObject;
 import com.tasc.hongquan.paymentservice.exception.MoMoException;
 import com.tasc.hongquan.paymentservice.kafka.KafkaProducer;
+import com.tasc.hongquan.paymentservice.models.EmailRetryQueue;
 import com.tasc.hongquan.paymentservice.models.Order;
 import com.tasc.hongquan.paymentservice.models.Payment;
 import com.tasc.hongquan.paymentservice.models.User;
@@ -16,6 +20,7 @@ import com.tasc.hongquan.paymentservice.models.momo.PaymentResponse;
 import com.tasc.hongquan.paymentservice.models.momo.QueryStatusTransactionResponse;
 import com.tasc.hongquan.paymentservice.models.momo.RequestType;
 import com.tasc.hongquan.paymentservice.processor.QueryTransactionStatus;
+import com.tasc.hongquan.paymentservice.repositories.EmailRetryQueueRepository;
 import com.tasc.hongquan.paymentservice.repositories.OrderDetailRepository;
 import com.tasc.hongquan.paymentservice.repositories.PaymentRepository;
 import com.tasc.hongquan.paymentservice.repositories.UserRepository;
@@ -46,6 +51,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderDetailService orderDetailService;
     private final KafkaProducer kafkaProducer;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
+    private final EmailService emailService;
+    private final EmailRetryQueueRepository emailRetryRepository;
 
     @Override
     public List<Payment> getAllPayments() {
@@ -206,9 +214,25 @@ public class PaymentServiceImpl implements PaymentService {
             } else {
                 logger.error("Update order " + orderId + " failed");
             }
-            // TODO: add send email to kafka
             User user = userRepository.findById(userId).orElse(null);
-            kafkaProducer.sendEmail("email-topic", new EmailRequest(user.getEmail(), "Payment Success", "Your order has been paid successfully"));
+            try {
+                if (user != null) {
+                    kafkaProducer.sendOrderConfirm(new OrderConfirm((Order) orderResponse.getBody().getData(), "online"));
+                    logger.info("Email successfully sent to Kafka");
+                }
+            } catch (Exception e) {
+                //save to db if disconnected to kafka
+                Order order = (Order) orderResponse.getBody().getData();
+                logger.error("Kafka connection failed: " + e.getMessage());
+                String subject = "Xác nhận đơn hàng #" + order.getId();
+                String emailContent = emailService.generateEmailContent(order, "online");
+                //TODO: Lưu vào DB
+                emailRetryRepository.save(new EmailRetryQueue().builder()
+                        .emailTo(order.getUser().getEmail())
+                        .subject(subject)
+                        .body(emailContent)
+                        .build());
+            }
         } else {
             // Failed transaction
             //TODO: Update Payment to error

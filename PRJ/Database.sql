@@ -167,7 +167,15 @@ CREATE TABLE comments (
     time_comment TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+CREATE TABLE email_retry_queue (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email_to VARCHAR(255),
+    subject VARCHAR(255),
+    body TEXT, -- Lưu object dưới dạng JSON
+    status VARCHAR(50) DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- Tạo các khóa ngoại
 ALTER TABLE users
     ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles(role_id);

@@ -19,10 +19,11 @@ public interface ProductService {
 
     Product getProductById(int id);
 
-    Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException;
+    List<Product> getAllProducts(int page, int size, int categoryId);
 
     int getCountProduct(Integer categoryId);
 
+    List<Product> getRelatedProducts(int productId);
 
     List<Integer> updateStockProduct(Map<Integer, Integer> productStocks) throws ExecutionException, InterruptedException;
 }

@@ -1,4 +1,4 @@
-package com.tasc.hongquan.paymentservice.config;
+package com.tasc.hongquan.productservice.configs;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -44,7 +44,7 @@ public class KafkaConfig {
     public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "email-order-group");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "product-group");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
@@ -53,16 +53,10 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic topic1() {
-        return new NewTopic("email-topic", 4, (short) 1);
+        return new NewTopic("product-topic", 4, (short) 1);
     }
 
-    @Bean
-    public NewTopic topic3() {
-        return new NewTopic("email-order-topic", 4, (short) 1);
-    }
-
-    @Bean
     public NewTopic topic2() {
-        return new NewTopic("email-error-topic", 4, (short) 1);
+        return new NewTopic("related-product-topic", 4, (short) 1);
     }
 }

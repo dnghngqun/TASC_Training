@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .info-table th, .info-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .total {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .product-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .product-container img {
+            margin-right: 20px;
+        }
+
+        .order-info td {
+            border: 0;
+        }
+
+        .text-end {
+            text-align: right !important;
+        }
+
+        .text-end-top-bqt {
+            font-style: italic;
+        }
+
+        .text-end-bqt {
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+<p>Xin chào {{customer_name}},</p>
+<p>Cảm ơn Anh/Chị đã đặt hàng tại Sudes Gốm Sứ!</p>
+<p>Đơn hàng của Anh/Chị đã được tiếp nhận. Chúng tôi sẽ xử lý nhanh chóng.</p>
+
+<h3>Thông tin mua hàng</h3>
+<table class="info-table">
+    <tr>
+        <th>Họ và tên</th>
+        <td>{{customer_name}}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{customer_email}}</td>
+    </tr>
+    <tr>
+        <th>Địa chỉ nhận hàng</th>
+        <td>{{shipping_address}}</td>
+    </tr>
+    <tr>
+        <th>Phương thức thanh toán</th>
+        <td>{{payment_method}}</td>
+    </tr>
+</table>
+
+<h3>Chi tiết đơn hàng</h3>
+<table class="info-table">
+    <thead>
+    <tr class="order-info">
+        <td colspan="3"><b>Mã đơn hàng:</b> {{order_id}}</td>
+        <td colspan="2"><b>Ngày đặt hàng:</b> {{date_order}}</td>
+    </tr>
+    <tr>
+        <th>STT</th>
+        <th>Sản phẩm</th>
+        <th>Số lượng</th>
+        <th>Đơn giá</th>
+        <th>Thành tiền</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{order_details}}
+    </tbody>
+</table>
+<h4 class="total">Giảm giá: {{discount}} VND</h4>
+<h3 class="total">Tổng thanh toán: {{total_amount}} VND</h3>
+
+<p>Trân trọng,</p>
+<p>Ban quản trị của hàng Sudes Gốm Sứ.</p>
+</body>
+</html>

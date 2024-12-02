@@ -1,103 +1,103 @@
 <div>
-    <app-breadcrumb [heading]="'Tất cả sản phẩm'" [location]="'Tất cả sản phẩm'">
-    </app-breadcrumb>
-    <div class="container mt-3 product-container">
-        <div id="pagination-target"></div>
-        <div class="sort-heading">
-            <div class="heading-left" (click)="onOutsideClick($event)">
-                <div class="danhmuc button-left" (click)="onClickBtnDanhmuc($event)">
-                    <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="25"
-                            height="25"
-                            viewBox="0 0 25 25"
-                            fill="none"
-                    >
-                        <g clip-path="url(#clip0_1045_185)">
-                            <path
-                                    d="M6.89722 13.8672H1.69653C0.761035 13.8672 0 14.6282 0 15.5637V20.7644C0 21.6999 0.761035 22.4609 1.69653 22.4609H6.89722C7.83272 22.4609 8.59375 21.6999 8.59375 20.7644V15.5637C8.59375 14.6282 7.83272 13.8672 6.89722 13.8672ZM1.69653 20.8984C1.62261 20.8984 1.5625 20.8383 1.5625 20.7644V15.5637C1.5625 15.4898 1.62261 15.4297 1.69653 15.4297H6.89722C6.97114 15.4297 7.03125 15.4898 7.03125 15.5637V20.7644C7.03125 20.8383 6.97114 20.8984 6.89722 20.8984H1.69653Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                            <path
-                                    d="M6.89722 2.53906H1.69653C0.761035 2.53906 0 3.3001 0 4.2356V9.43628C0 10.3718 0.761035 11.1328 1.69653 11.1328H6.89722C7.83272 11.1328 8.59375 10.3718 8.59375 9.43628V4.2356C8.59375 3.3001 7.83272 2.53906 6.89722 2.53906ZM1.69653 9.57031C1.62261 9.57031 1.5625 9.51021 1.5625 9.43628V4.2356C1.5625 4.16167 1.62261 4.10156 1.69653 4.10156H6.89722C6.97114 4.10156 7.03125 4.16167 7.03125 4.2356V9.43628C7.03125 9.51021 6.97114 9.57031 6.89722 9.57031H1.69653Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                            <path
-                                    d="M24.2188 18.5547H11.7188C11.2873 18.5547 10.9375 18.9045 10.9375 19.3359C10.9375 19.7674 11.2873 20.1172 11.7188 20.1172H24.2188C24.6502 20.1172 25 19.7674 25 19.3359C25 18.9045 24.6502 18.5547 24.2188 18.5547Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                            <path
-                                    d="M19.9219 15.625H11.7188C11.2873 15.625 10.9375 15.9748 10.9375 16.4062C10.9375 16.8377 11.2873 17.1875 11.7188 17.1875H19.9219C20.3533 17.1875 20.7031 16.8377 20.7031 16.4062C20.7031 15.9748 20.3533 15.625 19.9219 15.625Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                            <path
-                                    d="M24.2188 7.42188H11.7188C11.2873 7.42188 10.9375 7.77168 10.9375 8.20312C10.9375 8.63457 11.2873 8.98438 11.7188 8.98438H24.2188C24.6502 8.98438 25 8.63457 25 8.20312C25 7.77168 24.6502 7.42188 24.2188 7.42188Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                            <path
-                                    d="M19.9219 4.29688H11.7188C11.2873 4.29688 10.9375 4.64668 10.9375 5.07812C10.9375 5.50957 11.2873 5.85938 11.7188 5.85938H19.9219C20.3533 5.85938 20.7031 5.50957 20.7031 5.07812C20.7031 4.64668 20.3533 4.29688 19.9219 4.29688Z"
-                                    fill="#4A4A4A"
-                            ></path>
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_1045_185">
-                                <rect
-                                        width="25"
-                                        height="25"
-                                        fill="white"
-                                        transform="matrix(1 0 0 -1 0 25)"
-                                ></rect>
-                            </clipPath>
-                        </defs>
-                    </svg>
-                    Danh mục
-                    <svg
-                            style="width: 10px; height: 10px"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 11 7"
-                            fill="none"
-                    >
-                        <path
-                                d="M5.05626 6.11523L10.1125 1.05894L9.05363 3.05176e-05L5.05626 3.99743L1.05888 3.05176e-05L-3.05176e-05 1.05894L5.05626 6.11523Z"
-                                fill="#4B4B4B"
-                        ></path>
-                    </svg>
-                </div>
-                <ul *ngIf="isShowDanhmuc" class="danhmuc-list">
-                    <li
-                            class="danhmuc-item"
-                            (click)="onClickCategory(item.id)"
-                            *ngFor="let item of categories"
-                    >
-                        <div class="text">{{ item.name }}</div>
-                        <div class="icon">+</div>
-                    </li>
-                </ul>
-            </div>
-            
+  <app-breadcrumb [heading]="'Tất cả sản phẩm'" [location]="'Tất cả sản phẩm'">
+  </app-breadcrumb>
+  <div class="container mt-3 product-container">
+    <div id="pagination-target"></div>
+    <div class="sort-heading">
+      <div class="heading-left" (click)="onOutsideClick($event)">
+        <div class="danhmuc button-left" (click)="onClickBtnDanhmuc($event)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="25"
+            viewBox="0 0 25 25"
+            fill="none"
+          >
+            <g clip-path="url(#clip0_1045_185)">
+              <path
+                d="M6.89722 13.8672H1.69653C0.761035 13.8672 0 14.6282 0 15.5637V20.7644C0 21.6999 0.761035 22.4609 1.69653 22.4609H6.89722C7.83272 22.4609 8.59375 21.6999 8.59375 20.7644V15.5637C8.59375 14.6282 7.83272 13.8672 6.89722 13.8672ZM1.69653 20.8984C1.62261 20.8984 1.5625 20.8383 1.5625 20.7644V15.5637C1.5625 15.4898 1.62261 15.4297 1.69653 15.4297H6.89722C6.97114 15.4297 7.03125 15.4898 7.03125 15.5637V20.7644C7.03125 20.8383 6.97114 20.8984 6.89722 20.8984H1.69653Z"
+                fill="#4A4A4A"
+              ></path>
+              <path
+                d="M6.89722 2.53906H1.69653C0.761035 2.53906 0 3.3001 0 4.2356V9.43628C0 10.3718 0.761035 11.1328 1.69653 11.1328H6.89722C7.83272 11.1328 8.59375 10.3718 8.59375 9.43628V4.2356C8.59375 3.3001 7.83272 2.53906 6.89722 2.53906ZM1.69653 9.57031C1.62261 9.57031 1.5625 9.51021 1.5625 9.43628V4.2356C1.5625 4.16167 1.62261 4.10156 1.69653 4.10156H6.89722C6.97114 4.10156 7.03125 4.16167 7.03125 4.2356V9.43628C7.03125 9.51021 6.97114 9.57031 6.89722 9.57031H1.69653Z"
+                fill="#4A4A4A"
+              ></path>
+              <path
+                d="M24.2188 18.5547H11.7188C11.2873 18.5547 10.9375 18.9045 10.9375 19.3359C10.9375 19.7674 11.2873 20.1172 11.7188 20.1172H24.2188C24.6502 20.1172 25 19.7674 25 19.3359C25 18.9045 24.6502 18.5547 24.2188 18.5547Z"
+                fill="#4A4A4A"
+              ></path>
+              <path
+                d="M19.9219 15.625H11.7188C11.2873 15.625 10.9375 15.9748 10.9375 16.4062C10.9375 16.8377 11.2873 17.1875 11.7188 17.1875H19.9219C20.3533 17.1875 20.7031 16.8377 20.7031 16.4062C20.7031 15.9748 20.3533 15.625 19.9219 15.625Z"
+                fill="#4A4A4A"
+              ></path>
+              <path
+                d="M24.2188 7.42188H11.7188C11.2873 7.42188 10.9375 7.77168 10.9375 8.20312C10.9375 8.63457 11.2873 8.98438 11.7188 8.98438H24.2188C24.6502 8.98438 25 8.63457 25 8.20312C25 7.77168 24.6502 7.42188 24.2188 7.42188Z"
+                fill="#4A4A4A"
+              ></path>
+              <path
+                d="M19.9219 4.29688H11.7188C11.2873 4.29688 10.9375 4.64668 10.9375 5.07812C10.9375 5.50957 11.2873 5.85938 11.7188 5.85938H19.9219C20.3533 5.85938 20.7031 5.50957 20.7031 5.07812C20.7031 4.64668 20.3533 4.29688 19.9219 4.29688Z"
+                fill="#4A4A4A"
+              ></path>
+            </g>
+            <defs>
+              <clipPath id="clip0_1045_185">
+                <rect
+                  width="25"
+                  height="25"
+                  fill="white"
+                  transform="matrix(1 0 0 -1 0 25)"
+                ></rect>
+              </clipPath>
+            </defs>
+          </svg>
+          Danh mục
+          <svg
+            style="width: 10px; height: 10px"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 11 7"
+            fill="none"
+          >
+            <path
+              d="M5.05626 6.11523L10.1125 1.05894L9.05363 3.05176e-05L5.05626 3.99743L1.05888 3.05176e-05L-3.05176e-05 1.05894L5.05626 6.11523Z"
+              fill="#4B4B4B"
+            ></path>
+          </svg>
         </div>
-        <div class="product-list container">
-            <div class="row">
-                <div
-                        class="product-item col-sm-3"
-                        *ngFor="
+        <ul *ngIf="isShowDanhmuc" class="danhmuc-list">
+          <li
+            class="danhmuc-item"
+            (click)="onClickCategory(item.id)"
+            *ngFor="let item of categories"
+          >
+            <div class="text">{{ item.name }}</div>
+            <div class="icon">+</div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="product-list container">
+      <div class="row">
+        <div
+          class="product-item col-sm-3"
+          *ngFor="
             let item of products
               | paginate
                 : {
                     itemsPerPage: productPerPage,
-                    currentPage: currentPage + 1,
+                    currentPage: currentPage - 1,
                     totalItems: totalProducts,
                   }
           "
-                >
-                    <app-product [product]="item"></app-product>
-                </div>
-            </div>
-            <div class="row d-flex justify-content-center align-items-center pb-5">
-                <pagination-controls
-                        (pageChange)="onPageChange($event)"
-                ></pagination-controls>
-            </div>
+        >
+          <app-product [product]="item"></app-product>
         </div>
+      </div>
+      <div class="row d-flex justify-content-center align-items-center pb-5">
+        <pagination-controls
+          (pageChange)="onPageChange($event)"
+        ></pagination-controls>
+      </div>
     </div>
+  </div>
 </div>

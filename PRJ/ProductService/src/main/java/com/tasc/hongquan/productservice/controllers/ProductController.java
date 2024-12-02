@@ -78,12 +78,12 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<ResponseBody> getAllProduct(@RequestParam(value = "page", defaultValue = "0") String pageParams,
-                                                      @RequestParam(value = "size", defaultValue = "12") String sizeParams, @RequestParam(value = "categoryId") String categoryIdParams) {
+                                                      @RequestParam(value = "size", defaultValue = "12") String sizeParams, @RequestParam(value = "categoryId", defaultValue = "0") String categoryIdParams) {
         try {
             int page = Integer.parseInt(pageParams);
             int size = Integer.parseInt(sizeParams);
             Integer categoryId = Integer.parseInt(categoryIdParams);
-            Page<Product> products = productService.getAllProducts(page, size, categoryId);
+            List<Product> products = productService.getAllProducts(page, size, categoryId);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseBody("ok", "Product found", products)
             );
