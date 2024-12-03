@@ -72,7 +72,7 @@ export class ProductAllComponent implements OnInit {
 
   onPageChange(page: number) {
     console.log('Page: ', page);
-    this.currentPage = page;
+    this.currentPage = page - 1;
     this.loadProducts();
     this.scrollToTarget();
   }

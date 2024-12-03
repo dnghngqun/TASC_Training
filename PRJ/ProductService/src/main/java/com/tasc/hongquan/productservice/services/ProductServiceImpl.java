@@ -178,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts(int page, int size, int categoryId) {
         try {
             Set<Object> productIds = redisTemplate.opsForHash().keys("products");
-
+            log.info("ProductIds: " + productIds);
             List<Product> products = redisTemplate.opsForHash().multiGet("products", productIds).stream()
                     .map(obj -> (Product) obj)
                     .collect(Collectors.toList());
@@ -191,7 +191,8 @@ public class ProductServiceImpl implements ProductService {
             }
 
             int totalProduct = products.size();
-            int start = (page - 1) * size;
+            log.info("Total product: " + totalProduct);
+            int start = page * size;
             int end = Math.min(start + size, totalProduct);
 
             List<Product> pageProducts = products.subList(start, end);
@@ -200,8 +201,11 @@ public class ProductServiceImpl implements ProductService {
             log.error("Disconnect to Redis: " + e.getMessage());
             if (categoryId == 0) {
                 Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
+                log.info("Get products from database no category");
                 return products.getContent();
+
             }
+            log.info("Get products from database with category");
             return productRepository.getAllProductsByCategory(PageRequest.of(page, size), categoryId).getContent();
         }
     }

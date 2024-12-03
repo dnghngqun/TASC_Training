@@ -1,15 +1,16 @@
 package com.tasc.hongquan.productservice.dto;
 
-import com.tasc.hongquan.productservice.models.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class ProductRelated {
     private int productId;
-    private List<Integer> productRelated;
+    private List<String> productRelated;
 }

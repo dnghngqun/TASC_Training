@@ -281,4 +281,11 @@ CALL add_order_with_details(
     '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
 );
 
+SELECT p.* 
+FROM products p
+WHERE category_id = 1
+  AND product_id != 1
+ORDER BY RAND() 
+LIMIT 5
+
 

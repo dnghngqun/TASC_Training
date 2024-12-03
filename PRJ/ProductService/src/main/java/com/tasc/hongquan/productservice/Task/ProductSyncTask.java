@@ -7,8 +7,12 @@ import com.tasc.hongquan.productservice.models.Product;
 import com.tasc.hongquan.productservice.repositories.ProductRepository;
 import com.tasc.hongquan.productservice.services.CategoryService;
 import com.tasc.hongquan.productservice.services.ProductService;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,25 +22,34 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 
 @Component
 @AllArgsConstructor
-public class ProductSyncTask {
+@Slf4j
+public class ProductSyncTask implements ApplicationListener<ContextRefreshedEvent> {
     private final ProductService productService;
     private final ProductRepository productRepository;
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
     private final CategoryService categoryService;
     public static final String PRODUCT_ALL_PREFIX = "product_all:";
     @Qualifier("redisTemplate")
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private KafkaProducer kafkaProducer;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        log.info("ProductSyncTask started");
+        saveProductToCache();
+        syncProductUpdate();
+        syncRelatedProducts();
+    }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.DAYS) // 1 day
     public void saveProductToCache() {
         List<Product> products = productRepository.findAll();
+        log.info("Product list size: " + products.size());
         for (Product product : products) {
             executorService.submit(() -> {
                 kafkaProducer.sendProduct(product);
@@ -59,9 +72,9 @@ public class ProductSyncTask {
     public void syncRelatedProducts() {
         Set<Object> productIds = redisTemplate.opsForHash().keys("products");
         for (Object id : productIds) {
-            List<Integer> relatedProducts = productRepository.findRelatedProductsLimit5((int) id);
+            List<String> relatedProducts = productRepository.findRelatedProductsLimit5(Integer.parseInt(id.toString()));
             executorService.submit(() -> {
-                kafkaProducer.sendRelatedProduct(new ProductRelated((int) id, relatedProducts));
+                kafkaProducer.sendRelatedProduct(new ProductRelated(Integer.parseInt(id.toString()), relatedProducts));
             });
         }
     }

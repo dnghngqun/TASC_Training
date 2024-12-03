@@ -20,13 +20,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "SELECT p.* FROM order_details od JOIN products p ON od.product_id = p.product_id WHERE od.order_detail_id = :orderDetailId", nativeQuery = true)
     Optional<Product> findByOrderDetailId(@Param("orderDetailId") int orderDetailId);
 
-    @Query(value = "SELECT * FROM products p " +
-            "WHERE p.category_id = (SELECT category_id FROM products WHERE product_id = :productId AND deleted_at IS NULL) " +
+    @Query(value = "SELECT p.product_id FROM products p " +
+            "WHERE p.category_id = (SELECT p2.category_id FROM products p2 WHERE product_id = :productId AND deleted_at IS NULL) " +
             "AND p.product_id != :productId " +
             "AND p.deleted_at IS NULL " +
             "LIMIT 5", nativeQuery = true)
-    List<Integer> findRelatedProductsLimit5(@Param("productId") int productId);
+    List<String> findRelatedProductsLimit5(@Param("productId") int productId);
 
-    @Query(value = "SELECT p.product_id FROM products p WHERE updated_at >= NOW() - INTERVAL 5 MINUTE", nativeQuery = true)
+    @Query(value = "SELECT p.* FROM products p WHERE updated_at >= NOW() - INTERVAL 5 MINUTE", nativeQuery = true)
     List<Product> findProductUpdatedRecently();
 }
