@@ -4,6 +4,7 @@
 #### 1: Kafka (Dùng gửi email cho khách hàng)
 Khi khách hàng đặt hàng thành công:
 - Kafka sử dụng để gửi thông báo email tới người dùng. Producer gửi thông điệp về việc đặt hàng thành công vào Kafka, và Consumer xử lý thông điệp đó để gửi email.
+
 Khi hệ thống lỗi:
 - Nếu có lỗi trong hệ thống, Kafka ghi nhận lỗi và Consumer gửi email thông báo lỗi tới khách hàng.
 
@@ -33,6 +34,24 @@ từ đó tối ưu hóa hiệu suất mà không làm quá tải tài nguyên h
 - Em lưu cả vào database phòng trường hợp lỗi kết nối đến redis thì mình sẽ lấy dữ liệu từ database ra để hiển thị cho người dùng
 
 
+Câu hỏi 
+- Nếu lưu trên ram trong TH redis gặp vấn đề thì dữ liệu sẽ bị clear? vậy xử lý thế nào? 
+  - Nếu redis gặp vấn đề thì sử dụng replication và redis cluster để sao lưu dữ liệu, khi một node chết thì dữ liệu sẽ được chuyển qua 1 node khác để ko bị mất dữ liệu
+  - Nếu redis bị mất kết nối sẽ đọc dữ liệu từ database để hiển thị cho người dùng
+- Ngoài lưu trên ram thì có lựa chọn khác không?
+  - Bản chất của redis là để chịu tải cho mysql thì có thể dùng thêm 1 mysql song song để lưu dữ liệu và chịu tải thay hoặc dùng 1 cơ sở dữ liệu nosql khác 
+- làm thế nào để tối ưu hóa thời gian cache khi dữ liệu cần cache lên redis nhiều(thời gian đẩy thông tin từ db lên redis là ngắn nhất)
+  - Em đọc tất cả dữ liệu của product mình cần và lưu vào List
+  - Sau đó dùng ExecutorService để tạo nhiều thread song song, mỗi thread sẽ gửi dữ liệu của 1 product và gửi lên redis qua kafka
+  - Consumer kafka sẽ nhận dữ liệu và lưu vào redis
+  - Lý do dùng kafka khi lưu từ List vào Redis:
+    - Để tăng khả năng chịu tải và giải quyết vấn đề tốc độ không đồng bộ
+    - Vấn đề: Nếu số lượng dữ liệu từ DB lớn, việc đẩy trực tiếp từ List sang Redis có thể gây ghi đè dữ liệu hoặc xung đột giữa các câu lệnh do Redis là single-threaded
+    - Giải pháp:
+        - Kafka đóng vai trò như một bộ đệm trung gian để giải quyết tốc độ không đồng nhất giữa hai hệ thống
+        - Producer sẽ dùng thread để nhanh chóng đẩy dữ liệu lên Kafka mà không bị chậm lại bởi Redis
+        - Nhiều consumer sẽ đọc nhiều partition để tăng khả năng chịu tải và tăng tốc độ xử lý
+    - 
 
 
 
