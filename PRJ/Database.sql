@@ -1,4 +1,4 @@
-DROP DATABASE gomsu;
+
 CREATE DATABASE gomsu;
 USE gomsu;
 
@@ -272,20 +272,20 @@ END$$
 
 DELIMITER ;
 
-CALL add_order_with_details(
-    '2350c9c5-7b0a-4a55-9c2b-820e595fe30a', 
-    10000, 
-    NULL, 
-    NULL, 
-    1, 
-    '[{"productId": 13, "quantity": 1, "price": 999000}, {"productId": 42, "quantity": 5, "price": 10000}]'
-);
 
-SELECT p.* 
-FROM products p
-WHERE category_id = 1
-  AND product_id != 1
-ORDER BY RAND() 
-LIMIT 5
+INSERT INTO categories (name) VALUES
+('Nồi sứ dưỡng sinh'),
+('Phòng ăn'),
+('Sứ dưỡng sinh'),
+('Trà - cà phê'),
+('Phụ kiện bàn ăn'),
+('Sứ nghệ thuật');
 
-
+INSERT INTO products (name, description, price, image_url, category_id, stock, discount)
+VALUES
+('Nồi sứ dưỡng sinh 3.5L', 'Nồi sứ dưỡng sinh cao cấp, giữ nhiệt tốt, an toàn cho sức khoẻ.', 780000, 'images/noi_35l.jpg', 1, 20, 0),
+('Bộ chén dĩa bàn ăn 18 món', 'Bộ chén dĩa gốm sứ nghệ thuật dành cho 6 người ăn.', 1150000, 'images/chen_dia_18.jpg', 2, 10, 5.0),
+('Tô sứ dưỡng sinh nhỏ', 'Tô nhỏ dùng để đựng súp hoặc cháo, thích hợp cho trẻ em.', 185000, 'images/to_su_nho.jpg', 3, 50, 0),
+('Bộ bình trà và 6 ly', 'Bộ trà gốm sứ men rạn, họa tiết hoa sen thủ công.', 620000, 'images/bo_tra_hoa_sen.jpg', 4, 15, 10.0),
+('Khay gỗ tre đựng chén', 'Phụ kiện bàn ăn bằng gỗ tre, giúp sắp xếp chén dĩa gọn gàng.', 125000, 'images/khay_go.jpg', 5, 30, 0),
+('Bình hoa sứ nghệ thuật', 'Bình hoa gốm sứ vẽ tay, dùng trang trí phòng khách.', 970000, 'images/binh_hoa.jpg', 6, 8, 15.0);

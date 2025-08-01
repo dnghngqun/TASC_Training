@@ -1,5 +1,7 @@
 package com.tasc.hongquan.productservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAO;
 import com.tasc.hongquan.productservice.dao.statement.ProductDAOImpl;
@@ -11,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
-    //    @Override
+//    @Override
 //    public Page<Product> getAllProducts(int page, int size, Integer categoryId) throws JsonProcessingException {
 //        Pageable pageable = PageRequest.of(page, size);
 //        String productPageKey = categoryId != null && categoryId > 0
@@ -175,6 +179,7 @@ public class ProductServiceImpl implements ProductService {
 //
 //        return products;
 //    }
+    @Override
     public List<Product> getAllProducts(int page, int size, int categoryId) {
         try {
             Set<Object> productIds = redisTemplate.opsForHash().keys("products");
@@ -183,6 +188,14 @@ public class ProductServiceImpl implements ProductService {
                     .map(obj -> (Product) obj)
                     .collect(Collectors.toList());
 
+            if(products.isEmpty()) {
+                log.info("No products found in Redis, fetching from database");
+                products = productRepository.findAll();
+                // Save products to Redis
+                for (Product product : products) {
+                    redisTemplate.opsForHash().put("products", product.getId(), product);
+                }
+            }
             if (categoryId != 0) {
                 products = products.stream()
                         .map(obj -> (Product) obj)

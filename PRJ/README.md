@@ -35,3 +35,15 @@
    git clone 
 
    ```
+
+2. Install redis:
+    
+   ```bash
+   docker run -d \
+    --name redis \
+    -p 6379:6379 \
+    -e REDIS_PASSWORD=207205 \
+    redis:7.2 \
+    redis-server --requirepass 207205
+
+   ```
